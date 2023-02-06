@@ -4,6 +4,9 @@ project(test-bed LANGUAGES CXX)
 
 add_subdirectory(src)
 
+# Adding dependencies
+include(cmake/deps.cmake)
+
 add_executable(test-bed src/main.cpp)
 
 target_link_libraries(test-bed PRIVATE app)

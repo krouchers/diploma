@@ -1,0 +1,1 @@
+cmake -S . -B build_debug -GNinja -DCMAKE_BUILD_TYPE=Debug
