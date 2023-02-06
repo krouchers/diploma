@@ -2,6 +2,5 @@
 
 int main()
 {
-    print(4);
-    call_window();
+    auto test_bed = app();
 }
