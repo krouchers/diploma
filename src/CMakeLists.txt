@@ -1,4 +1,5 @@
 set(MODULES 
+    utils
     platform
     app)
 

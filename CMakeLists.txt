@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 3.24)
 
 project(test-bed LANGUAGES CXX)
 
-add_subdirectory(src)
-
 # Adding dependencies
 include(cmake/deps.cmake)
+
+add_subdirectory(src)
 
 add_executable(test-bed src/main.cpp)
 
