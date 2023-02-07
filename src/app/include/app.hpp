@@ -1,19 +1,17 @@
 #pragma once
 #include <memory>
+#include "platform.hpp"
 
-class window;
 class app
 {
 public:
     app();
     app(app &&);
-    ~app();
+    void run();
 
 private:
     app(const app &) = delete;
     app &operator=(const app &) = delete;
 
-    window *window_;
+    std::unique_ptr<platform> platform_;
 };
-void print(int);
-void call_window();

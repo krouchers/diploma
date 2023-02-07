@@ -1,19 +1,12 @@
-#include <iostream>
-
-#include "window.hpp"
+#include "platform.hpp"
 #include "app.hpp"
 
-void print(int a)
-{
-    std::cout << a << '\n';
-}
-
 app::app()
-    : window_{new window{"test window"}}
+    : platform_{new platform{}}
 {
+    platform_->create_window({1280, 720}, "my window");
 }
 
-app::~app()
-{
-    delete window_;
+void app::run(){
+
 }
