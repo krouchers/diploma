@@ -1,7 +1,8 @@
 set(MODULES 
     utils
     platform
-    app)
+    app
+    glad)
 
 set(MODULE_COMPILE_FLAGS -Wall -Wextra -Werr)
 

@@ -1,5 +1,5 @@
-function(build_library_with_type name type cxx_flags)
-    add_library(${name} ${type})
+function(build_library_with_type name type cxx_flags src)
+    add_library(${name} ${type} ${src})
     set_target_properties(${name}
     PROPERTIES 
     COMPILE_FLAGS ${cxx_flags})

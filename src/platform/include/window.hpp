@@ -11,6 +11,7 @@ public:
     ~window();
 
     SDL_Window *get_sdl_handler() const;
+    void poll_event();
 
 private:
     glm::vec2 size_{1280, 720};

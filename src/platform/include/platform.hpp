@@ -15,7 +15,9 @@ public:
     platform();
     ~platform();
 
+    void render();
 private:
     std::unique_ptr<window> window_;
     std::unique_ptr<graphic> gl_;
+    const uint8_t *key_baf_;
 };

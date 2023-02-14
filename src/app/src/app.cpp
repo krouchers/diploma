@@ -7,6 +7,10 @@ app::app()
     platform_->create_window({1280, 720}, "my window");
 }
 
-void app::run(){
-
+void app::run()
+{
+    while (true)
+    {
+        platform_.get()->render();
+    }
 }

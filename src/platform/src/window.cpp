@@ -7,14 +7,15 @@
 
 void window::create_window()
 {
-    info("Initializing SDL\n");
+    info("Initializing SDL");
     if (SDL_Init(SDL_INIT_EVERYTHING))
     {
         throw std::runtime_error("Failed to init sdl");
     }
-    info("Creating window\n");
+    info("Creating window");
+
     sdl_handler_ = SDL_CreateWindow("some window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                    size_.x, size_.y, 0);
+                                    size_.x, size_.y, SDL_WINDOW_OPENGL);
     if (!sdl_handler_)
     {
         throw std::runtime_error("Faile to create window");
@@ -34,6 +35,12 @@ window::window(std::string window_name, glm::vec2 size)
 
 window::~window()
 {
-    info("Destroing window\n");
+    info("Destroing window");
     SDL_DestroyWindow(sdl_handler_);
+}
+
+void window::poll_event()
+{
+    SDL_Event e;
+    SDL_PollEvent(&e);
 }

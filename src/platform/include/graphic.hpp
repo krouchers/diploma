@@ -1,5 +1,10 @@
 #pragma once
+
+#include <memory>
+#include <string>
+
 #include "SDL.h"
+#include "shader.hpp"
 
 class window;
 
@@ -11,6 +16,11 @@ public:
     graphic(const graphic &) = delete;
     graphic &operator=(const graphic &) = delete;
 
+    void render();
 private:
-    SDL_GLContext *gl_context_ = nullptr;
+    SDL_GLContext gl_context_;
+    void setup_debug_proc();
+    std::string version();
+    shader shader_;
+    GLuint VAO;
 };
