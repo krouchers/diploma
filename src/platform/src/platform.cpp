@@ -8,20 +8,28 @@ platform::~platform() = default;
 
 void platform::render()
 {
-    while (!should_close_window())
-    {
-        
-        gl_.get()->render();
-    }
+    poll_and_process_events();
+    gl_->render();
 }
 
 void platform::create_window(glm::vec2 size, std::string name)
 {
-    window_ = std::make_unique<window>(name);
-    gl_ = std::make_unique<graphic>(*window_.get());
-    key_baf_ = SDL_GetKeyboardState(nullptr);
+    window_ = std::make_shared<window>(name, size);
+    gl_ = std::make_unique<graphic>(window_);
 }
 
-bool platform::should_close_window()
+void platform::poll_and_process_events()
 {
+    for (auto event : window_.get()->poll_events())
+    {
+        switch (event)
+        {
+        case event::QUIT:
+            should_quit_ = true;
+            break;
+
+        default:
+            break;
+        }
+    }
 }

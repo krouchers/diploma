@@ -12,19 +12,16 @@ void window::create_window()
     {
         throw std::runtime_error("Failed to init sdl");
     }
-    info("Creating window");
 
+    info("Creating window");
     sdl_handler_ = SDL_CreateWindow("some window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                     size_.x, size_.y, SDL_WINDOW_OPENGL);
     if (!sdl_handler_)
     {
-        throw std::runtime_error("Faile to create window");
+        throw std::runtime_error("Failed to create window");
     }
-}
-
-SDL_Window *window::get_sdl_handler() const
-{
-    return sdl_handler_;
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
 }
 
 window::window(std::string window_name, glm::vec2 size)
@@ -39,8 +36,14 @@ window::~window()
     SDL_DestroyWindow(sdl_handler_);
 }
 
-void window::poll_event()
+std::vector<event> window::poll_events()
 {
     SDL_Event e;
-    SDL_PollEvent(&e);
+    std::vector<event> events;
+    while (SDL_PollEvent(&e))
+    {
+        if (e.type == SDL_QUIT)
+            events.push_back(event::QUIT);
+    }
+    return events;
 }

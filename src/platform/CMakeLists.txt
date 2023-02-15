@@ -7,7 +7,7 @@ set(src_files
    src/shader.cpp
 )   
 
-build_library_with_type(platform STATIC "${MODULE_COMPILE_FLAGS}" "${src_files}")
+build_library_with_type(platform STATIC ${MODULE_COMPILE_FLAGS} "${src_files}")
 
 target_link_libraries(platform PRIVATE SDL2-static utils glad)
 target_link_libraries(platform PUBLIC glm)

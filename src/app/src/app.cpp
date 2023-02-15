@@ -9,8 +9,8 @@ app::app()
 
 void app::run()
 {
-    while (true)
+    while (!platform_->should_quit())
     {
-        platform_.get()->render();
+        platform_->render();
     }
 }

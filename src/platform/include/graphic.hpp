@@ -11,16 +11,19 @@ class window;
 class graphic
 {
 public:
-    graphic(const window &);
+    graphic(const std::shared_ptr<window>);
     ~graphic();
     graphic(const graphic &) = delete;
     graphic &operator=(const graphic &) = delete;
 
     void render();
+
 private:
-    SDL_GLContext gl_context_;
     void setup_debug_proc();
+
+    std::shared_ptr<window> window_;
+    SDL_GLContext gl_context_;
     std::string version();
     shader shader_;
-    GLuint VAO;
+    GLuint VAO_, vertex_buffer_;
 };

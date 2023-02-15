@@ -8,6 +8,8 @@
 class window;
 class graphic;
 
+enum class event;
+
 class platform
 {
 public:
@@ -16,8 +18,12 @@ public:
     ~platform();
 
     void render();
+    inline bool should_quit() { return should_quit_; }
+
 private:
-    std::unique_ptr<window> window_;
+    void poll_and_process_events();
+
+    std::shared_ptr<window> window_;
     std::unique_ptr<graphic> gl_;
-    const uint8_t *key_baf_;
+    bool should_quit_{false};
 };
