@@ -94,26 +94,35 @@ graphic::graphic(const std::shared_ptr<window> win)
     glGenVertexArrays(1, &VAO_);
 
     glBindVertexArray(VAO_);
-    glGenBuffers(1, &vertex_buffer_);
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
-    const GLfloat vertex_data[]{-1.0f, -1.0f, 0.0f,
-                                1.0f, -1.0f, 0.0f,
-                                0.0f, 1.0f, 0.0f};
+    glGenBuffers(1, &VBO_);
+    glGenBuffers(1, &EBO_);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_);
+    const GLfloat vertex_data[]{-0.5f, -0.5f, 0.0f,
+                                0.5f, -0.5f, 0.0f,
+                                0.5f, 0.5f, 0.0f,
+                                -0.5f, 0.5f, 0.0f};
+    const GLuint indeces[]{0, 1, 2, 0, 2, 3};
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_data), vertex_data, GL_STATIC_DRAW);
 
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indeces), indeces, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     info("Compiling and loading shaders...");
     shader_.load(shaders::vertex_shader, shaders::fragment_shader);
     glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+    glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
 }
 
 void graphic::render()
 {
-    glUseProgram(shader_.get_program_id());
     glClear(GL_COLOR_BUFFER_BIT);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-    glDisableVertexAttribArray(0);
+    glUseProgram(shader_.get_program_id());
+    glBindVertexArray(VAO_);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+    
     SDL_GL_SwapWindow(window_->get_sdl_handler());
 }
 

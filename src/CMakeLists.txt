@@ -2,7 +2,8 @@ set(MODULES
     utils
     platform
     app
-    glad)
+    glad
+    math)
 
 set(MODULE_COMPILE_FLAGS "-Wall -Wextra -Werror -Wshadow")
 

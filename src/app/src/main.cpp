@@ -1,6 +1,7 @@
-#include<iostream>
+#include <iostream>
 
 #include "app.hpp"
+#include "math.hpp"
 
 int main()
 {

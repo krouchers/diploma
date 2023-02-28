@@ -7,7 +7,7 @@ add_executable(test-bed
     src/app.cpp
 )
 
-target_link_libraries(test-bed PRIVATE platform)
+target_link_libraries(test-bed PRIVATE platform math utils)
 target_include_directories(test-bed PRIVATE include)
 
 set_target_properties(test-bed PROPERTIES

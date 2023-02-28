@@ -25,5 +25,5 @@ private:
     SDL_GLContext gl_context_;
     std::string version();
     shader shader_;
-    GLuint VAO_, vertex_buffer_;
+    GLuint VAO_, VBO_, EBO_;
 };
