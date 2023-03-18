@@ -1,6 +1,8 @@
 #include "shader.hpp"
 #include "log.hpp"
 
+#include <cmath>
+
 void shader::load(const std::string vertex, const std::string fragment)
 {
     vertex_ = glCreateShader(GL_VERTEX_SHADER);
@@ -22,15 +24,19 @@ void shader::load(const std::string vertex, const std::string fragment)
     glLinkProgram(program_);
     GLint status;
     glGetProgramiv(program_, GL_LINK_STATUS, &status);
-    if(status != GL_TRUE)
+    if (status != GL_TRUE)
+    {
         warn("Failed to link program");
+        GLchar buf[128];
+        glGetProgramInfoLog(program_, sizeof(buf), nullptr, buf);
+        warn("%s", buf);
+    }
 }
 
 bool shader::validate(GLuint shader)
 {
     GLint is_compiled;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &is_compiled);
-    return is_compiled == GL_TRUE;
     if (is_compiled != GL_TRUE)
     {
         GLint len{0};
@@ -39,4 +45,24 @@ bool shader::validate(GLuint shader)
         glGetShaderInfoLog(shader, len, nullptr, msg);
         warn("Failed to compile %d shader: %s", shader, msg);
     }
+    return is_compiled == GL_TRUE;
+}
+
+bool shader::update_unifom(const char *uniform_name, float value)
+{
+    // FIXME: should be better logic
+    auto location{glGetUniformLocation(program_, uniform_name)};
+    if (location == -1)
+    {
+        return false;
+    }
+    glUniform4f(location, 0, value, 0, 1);
+    return true;
+}
+
+shader::~shader()
+{
+    glDeleteShader(fragment_);
+    glDeleteShader(vertex_);
+    glDeleteProgram(program_);
 }

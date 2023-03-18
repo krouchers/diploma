@@ -55,25 +55,26 @@ struct vec4
     };
 };
 
+struct vec3
+{
+    float x, y, z;
+};
+
+struct vec2
+{
+    float x, y;
+};
+
 struct mat4x4
 {
     static const mat4x4 I;
-    // mat4x4() = default;
-    // {
-    //     *this = I;
-    // }
-
-    // constexpr mat4x4()
-    // {
-    //     *this = I;
-    // }
     constexpr mat4x4()
     {
         *this = I;
     }
 
     constexpr mat4x4(
-        std::initializer_list<vec4> il) : rows{}
+        std::initializer_list<vec4> il)
     {
         for (std::size_t i = 0; i < il.size(); ++i)
         {
@@ -100,7 +101,7 @@ struct mat4x4
     }
     union
     {
-        vec4 rows[4];
+        vec4 rows[4]{};
         float data[16];
     };
 };
@@ -120,7 +121,7 @@ constexpr mat4x4 get_project_matrix(float n, float f, float l, float r, float b,
     };
 }
 
-constexpr mat4x4 get_projection_matrix(float n, float f, float l, float r, float b, float t)
+constexpr mat4x4 project(float n, float f, float l, float r, float b, float t)
 {
     return mat4x4{
         vec4{-2.0f * n / (r - l), 0, -(r + l) / (r - l), 0},
@@ -130,7 +131,7 @@ constexpr mat4x4 get_projection_matrix(float n, float f, float l, float r, float
     };
 }
 
-constexpr mat4x4 get_translation_matrix(const vec4 &v)
+constexpr mat4x4 translate(const vec4 &v)
 {
     return mat4x4{
         vec4{1, 0, 0, v.x},
@@ -140,7 +141,7 @@ constexpr mat4x4 get_translation_matrix(const vec4 &v)
     };
 }
 
-constexpr mat4x4 get_rotation_matrix(float angle)
+constexpr mat4x4 rotate(float angle)
 {
     // FIXME: Test rotation about x axis
     return mat4x4{
