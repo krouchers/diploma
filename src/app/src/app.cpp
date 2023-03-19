@@ -1,5 +1,6 @@
 #include "platform.hpp"
 #include "app.hpp"
+#include "log.hpp"
 
 app::app()
     : platform_{new platform{}}
@@ -14,5 +15,14 @@ void app::run()
     while (!platform_->should_quit())
     {
         platform_->render();
+        if (platform_->is_pressed(keys::LEFT))
+        {
+            info("Key %d is pressed", keys::LEFT);
+        }
+
+        if (platform_->is_pressed(keys::RIGHT))
+        {
+            info("Key %d is pressed", keys::RIGHT);
+        }
     }
 }

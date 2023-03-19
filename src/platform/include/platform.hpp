@@ -5,6 +5,13 @@
 
 #include "glm/vec2.hpp"
 
+enum class keys : int8_t
+{
+    LEFT,
+    RIGHT,
+    COUNT
+};
+
 class window;
 class graphic;
 
@@ -12,11 +19,22 @@ class platform
 {
 public:
     void create_window(glm::vec2 size, std::string name);
+
     platform();
+
     ~platform();
 
     void render();
+
     inline bool should_quit() { return should_quit_; }
+
+    /**
+     * @brief Проверяет состояние клавиши. 
+     * 
+     * @return true Если клавиша была нажата.
+     * @return false 
+     */
+    bool is_pressed(keys);
 
 private:
     void poll_and_process_events();
@@ -26,8 +44,14 @@ private:
     bool should_quit_{false};
 
     /**
-     * @brief Буффер, хранящий текущее состояние клавиатуры. 
-     * 
+     * @brief Буффер, хранящий текущее состояние клавиатуры.
+     *
      */
-    const uint8_t *m_key_buf;
+    const uint8_t *m_key_buf_current;
+
+    /**
+     * @brief Буффер, хранящий текущее предыдущее состояние клавиатуры.
+     *
+     */
+    uint8_t m_key_buf_previous[512]{};
 };
