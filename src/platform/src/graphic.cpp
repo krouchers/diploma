@@ -96,8 +96,11 @@ graphic::graphic(const std::shared_ptr<window> win)
     info("Compiling and loading shaders...");
     shader_.load(shaders::vertex_shader, shaders::fragment_shader);
     rect = mesh(std::move(vertex_data), std::move(indices));
-    //FIXME: there gonna be ralative path
-    m_tex = tex2D("C:/Users/filin/coding/diploma/assets/container.jpg");
+    // FIXME: there gonna be ralative path
+    m_tex1 = tex2D("C:/Users/filin/coding/diploma/assets/container.jpg");
+    m_tex2 = tex2D("C:/Users/filin/coding/diploma/assets/awesomeface.png");
+    shader_.set("tex1", 0);
+    shader_.set("tex2", 1);
 }
 
 void graphic::render()
@@ -105,7 +108,8 @@ void graphic::render()
     glClearColor(1.0f, 0.0f, 0.4f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     shader_.bind();
-    m_tex.bind();
+    m_tex1.bind(0);
+    m_tex2.bind(1);
     rect.render();
     SDL_GL_SwapWindow(window_->get_sdl_handler());
 }

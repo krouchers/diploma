@@ -6,6 +6,7 @@ set(src_files
    src/graphic.cpp
    src/shader.cpp
    src/mesh.cc
+   src/tex2D.cc
 )   
 
 build_library_with_type(platform STATIC ${MODULE_COMPILE_FLAGS} "${src_files}")

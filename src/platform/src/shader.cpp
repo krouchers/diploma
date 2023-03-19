@@ -48,16 +48,16 @@ bool shader::validate(GLuint shader)
     return is_compiled == GL_TRUE;
 }
 
-bool shader::update_unifom(const char *uniform_name, float value)
+void shader::set(const char *uniform_name, float value)
 {
     // FIXME: should be better logic
-    auto location{glGetUniformLocation(program_, uniform_name)};
-    if (location == -1)
-    {
-        return false;
-    }
-    glUniform4f(location, 0, value, 0, 1);
-    return true;
+    glUniform4f(glGetUniformLocation(program_, uniform_name), 0, value, 0, 1);
+}
+
+void shader::set(const char *uniform_name, int value)
+{
+    bind();
+    glUniform1i(glGetUniformLocation(program_, uniform_name), value);
 }
 
 shader::~shader()

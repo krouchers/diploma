@@ -29,7 +29,8 @@ public:
         {{-0.5f, 0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}}};
     std::vector<GLuint> indices{0, 1, 2, 0, 2, 3};
     mesh rect;
-    tex2D m_tex;
+    tex2D m_tex1;
+    tex2D m_tex2;
 
 private:
     void

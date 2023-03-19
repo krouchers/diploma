@@ -2,7 +2,9 @@
 #include "window.hpp"
 #include "graphic.hpp"
 
-platform::platform() = default;
+platform::platform() : m_key_buf{SDL_GetKeyboardState(nullptr)}
+{
+}
 
 platform::~platform() = default;
 
@@ -20,16 +22,19 @@ void platform::create_window(glm::vec2 size, std::string name)
 
 void platform::poll_and_process_events()
 {
-    for (auto event : window_.get()->poll_events())
+    SDL_Event e;
+    while (SDL_PollEvent(&e))
     {
-        switch (event)
+        if (e.type == SDL_QUIT)
         {
-        case event::QUIT:
-            should_quit_ = true;
-            break;
-
-        default:
-            break;
+            switch (e.type)
+            {
+            case SDL_QUIT:
+                should_quit_ = true;
+                break;
+            default:
+                break;
+            }
         }
     }
 }

@@ -23,10 +23,11 @@ namespace shaders
         in vec2 t_coord;
         out vec4 out_color;
         
-        uniform sampler2D tex;
+        uniform sampler2D tex1;
+        uniform sampler2D tex2;
         
         void main(){
-            out_color = texture(tex, t_coord);
+            out_color = mix(texture(tex1, t_coord),texture(tex2, t_coord), 0.2);
         }
         )"};
 }
@@ -54,7 +55,17 @@ public:
      * @return false - если значение обновыить не вышло, в случае если переменной
      * с таким именем нет, или она была соптимизирована glsl компилятором.
      */
-    bool update_unifom(const char *uniform_name, float value);
+    void set(const char *uniform_name, float value);
+    /**
+     * @brief Обновляет значение юниформ объекта формата "одно целочисленное".
+     *
+     * @param uniform_name Имя юниформ переменной.
+     * @param value Привсваемое ей значение.
+     * @return true - если значение успешно обновлено.
+     * @return false - если значение обновыить не вышло, в случае если переменной
+     * с таким именем нет, или она была соптимизирована glsl компилятором.
+     */
+    void set(const char *uniform_name, int value);
 
     inline GLuint get_program_id() const noexcept { return program_; };
     inline void bind() { glUseProgram(program_); }

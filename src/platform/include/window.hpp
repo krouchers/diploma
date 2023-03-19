@@ -5,11 +5,6 @@
 #include "glm/vec2.hpp"
 #include "SDL.h"
 
-enum class event
-{
-    QUIT
-};
-
 class window
 {
 public:
@@ -17,7 +12,6 @@ public:
     ~window();
 
     inline SDL_Window *get_sdl_handler() const noexcept { return sdl_handler_; }
-    std::vector<event> poll_events();
 
 private:
     glm::vec2 size_{1280, 720};

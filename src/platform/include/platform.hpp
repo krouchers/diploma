@@ -8,8 +8,6 @@
 class window;
 class graphic;
 
-enum class event;
-
 class platform
 {
 public:
@@ -26,4 +24,10 @@ private:
     std::shared_ptr<window> window_;
     std::unique_ptr<graphic> gl_;
     bool should_quit_{false};
+
+    /**
+     * @brief Буффер, хранящий текущее состояние клавиатуры. 
+     * 
+     */
+    const uint8_t *m_key_buf;
 };

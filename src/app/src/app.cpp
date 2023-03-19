@@ -7,6 +7,8 @@ app::app()
     platform_->create_window({1280, 720}, "my window");
 }
 
+app::~app() = default;
+
 void app::run()
 {
     while (!platform_->should_quit())

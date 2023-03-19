@@ -35,15 +35,3 @@ window::~window()
     info("Destroing window");
     SDL_DestroyWindow(sdl_handler_);
 }
-
-std::vector<event> window::poll_events()
-{
-    SDL_Event e;
-    std::vector<event> events;
-    while (SDL_PollEvent(&e))
-    {
-        if (e.type == SDL_QUIT)
-            events.push_back(event::QUIT);
-    }
-    return events;
-}
