@@ -3,7 +3,7 @@
 #include "graphic.hpp"
 #include "SDL.h"
 
-#include <string>
+#include <cstring>
 
 namespace
 {

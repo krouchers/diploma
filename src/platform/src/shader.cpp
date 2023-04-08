@@ -33,16 +33,16 @@ void shader::load(const std::string vertex, const std::string fragment)
     }
 }
 
-bool shader::validate(GLuint shader)
+bool shader::validate(GLuint shader_id)
 {
     GLint is_compiled;
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &is_compiled);
+    glGetShaderiv(shader_id, GL_COMPILE_STATUS, &is_compiled);
     if (is_compiled != GL_TRUE)
     {
         GLint len{0};
-        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len);
+        glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &len);
         char *msg{new char[len]};
-        glGetShaderInfoLog(shader, len, nullptr, msg);
+        glGetShaderInfoLog(shader_id, len, nullptr, msg);
         warn("Failed to compile %d shader: %s", shader, msg);
     }
     return is_compiled == GL_TRUE;

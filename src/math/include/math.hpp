@@ -8,9 +8,9 @@ struct vec4
 {
 
     constexpr vec4()
-        : x{0}, y{0}, z{0}, w{0} {};
+        : x_{0}, y_{0}, z_{0}, w_{0} {};
     constexpr vec4(float x, float y, float z, float w)
-        : x{x}, y{y}, z{z}, w{w} {};
+        : x_{x}, y_{y}, z_{z}, w_{w} {};
 
     float &operator[](int i)
     {
@@ -23,10 +23,10 @@ struct vec4
 
     constexpr bool operator==(const vec4 &rhs) const
     {
-        return x == rhs.x &&
-               y == rhs.y &&
-               z == rhs.z &&
-               w == rhs.w;
+        return x_ == rhs.x_ &&
+               y_ == rhs.y_ &&
+               z_ == rhs.z_ &&
+               w_ == rhs.w_;
     }
 
     constexpr bool operator!=(const vec4 &rhs) const
@@ -48,7 +48,7 @@ struct vec4
     {
         struct
         {
-            float x, y, z, w;
+            float x_, y_, z_, w_;
         };
 
         float data[4];
@@ -134,9 +134,9 @@ constexpr mat4x4 project(float n, float f, float l, float r, float b, float t)
 constexpr mat4x4 translate(const vec4 &v)
 {
     return mat4x4{
-        vec4{1, 0, 0, v.x},
-        vec4{0, 1, 0, v.y},
-        vec4{0, 0, 1, v.z},
+        vec4{1, 0, 0, v.x_},
+        vec4{0, 1, 0, v.y_},
+        vec4{0, 0, 1, v.z_},
         vec4{0, 0, 0, 1},
     };
 }
