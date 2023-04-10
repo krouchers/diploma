@@ -2,7 +2,10 @@
 #include <cmath>
 #include <numbers>
 
-#include "log.hpp"
+constexpr float radians(float degrees)
+{
+    return degrees * std::numbers::pi / 180.f;
+}
 
 struct vec4
 {
@@ -14,7 +17,7 @@ struct vec4
 
     float &operator[](int i)
     {
-        if (!(i >= 0 && i <= 4))
+        if (!(i >= 0 && i <= 3))
         {
             throw std::out_of_range("Out of range indexing in vec4");
         }
@@ -82,12 +85,32 @@ struct mat4x4
         }
     }
 
+    constexpr mat4x4(
+        std::initializer_list<float> il)
+    {
+        for (std::size_t i = 0; i < 4; ++i)
+            for (std::size_t j = 0; j < 4; ++j)
+            {
+                rows[i][j] = *(il.begin() + 4 * i + j);
+            }
+    }
+
     constexpr bool operator==(const mat4x4 &rhs) const
     {
         for (std::size_t i = 0; i < 4; ++i)
             if (rows[i] != rhs.rows[i])
                 return false;
         return true;
+    }
+
+    constexpr vec4 &operator[](std::size_t index)
+    {
+        return rows[index];
+    }
+
+    constexpr vec4 operator[](std::size_t index) const
+    {
+        return rows[index];
     }
 
     const vec4 *begin() const
@@ -104,12 +127,55 @@ struct mat4x4
         vec4 rows[4]{};
         float data[16];
     };
-};
 
-constexpr float radians(float degrees)
-{
-    return degrees * std::numbers::pi / 180.f;
-}
+    friend constexpr mat4x4 operator*(const mat4x4 &lhs, const mat4x4 &rhs)
+    {
+        return mat4x4{
+            rhs[0][0] * lhs[0][0] + rhs[1][0] * lhs[0][1] + rhs[2][0] * lhs[0][2] + rhs[3][0] * lhs[0][3],
+            rhs[0][0] * lhs[1][0] + rhs[1][0] * lhs[1][1] + rhs[2][0] * lhs[1][2] + rhs[3][0] * lhs[1][3],
+            rhs[0][0] * lhs[2][0] + rhs[1][0] * lhs[2][1] + rhs[2][0] * lhs[2][2] + rhs[3][0] * lhs[2][3],
+            rhs[0][0] * lhs[3][0] + rhs[1][0] * lhs[3][1] + rhs[2][0] * lhs[3][2] + rhs[3][0] * lhs[3][3],
+            rhs[0][1] * lhs[0][0] + rhs[1][1] * lhs[0][1] + rhs[2][1] * lhs[0][2] + rhs[3][1] * lhs[0][3],
+            rhs[0][1] * lhs[1][0] + rhs[1][1] * lhs[1][1] + rhs[2][1] * lhs[1][2] + rhs[3][1] * lhs[1][3],
+            rhs[0][1] * lhs[2][0] + rhs[1][1] * lhs[2][1] + rhs[2][1] * lhs[2][2] + rhs[3][1] * lhs[2][3],
+            rhs[0][1] * lhs[3][0] + rhs[1][1] * lhs[3][1] + rhs[2][1] * lhs[3][2] + rhs[3][1] * lhs[3][3],
+            rhs[0][2] * lhs[0][0] + rhs[1][2] * lhs[0][1] + rhs[2][2] * lhs[0][2] + rhs[3][2] * lhs[0][3],
+            rhs[0][2] * lhs[1][0] + rhs[1][2] * lhs[1][1] + rhs[2][2] * lhs[1][2] + rhs[3][2] * lhs[1][3],
+            rhs[0][2] * lhs[2][0] + rhs[1][2] * lhs[2][1] + rhs[2][2] * lhs[2][2] + rhs[3][2] * lhs[2][3],
+            rhs[0][2] * lhs[3][0] + rhs[1][2] * lhs[3][1] + rhs[2][2] * lhs[3][2] + rhs[3][2] * lhs[3][3],
+            rhs[0][3] * lhs[0][0] + rhs[1][3] * lhs[0][1] + rhs[2][3] * lhs[0][2] + rhs[3][3] * lhs[0][3],
+            rhs[0][3] * lhs[1][0] + rhs[1][3] * lhs[1][1] + rhs[2][3] * lhs[1][2] + rhs[3][3] * lhs[1][3],
+            rhs[0][3] * lhs[2][0] + rhs[1][3] * lhs[2][1] + rhs[2][3] * lhs[2][2] + rhs[3][3] * lhs[2][3],
+            rhs[0][3] * lhs[3][0] + rhs[1][3] * lhs[3][1] + rhs[2][3] * lhs[3][2] + rhs[3][3] * lhs[3][3]};
+    }
+
+    constexpr static mat4x4 get_rotation_matrix(vec3 euler_angles)
+    {
+        auto x_rad{radians(euler_angles.x)};
+        auto y_rad{radians(euler_angles.y)};
+        auto z_rad{radians(euler_angles.x)};
+
+        mat4x4 rot_around_x{
+            {1, 0, 0, 0},
+            {0, std::cos(x_rad), -std::sin(x_rad), 0},
+            {0, std::sin(x_rad), std::cos(x_rad), 0},
+            {0, 0, 0, 1}};
+
+        mat4x4 rot_around_y{
+            {std::cos(y_rad), 0, std::sin(y_rad), 0},
+            {0, 1, 0, 0},
+            {-std::sin(y_rad), 0, std::cos(y_rad), 0},
+            {0, 0, 0, 1}};
+
+        mat4x4 rot_around_z{
+            {std::cos(z_rad), -std::sin(z_rad), 0, 0},
+            {std::sin(z_rad), std::cos(z_rad), 0, 0},
+            {0, 0, 1, 0},
+            {0, 0, 0, 1}};
+
+        return rot_around_z * rot_around_y * rot_around_x;
+    }
+};
 
 constexpr mat4x4 get_project_matrix(float n, float f, float l, float r, float b, float t)
 {
