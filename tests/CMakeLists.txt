@@ -12,8 +12,12 @@ message(STATUS "Creating tests...")
 
 add_executable(math_test math_tests.cpp)
 
-target_link_libraries(math_test gtest math)
+target_link_libraries(math_test gtest_main math)
 
 enable_testing()
 include(GoogleTest)
-gtest_discover_tests(math_test)
+
+add_test(NAME math_test COMMAND math_test)
+
+# Mark the test as failed if any gtest test fails
+set_tests_properties(math_test PROPERTIES FAIL_REGULAR_EXPRESSION ".*\\[  FAILED  \\].*")
