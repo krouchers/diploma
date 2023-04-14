@@ -12,6 +12,12 @@ FetchContent_Declare(
     GIT_TAG efec5db081e3aad807d0731e172ac597f6a39447
 )
 
+FetchContent_Declare(
+    IMGUI 
+    GIT_REPOSITORY https://github.com/ocornut/imgui 
+    GIT_TAG v1.89.4 
+)
+
 FetchContent_MakeAvailable(
-    SDL3 GLM
+    SDL3 GLM IMGUI
 )

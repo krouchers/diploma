@@ -1,4 +1,4 @@
-include(${PROJECT_SOURCE_DIR}/cmake/cmake_utils.cmake)
+include(cmake_utils)
 
 set(src_files  
    src/window.cpp
