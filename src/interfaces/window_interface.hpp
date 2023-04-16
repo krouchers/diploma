@@ -2,7 +2,11 @@
 
 #include "math.hpp"
 
-class window_interface
+class IWindow
 {
-    virtual vec2 get_aspect_ratio() = 0;
+public:
+    virtual float get_aspect_ratio() = 0;
+    virtual void create_window(std::string const &window_name, vec2 const &size) = 0;
+    virtual bool should_quit() = 0;
+    virtual void *get_handler() = 0;
 };
