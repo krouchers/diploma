@@ -12,6 +12,6 @@ target_include_directories(test-bed PRIVATE include)
 
 install(TARGETS test-bed)
 
-# set_target_properties(test-bed PROPERTIES
-# RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+set_target_properties(test-bed PROPERTIES
+RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 

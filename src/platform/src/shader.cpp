@@ -60,6 +60,17 @@ void shader::set(const char *uniform_name, int value)
     glUniform1i(glGetUniformLocation(program_, uniform_name), value);
 }
 
+void shader::set(const char *uniform_name, const mat4x4 &value)
+{
+    bind();
+    auto id = glGetUniformLocation(program_, uniform_name);
+    if(id == GL_INVALID_VALUE or id == GL_INVALID_OPERATION){
+        warn("Failed to pass matrix to shader");
+    }
+    // glUniformMatrix4fv(glGetUniformLocation(program_, uniform_name), 1, GL_FALSE, value.data);
+    glUniformMatrix4fv(id, 1, GL_FALSE, value.data);
+}
+
 shader::~shader()
 {
     glDeleteShader(fragment_);
