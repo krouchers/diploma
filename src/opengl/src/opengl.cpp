@@ -63,7 +63,7 @@ debug_proc(GLenum source,
     warn("Source: %s, Type: %s: %s", src.c_str(), tp.c_str(), message);
 }
 
-opengl::opengl(const std::shared_ptr<IWindow> win, camera const &cam)
+opengl::opengl(std::shared_ptr<IWindow> const &win, camera const &cam)
     : window_{win}, m_camera{cam}
 {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -102,9 +102,8 @@ opengl::opengl(const std::shared_ptr<IWindow> win, camera const &cam)
     m_tex2 = tex2D("C:/Users/filin/coding/diploma/assets/awesomeface.png");
     shader_.set("tex1", 0);
     shader_.set("tex2", 1);
-    shader_.set("transform",
-                mat4x4::get_rotation_matrix(vec3{0, 0, 30}));
-    // mat4x4::get_projection_matrix(2.f, 10, 45, window_->get_aspect_ratio()));
+    shader_.set("transform", mat4x4::get_projection_matrix(2.f, 10, 45, window_->get_aspect_ratio()) *
+                                 mat4x4::get_rotation_matrix(vec3{0, 0, 30}));
 }
 
 void opengl::render()

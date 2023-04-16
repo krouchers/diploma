@@ -95,6 +95,15 @@ constexpr vec4 operator*(const vec4 &rhs, const float k)
     return res;
 }
 
+constexpr vec4 operator/(const vec4 &rhs, const float k)
+{
+    vec4 res{};
+    for (int i{0}; i < 4; ++i)
+        res[i] = rhs[i] / k;
+
+    return res;
+}
+
 struct vec3
 {
     float x, y, z;
@@ -241,7 +250,7 @@ inline mat4x4 mat4x4::get_projection_matrix(float n, float f, float fov, float a
         vec4{2.0f * n / (r - l), 0, (r + l) / (r - l), 0},
         vec4{0, 2.0f * n / (t - b), (t + b) / (t - b), 0},
         vec4{0, 0, -(f + n) / (f - n), -2.0f * n * f / (f - n)},
-        vec4{0, 0, 1, 0},
+        vec4{0, 0, -1, 0},
     };
 }
 

@@ -14,7 +14,7 @@
 class opengl
 {
 public:
-    opengl(const std::shared_ptr<IWindow>, camera const &);
+    opengl(std::shared_ptr<IWindow> const &, camera const &);
     ~opengl();
     opengl(const opengl &) = delete;
     opengl &operator=(const opengl &) = delete;
@@ -23,10 +23,10 @@ public:
 
     // FIXME: That not should be there
     std::vector<vert> vertex_data{
-        {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-        {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-        {{-0.5f, 0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}}};
+        {{-0.5f, -0.5f, -2.f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+        {{0.5f, -0.5f, -2.f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+        {{0.5f, 0.5f, -2.f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+        {{-0.5f, 0.5f, -2.f}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}}};
     std::vector<GLuint> indices{0, 1, 2, 0, 2, 3};
     mesh rect;
     tex2D m_tex1;
