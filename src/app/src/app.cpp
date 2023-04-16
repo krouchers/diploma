@@ -1,28 +1,22 @@
-#include "platform.hpp"
 #include "app.hpp"
 #include "log.hpp"
+#include "window/sdl_window.hpp"
+#include "opengl.hpp"
 
 app::app()
-    : platform_{new platform{}}
+    : m_window{new sdl_window{}},
+      m_camera{{1280, 720}}
 {
-    platform_->create_window({1280, 720}, "my window");
+    m_window->create_window("Geodip", {1280, 720});
+    m_gl = std::make_unique<opengl>(m_window, m_camera);
 }
 
 app::~app() = default;
 
 void app::run()
 {
-    while (!platform_->should_quit())
+    while (!m_window->should_quit())
     {
-        platform_->render();
-        if (platform_->is_pressed(keys::LEFT))
-        {
-            info("Key %d is pressed", keys::LEFT);
-        }
-
-        if (platform_->is_pressed(keys::RIGHT))
-        {
-            info("Key %d is pressed", keys::RIGHT);
-        }
+        m_gl->render();
     }
 }

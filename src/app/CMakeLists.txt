@@ -7,8 +7,8 @@ add_executable(test-bed
     src/app.cpp
 )
 
-target_link_libraries(test-bed PRIVATE platform math utils)
-target_include_directories(test-bed PRIVATE include)
+target_link_libraries(test-bed PRIVATE sdl_window opengl math utils)
+target_include_directories(test-bed PRIVATE include ${CMAKE_SOURCE_DIR}/src/interfaces)
 
 install(TARGETS test-bed)
 

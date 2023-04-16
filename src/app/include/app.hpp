@@ -1,7 +1,11 @@
 #pragma once
 #include <memory>
 
-class platform;
+#include "camera.hpp"
+#include "window_interface.hpp"
+// #include "gui/gui.hpp"
+
+class opengl;
 
 class app
 {
@@ -16,5 +20,9 @@ private:
     app(const app &) = delete;
     app &operator=(const app &) = delete;
 
-    std::unique_ptr<platform> platform_;
+    std::shared_ptr<IWindow> m_window;
+    std::unique_ptr<opengl> m_gl;
+
+    camera m_camera;
+    // gui m_gui;
 };
