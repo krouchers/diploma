@@ -17,7 +17,7 @@ struct vec4
     constexpr vec4(float x, float y, float z, float w)
         : x_{x}, y_{y}, z_{z}, w_{w} {};
 
-    float &operator[](int i)
+    constexpr float &operator[](int i)
     {
         if (!(i >= 0 && i <= 3))
         {
@@ -26,7 +26,7 @@ struct vec4
         return data[i];
     }
 
-    float operator[](int i) const
+     constexpr float operator[](int i) const
     {
         if (!(i >= 0 && i <= 3))
         {
@@ -150,20 +150,20 @@ struct mat4x4
         return rows[index];
     }
 
-    vec4 *begin()
+    constexpr vec4 *begin()
     {
         return rows;
     }
 
-    vec4 *end()
+    constexpr vec4 *end()
     {
         return rows + sizeof(rows) / sizeof(rows[0]);
     }
 
     constexpr mat4x4 inverse();
 
-    constexpr static mat4x4 get_rotation_matrix(vec3 euler_angles);
-    constexpr static mat4x4 get_project_matrix(float n, float f, float l, float r, float b, float t);
+    static mat4x4 get_rotation_matrix(vec3 euler_angles);
+    static mat4x4 get_projection_matrix(float n, float f, float fov, float aspect_ratio);
 
     constexpr static mat4x4 get_translation_matrix(const vec3 &translate);
 
@@ -230,7 +230,7 @@ constexpr mat4x4 operator*(const mat4x4 &lhs, const mat4x4 &rhs)
         rhs[0][3] * lhs[3][0] + rhs[1][3] * lhs[3][1] + rhs[2][3] * lhs[3][2] + rhs[3][3] * lhs[3][3]};
 }
 
-constexpr mat4x4 get_projection_matrix(float n, float f, float fov, float aspect_ratio)
+inline mat4x4 mat4x4::get_projection_matrix(float n, float f, float fov, float aspect_ratio)
 {
     float focal_length{1.f / std::tan(radians(fov))};
     float r = n / focal_length;
@@ -326,7 +326,7 @@ constexpr mat4x4 mat4x4::inverse()
                    .transpose();
 }
 
-constexpr mat4x4 mat4x4::get_rotation_matrix(vec3 euler_angles)
+inline mat4x4 mat4x4::get_rotation_matrix(vec3 euler_angles)
 {
     auto x_rad{radians(euler_angles.x)};
     auto y_rad{radians(euler_angles.y)};
@@ -353,7 +353,7 @@ constexpr mat4x4 mat4x4::get_rotation_matrix(vec3 euler_angles)
     return rot_around_z * rot_around_y * rot_around_x;
 }
 
-constexpr mat4x4 mat4x4::get_translation_matrix(const vec3 &translate)
+inline constexpr mat4x4 mat4x4::get_translation_matrix(const vec3 &translate)
 {
     mat4x4 res{};
     res[0][3] = translate.x;
@@ -363,7 +363,7 @@ constexpr mat4x4 mat4x4::get_translation_matrix(const vec3 &translate)
     return res;
 }
 
-constexpr vec4 operator*(const mat4x4 &rot, const vec4 &vec)
+inline constexpr vec4 operator*(const mat4x4 &rot, const vec4 &vec)
 {
     return vec4{
         rot[0][0] * vec[0] + rot[0][1] * vec[1] + rot[0][2] * vec[2] + rot[0][3] * vec[3],
@@ -373,12 +373,12 @@ constexpr vec4 operator*(const mat4x4 &rot, const vec4 &vec)
     };
 }
 
-constexpr vec4 rotate_vec(const mat4x4 &rot, const vec4 &vec4)
+inline constexpr vec4 rotate_vec(const mat4x4 &rot, const vec4 &vec4)
 {
     return rot * vec4;
 }
 
-constexpr vec4 translate_vec(const mat4x4 &translation_mat, const vec4 &vec4)
+inline constexpr vec4 translate_vec(const mat4x4 &translation_mat, const vec4 &vec4)
 {
     return translation_mat * vec4;
 }

@@ -5,7 +5,7 @@
 class camera
 {
 public:
-    camera();
+    camera(vec2 dim);
 
 private:
     // vec3 m_position, m_rotation;
