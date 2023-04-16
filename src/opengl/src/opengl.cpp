@@ -3,11 +3,12 @@
 #include <cmath>
 #include <utility>
 
-#include "graphic.hpp"
-#include "window.hpp"
+#include "opengl.hpp"
+#include "window/sdl_window.hpp"
 #include "log.hpp"
 #include "glad.hpp"
 #include "mesh.hpp"
+#include "shader.hpp"
 
 void APIENTRY
 debug_proc(GLenum source,
@@ -62,8 +63,8 @@ debug_proc(GLenum source,
     warn("Source: %s, Type: %s: %s", src.c_str(), tp.c_str(), message);
 }
 
-graphic::graphic(const std::shared_ptr<window> win)
-    : window_{win}
+opengl::opengl(std::shared_ptr<IWindow> const &win, camera const &cam)
+    : window_{win}, m_camera{cam}
 {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
@@ -71,13 +72,13 @@ graphic::graphic(const std::shared_ptr<window> win)
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     info("Creating GL context");
-    gl_context_ = SDL_GL_CreateContext(window_->get_sdl_handler());
+    gl_context_ = SDL_GL_CreateContext(reinterpret_cast<SDL_Window *>(window_->get_handler()));
     if (!gl_context_)
     {
         throw std::runtime_error("Failed to create GL context");
     }
 
-    if (SDL_GL_MakeCurrent(window_->get_sdl_handler(), gl_context_))
+    if (SDL_GL_MakeCurrent(reinterpret_cast<SDL_Window *>(window_->get_handler()), gl_context_))
     {
         throw std::runtime_error("Failed to make gl context current for created window");
     }
@@ -101,9 +102,11 @@ graphic::graphic(const std::shared_ptr<window> win)
     m_tex2 = tex2D("C:/Users/filin/coding/diploma/assets/awesomeface.png");
     shader_.set("tex1", 0);
     shader_.set("tex2", 1);
+    shader_.set("transform", mat4x4::get_projection_matrix(2.f, 10, 45, window_->get_aspect_ratio()) *
+                                 mat4x4::get_rotation_matrix(vec3{0, 0, 30}));
 }
 
-void graphic::render()
+void opengl::render()
 {
     glClearColor(1.0f, 0.0f, 0.4f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -111,23 +114,23 @@ void graphic::render()
     m_tex1.bind(0);
     m_tex2.bind(1);
     rect.render();
-    SDL_GL_SwapWindow(window_->get_sdl_handler());
+    SDL_GL_SwapWindow(reinterpret_cast<SDL_Window *>(window_->get_handler()));
 }
 
-graphic::~graphic()
+opengl::~opengl()
 {
     info("Destroing GL context");
     SDL_GL_DeleteContext(gl_context_);
 }
 
-void graphic::setup_debug_proc()
+void opengl::setup_debug_proc()
 {
     info("Settin up debug proc for gl");
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(debug_proc, nullptr);
 }
 
-std::string graphic::version()
+std::string opengl::version()
 {
     return {(char *)glGetString(GL_VERSION)};
 };
