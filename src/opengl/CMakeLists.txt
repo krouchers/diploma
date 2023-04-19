@@ -7,7 +7,7 @@ set(src_files
    src/tex2D.cc
 )
 
-build_library_with_type(opengl STATIC ${MODULE_COMPILE_FLAGS} "${src_files}")
+build_library_with_type(opengl STATIC "${MODULE_COMPILE_FLAGS}" "${src_files}")
 
 target_link_libraries(opengl PRIVATE utils math sdl_window)
 target_link_libraries(opengl PUBLIC glm glad)

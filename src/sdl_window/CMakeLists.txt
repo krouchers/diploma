@@ -2,7 +2,7 @@ include(cmake_utils)
 
 set(src_files src/sdl_window.cc)
 
-build_library_with_type(sdl_window STATIC "${MODULE_COMPILE_FLAGS}" "${src_files}")
+build_library_with_type(sdl_window SHARED "${MODULE_COMPILE_FLAGS}" "${src_files}")
 
 target_include_directories(sdl_window PUBLIC include ${PROJECT_SOURCE_DIR}/src/common)
 

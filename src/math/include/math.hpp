@@ -4,6 +4,8 @@
 #include <cmath>
 #include <numbers>
 
+static inline constexpr float eps{1e-4};
+
 constexpr inline float radians(float degrees)
 {
     return degrees * std::numbers::pi / 180.f;
@@ -26,7 +28,7 @@ struct vec4
         return data[i];
     }
 
-     constexpr float operator[](int i) const
+    constexpr float operator[](int i) const
     {
         if (!(i >= 0 && i <= 3))
         {
@@ -37,10 +39,10 @@ struct vec4
 
     constexpr bool operator==(const vec4 &rhs) const
     {
-        return x_ == rhs.x_ &&
-               y_ == rhs.y_ &&
-               z_ == rhs.z_ &&
-               w_ == rhs.w_;
+        return std::abs(x_ - rhs.x_) < eps &&
+               std::abs(y_ - rhs.y_) < eps &&
+               std::abs(z_ - rhs.z_) < eps &&
+               std::abs(w_ - rhs.w_) < eps;
     }
 
     constexpr bool operator!=(const vec4 &rhs) const
@@ -192,8 +194,6 @@ struct mat4x4
         vec4 rows[4]{};
         float data[16];
     };
-
-    static inline constexpr float eps{1e-7};
 };
 
 constexpr mat4x4 operator*(const mat4x4 &lhs, const float k)

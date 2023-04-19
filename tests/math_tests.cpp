@@ -74,3 +74,12 @@ TEST(matrix_test, get_rotation_matrix)
 
     EXPECT_EQ(mat4x4::get_rotation_matrix(vec3{0, 0, 45}), expected);
 }
+
+TEST(matrix_test, get_projection_matrix)
+{
+    mat4x4 mat = mat4x4::get_projection_matrix(2.f, 10, 45, 720. / 1280.);
+    vec4 vertex{-0.5f, -0.5f, -10.0f, 1.f};
+    vec4 transformed{mat * vertex};
+    vec4 expected{-0.5, -0.888889, 10, 10};
+    EXPECT_EQ(transformed, expected);
+}
