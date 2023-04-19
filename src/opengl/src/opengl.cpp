@@ -104,17 +104,21 @@ opengl::opengl(std::shared_ptr<IWindow> const &win, camera const &cam)
     shader_.set("tex2", 1);
     shader_.set("transform", mat4x4::get_projection_matrix(2.f, 10, 45, window_->get_aspect_ratio()) *
                                  mat4x4::get_rotation_matrix(vec3{0, 0, 30}));
+
+    glClearColor(1.0f, 0.0f, 0.4f, 1.0f);
+}
+
+void opengl::begin()
+{
+    glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void opengl::render()
 {
-    glClearColor(1.0f, 0.0f, 0.4f, 1.0f);
-    // glClear(GL_COLOR_BUFFER_BIT);
     shader_.bind();
     m_tex1.bind(0);
     m_tex2.bind(1);
     rect.render();
-    SDL_GL_SwapWindow(reinterpret_cast<SDL_Window *>(window_->get_handler()));
 }
 
 opengl::~opengl()
@@ -138,4 +142,9 @@ std::string opengl::version()
 void *opengl::get_handler()
 {
     return gl_context_;
+}
+
+void opengl::end()
+{
+    SDL_GL_SwapWindow(reinterpret_cast<SDL_Window *>(window_->get_handler()));
 }

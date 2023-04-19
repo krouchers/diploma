@@ -22,7 +22,9 @@ void app::run()
 {
     while (!m_window->should_quit())
     {
-        m_gui->render();
+        m_gl->begin();
         m_gl->render();
+        m_gui->render();
+        m_gl->end();
     }
 }

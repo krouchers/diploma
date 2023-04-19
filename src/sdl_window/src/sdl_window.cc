@@ -27,26 +27,15 @@ float sdl_window::get_aspect_ratio()
 
 bool sdl_window::should_quit()
 {
-    SDL_Event e;
-    bool should_quit{false};
-    while (SDL_PollEvent(&e))
-    {
-        if (e.type == SDL_QUIT)
-        {
-            switch (e.type)
-            {
-            case SDL_QUIT:
-                should_quit = true;
-                break;
-            default:
-                break;
-            }
-        }
-    }
-    return should_quit;
+    return should_quit_;
 }
 
 void *sdl_window::get_handler()
 {
     return m_sdl_handler;
+}
+
+void sdl_window::close()
+{
+    should_quit_ = true;
 }

@@ -31,6 +31,14 @@ void dear_gui::init()
 
 void dear_gui::render()
 {
+    SDL_Event e;
+    while (SDL_PollEvent(&e))
+    {
+        ImGui_ImplSDL2_ProcessEvent(&e);
+        if (e.type == SDL_QUIT)
+            window_->close();
+    }
+    
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();

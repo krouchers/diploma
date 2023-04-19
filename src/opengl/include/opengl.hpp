@@ -23,6 +23,10 @@ public:
     opengl(opengl &&) = delete;
     opengl &operator=(opengl &&) = delete;
 
+    void begin();
+
+    void end();
+
     void render();
 
     void *get_handler();

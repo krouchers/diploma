@@ -14,10 +14,12 @@ public:
     float get_aspect_ratio() final;
     bool should_quit() final;
     void *get_handler() final;
+    void close() final;
 
     SDL_Window *m_sdl_handler{nullptr};
 
 private:
     vec2 m_size{1280, 720};
     std::string m_name{};
+    bool should_quit_{false};
 };
