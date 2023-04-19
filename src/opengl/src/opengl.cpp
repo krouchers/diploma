@@ -109,7 +109,7 @@ opengl::opengl(std::shared_ptr<IWindow> const &win, camera const &cam)
 void opengl::render()
 {
     glClearColor(1.0f, 0.0f, 0.4f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    // glClear(GL_COLOR_BUFFER_BIT);
     shader_.bind();
     m_tex1.bind(0);
     m_tex2.bind(1);
@@ -134,3 +134,8 @@ std::string opengl::version()
 {
     return {(char *)glGetString(GL_VERSION)};
 };
+
+void *opengl::get_handler()
+{
+    return gl_context_;
+}

@@ -3,7 +3,8 @@
 
 #include "camera.hpp"
 #include "window_interface.hpp"
-// #include "gui/gui.hpp"
+#include "gui_interface.hpp"
+#include "gui.hpp"
 
 class opengl;
 
@@ -21,8 +22,8 @@ private:
     app &operator=(const app &) = delete;
 
     std::shared_ptr<IWindow> m_window;
-    std::unique_ptr<opengl> m_gl;
+    std::shared_ptr<opengl> m_gl;
+    std::shared_ptr<IGui> m_gui;
 
     camera m_camera;
-    // gui m_gui;
 };

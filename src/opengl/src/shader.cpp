@@ -43,7 +43,7 @@ bool shader::validate(GLuint shader_id)
         glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &len);
         char *msg{new char[len]};
         glGetShaderInfoLog(shader_id, len, nullptr, msg);
-        warn("Failed to compile %d shader: %s", shader, msg);
+        warn("Failed to compile %d shader: %s", shader_id, msg);
     }
     return is_compiled == GL_TRUE;
 }
