@@ -17,6 +17,7 @@ public:
     void init() final;
     void render() final;
     void hello();
+    void add_slider(const std::string &name, float &value);
 
 private:
     std::shared_ptr<opengl> gl_;

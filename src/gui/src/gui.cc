@@ -29,6 +29,11 @@ void dear_gui::init()
     ImGui_ImplOpenGL3_Init(nullptr);
 }
 
+void dear_gui::add_slider(const std::string &name, float &value)
+{
+    ImGui::SliderFloat(name.c_str(), &value, 0.0f, 1.0f, "ratio = %.3f");
+}
+
 void dear_gui::render()
 {
     SDL_Event e;
@@ -38,13 +43,15 @@ void dear_gui::render()
         if (e.type == SDL_QUIT)
             window_->close();
     }
-    
+
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
     bool show_demo_window = true;
     ImGui::ShowDemoWindow(&show_demo_window);
+    static float angle{0};
+    add_slider("angle", angle);
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
