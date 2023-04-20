@@ -2,15 +2,23 @@
 
 #include "math.hpp"
 
-class camera
+class Camera
 {
 public:
-    camera(vec2 dim);
+    Camera(Vec2 dim);
+
+    Mat4x4 GetProjection();
+    Mat4x4 GetView();
 
 private:
-    // vec3 m_position, m_rotation;
-    // float m_radius;
+    void Reset();
+    void SetAs(float as);
 
-    // mat4x4 m_view, m_iview;
-    mat4x4 m_view, m_proj;
+    // vec3 m_position, m_rotation;
+    float fov_, near_plane_, far_plane_, aspect_ratio_;
+
+    // Vec2 dim_;
+
+    // Mat4x4 m_view, m_iview;
+    Mat4x4 view_, proj_;
 };

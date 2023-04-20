@@ -11,13 +11,13 @@
 #include "shader.hpp"
 
 void APIENTRY
-debug_proc(GLenum source,
-           GLenum type,
-           [[maybe_unused]] GLuint id,
-           GLenum severity,
-           [[maybe_unused]] GLsizei length,
-           [[maybe_unused]] const GLchar *message,
-           [[maybe_unused]] const void *userParam)
+DebugProc(GLenum source,
+          GLenum type,
+          [[maybe_unused]] GLuint id,
+          GLenum severity,
+          [[maybe_unused]] GLsizei length,
+          [[maybe_unused]] const GLchar *message,
+          [[maybe_unused]] const void *user_param)
 {
     std::string src{};
     switch (source)
@@ -63,8 +63,8 @@ debug_proc(GLenum source,
     warn("Source: %s, Type: %s: %s", src.c_str(), tp.c_str(), message);
 }
 
-opengl::opengl(std::shared_ptr<IWindow> const &win, camera const &cam)
-    : window_{win}, m_camera{cam}
+Opengl::Opengl(std::shared_ptr<IWindow> const &win, Camera const &cam)
+    : window_{win}, m_camera_{cam}
 {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
@@ -72,13 +72,13 @@ opengl::opengl(std::shared_ptr<IWindow> const &win, camera const &cam)
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     info("Creating GL context");
-    gl_context_ = SDL_GL_CreateContext(reinterpret_cast<SDL_Window *>(window_->get_handler()));
-    if (!gl_context_)
+    gl_context_ = SDL_GL_CreateContext(reinterpret_cast<SDL_Window *>(window_->GetHandler()));
+    if (gl_context_ == nullptr)
     {
         throw std::runtime_error("Failed to create GL context");
     }
 
-    if (SDL_GL_MakeCurrent(reinterpret_cast<SDL_Window *>(window_->get_handler()), gl_context_))
+    if (SDL_GL_MakeCurrent(reinterpret_cast<SDL_Window *>(window_->GetHandler()), gl_context_))
     {
         throw std::runtime_error("Failed to make gl context current for created window");
     }
@@ -91,50 +91,24 @@ opengl::opengl(std::shared_ptr<IWindow> const &win, camera const &cam)
 
     info("GL Version is %s", version().c_str());
 
-    setup_debug_proc();
+    SetupDebugProc();
     SDL_GL_SetSwapInterval(1);
-
-    info("Compiling and loading shaders...");
-    shader_.load(shaders::vertex_shader, shaders::fragment_shader);
-    rect = mesh(std::move(vertex_data), std::move(indices));
-    // FIXME: there gonna be ralative path
-    m_tex1 = tex2D("C:/Users/filin/coding/diploma/assets/container.jpg");
-    m_tex2 = tex2D("C:/Users/filin/coding/diploma/assets/awesomeface.png");
-    shader_.set("tex1", 0);
-    shader_.set("tex2", 1);
-    shader_.set("transform", mat4x4::get_projection_matrix(2.f, 10, 45, window_->get_aspect_ratio()) *
-                                 mat4x4::get_rotation_matrix(vec3{0, 0, 30}));
-
-    glClearColor(1.0f, 0.0f, 0.4f, 1.0f);
 }
 
-void opengl::begin()
-{
-    glClear(GL_COLOR_BUFFER_BIT);
-}
-
-void opengl::render()
-{
-    shader_.bind();
-    m_tex1.bind(0);
-    m_tex2.bind(1);
-    rect.render();
-}
-
-opengl::~opengl()
+Opengl::~Opengl()
 {
     info("Destroing GL context");
     SDL_GL_DeleteContext(gl_context_);
 }
 
-void opengl::setup_debug_proc()
+void Opengl::SetupDebugProc()
 {
     info("Settin up debug proc for gl");
     glEnable(GL_DEBUG_OUTPUT);
-    glDebugMessageCallback(debug_proc, nullptr);
+    glDebugMessageCallback(DebugProc, nullptr);
 }
 
-std::string opengl::version()
+std::string Opengl::Version()
 {
     return {(char *)glGetString(GL_VERSION)};
 };

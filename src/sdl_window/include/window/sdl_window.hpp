@@ -7,19 +7,18 @@
 #include "SDL.h"
 #include "log.hpp"
 
-class GEODIP_API sdl_window : public IWindow
+class GEODIP_API SdlWindow : public IWindow
 {
 public:
-    void create_window(std::string const &window_name, vec2 const &size) final;
-    float get_aspect_ratio() final;
-    bool should_quit() final;
-    void *get_handler() final;
-    void close() final;
+    void CreateWindow(std::string const &window_name, Vec2 const &size) final;
+    float GetAspectRatio() final;
+    bool ShouldQuit() final;
+    void *GetHandler() final;
+    void Close() final;
 
     SDL_Window *m_sdl_handler{nullptr};
 
 private:
-    vec2 m_size{1280, 720};
-    std::string m_name{};
-    bool should_quit_{false};
+    Vec2 size_{1280, 720};
+    std::string name_{};
 };

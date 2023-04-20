@@ -5,39 +5,41 @@
 #include "math.hpp"
 #include "glad.hpp"
 
-struct vert
+struct Vert
 {
-    vec3 pos;
-    vec3 norm;
-    vec2 tex_coord;
+    Vec3 pos;
+    Vec3 norm;
+    Vec2 tex_coord;
 };
 
-class mesh
+namespace gl
 {
-public:
+    class Mesh
+    {
+    public:
+        Mesh() = default;
+        /**
+         * @brief Construct a new Mesh object
+         *
+         * @param vertices Vertices vector
+         * @param indices  Indexes vector
+         */
+        Mesh(std::vector<Vert> &&vertices, std::vector<GLuint> &&indices);
+        /**
+         * @brief Вызывает openGL draw функцию
+         *
+         */
+        void Render();
 
-    mesh() = default;
-    /**
-     * @brief Construct a new mesh object
-     *
-     * @param vertices Vertices vector
-     * @param indices  Indexes vector
-     */
-    mesh(std::vector<vert> &&vertices, std::vector<GLuint> &&indices);
-    /**
-     * @brief Вызывает openGL draw функцию 
-     * 
-     */
-    void render();
+    private:
+        /**
+         * @brief Set the up opengl vao
+         *
+         */
+        void SetupVao();
 
-private:
-    /**
-     * @brief Set the up opengl vao
-     *
-     */
-    void setup_vao();
-
-    GLuint vao_, vbo_, veo_;
-    std::vector<vert> vertices_;
-    std::vector<GLuint> indices_;
-};
+        GLuint vao_, vbo_, veo_;
+        std::vector<Vert> vertices_;
+        std::vector<GLuint> indices_;
+    };
+}

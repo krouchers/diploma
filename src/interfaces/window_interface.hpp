@@ -5,9 +5,9 @@
 class IWindow
 {
 public:
-    virtual float get_aspect_ratio() = 0;
-    virtual void create_window(std::string const &window_name, vec2 const &size) = 0;
-    virtual bool should_quit() = 0;
-    virtual void *get_handler() = 0;
-    virtual void close() = 0;
+    virtual void Close() = 0;
+    virtual float GetAspectRatio() = 0;
+    virtual void CreateWindow(std::string const &window_name, Vec2 const &size) = 0;
+    virtual bool ShouldQuit() = 0;
+    virtual void *GetHandler() = 0;
 };

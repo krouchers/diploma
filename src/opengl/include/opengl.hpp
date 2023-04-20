@@ -11,43 +11,31 @@
 #include "window/sdl_window.hpp"
 #include "shader.hpp"
 
-class opengl
+class Opengl
 {
 public:
-    opengl(std::shared_ptr<IWindow> const &, camera const &);
-    ~opengl();
+    Opengl(std::shared_ptr<IWindow> const &, Camera const &);
+    ~Opengl();
 
-    opengl(const opengl &) = delete;
-    opengl &operator=(const opengl &) = delete;
+    Opengl(const Opengl &) = delete;
+    Opengl &operator=(const Opengl &) = delete;
 
-    opengl(opengl &&) = delete;
-    opengl &operator=(opengl &&) = delete;
+    Opengl(Opengl &&) = delete;
+    Opengl &operator=(Opengl &&) = delete;
 
-    void begin();
+    void Render();
 
-    void end();
-
-    void render();
-
-    void *get_handler();
+    void *GetHandler();
 
     // FIXME: That not should be there
-    std::vector<vert> vertex_data{
-        {{-0.5f, -0.5f, -2.f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, -2.f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-        {{0.5f, 0.5f, -2.f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-        {{-0.5f, 0.5f, -2.f}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}}};
-    std::vector<GLuint> indices{0, 1, 2, 0, 2, 3};
-    mesh rect;
-    tex2D m_tex1;
-    tex2D m_tex2;
+    Tex2D m_tex1;
+    Tex2D m_tex2;
 
 private:
-    void setup_debug_proc();
+    void SetupDebugProc();
 
     std::shared_ptr<IWindow> window_;
-    camera m_camera;
+    Camera m_camera_;
     SDL_GLContext gl_context_;
-    std::string version();
-    shader shader_;
+    std::string Version();
 };

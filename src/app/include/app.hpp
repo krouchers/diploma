@@ -3,27 +3,28 @@
 
 #include "camera.hpp"
 #include "window_interface.hpp"
-#include "gui_interface.hpp"
 #include "gui.hpp"
+#include "scene/scene.hpp"
 
-class opengl;
-
-class app
+class App
 {
 public:
-    app();
-    app(app &&);
-    void run();
+    App();
+    void Run();
 
-    ~app();
+    ~App();
 
 private:
-    app(const app &) = delete;
-    app &operator=(const app &) = delete;
+    App(const App &) = delete;
+    App &operator=(const App &) = delete;
 
-    std::shared_ptr<IWindow> m_window;
-    std::shared_ptr<opengl> m_gl;
-    std::shared_ptr<IGui> m_gui;
+    App(App &&) = delete;
+    App &operator=(App &&) = delete;
 
-    camera m_camera;
+    std::shared_ptr<IWindow> window_;
+    std::shared_ptr<IGui> gui_;
+
+    Camera camera_;
+
+    Scene scene_;
 };

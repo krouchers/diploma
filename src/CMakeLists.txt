@@ -4,6 +4,7 @@ set(MODULES
     interfaces
     sdl_window
     app
+    scene
     glad
     gui
     math)
