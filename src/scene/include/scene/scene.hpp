@@ -1,7 +1,5 @@
 #pragma once
 
-#include <variant>
-
 #include "item.hpp"
 #include "functional"
 

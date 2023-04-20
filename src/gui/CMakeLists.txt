@@ -24,7 +24,7 @@ set(src_files
 build_library_with_type(dear_gui SHARED "${MODULE_COMPILE_FLAGS}" "${src_files}")
 target_link_libraries(dear_gui PRIVATE IGui imgui opengl)
 target_include_directories(dear_gui PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/gui
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/src/common)
 target_compile_definitions(dear_gui PRIVATE "-DDLL_EXPORT")
 set_target_properties(dear_gui PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)

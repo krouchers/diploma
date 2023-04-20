@@ -6,20 +6,17 @@
 #include "gui_interface.hpp"
 #include "window_interface.hpp"
 
-class opengl;
-class sdl_window;
+class Opengl;
 
-class GEODIP_API dear_gui : public IGui
+class GEODIP_API DearGui : public IGui
 {
 
 public:
-    dear_gui(const std::shared_ptr<opengl> &gl, const std::shared_ptr<IWindow> &window);
-    void init() final;
-    void render() final;
-    void hello();
-    void add_slider(const std::string &name, float &value);
+    DearGui(const std::shared_ptr<Opengl> &gl, const std::shared_ptr<IWindow> &window);
+    void Render() final;
+    void AddSlider(const std::string &name, float &value);
 
 private:
-    std::shared_ptr<opengl> gl_;
     std::shared_ptr<IWindow> window_;
+    std::shared_ptr<Opengl> gl_;
 };

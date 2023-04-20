@@ -12,7 +12,7 @@ void Camera::Reset()
 {
 	fov_ = 45.f;
 	near_plane_ = 2.f;
-	far_plane_ = 2.f;
+	far_plane_ = 10.f;
 }
 
 void Camera::SetAs(float as)

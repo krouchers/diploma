@@ -3,7 +3,7 @@
 #include "app.hpp"
 #include "math.hpp"
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
     try
     {

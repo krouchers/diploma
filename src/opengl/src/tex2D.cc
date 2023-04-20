@@ -3,12 +3,12 @@
 Tex2D::Tex2D(std::string path)
 {
     glGenTextures(1, &id_);
-    info("Creating texture with id %d", m_id);
+    info("Creating texture with id %d", id_);
     stbi_set_flip_vertically_on_load(1);
     unsigned char *img{stbi_load(path.c_str(), &w_, &h_, &number_of_comp_, 0)};
     if (!img)
     {
-        warn("Failed to create texture with id %d", m_id);
+        warn("Failed to create texture with id %d", id_);
     }
     else
     {

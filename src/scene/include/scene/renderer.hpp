@@ -21,18 +21,18 @@ namespace scene
         static Renderer &Get();
         void Mesh(gl::Mesh &mesh, const Mat4x4 &view);
         void SetProjectionMatrix(const Mat4x4 &proj);
-        static void Setup(std::shared_ptr<IWindow> win, const Camera &cam);
+        static void Setup(const std::shared_ptr<Opengl> &gl);
         void Render3D(Scene &, Camera &);
+
+        void Clear();
 
     private:
         Renderer();
 
-        static inline Renderer *instance_{nullptr};
+        static inline std::unique_ptr<scene::Renderer> instance_;
+
+        std::shared_ptr<Opengl> gl_;
 
         Shader mesh_shader_;
-
-        Mat4x4 projection_;
-
-        std::unique_ptr<Opengl> gl_{};
     };
 }

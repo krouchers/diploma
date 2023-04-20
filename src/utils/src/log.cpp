@@ -2,12 +2,12 @@
 
 #include "log.hpp"
 
-std::string get_file_name(std::string file_path)
+std::string GetFileName(std::string file_path)
 {
     return file_path.substr(file_path.find_last_of('/') + 1);
 }
 
-void log(std::string fmt, ...)
+void Log(std::string fmt, ...)
 {
     std::va_list args;
     va_start(args, fmt);

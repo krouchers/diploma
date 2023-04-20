@@ -63,8 +63,8 @@ DebugProc(GLenum source,
     warn("Source: %s, Type: %s: %s", src.c_str(), tp.c_str(), message);
 }
 
-Opengl::Opengl(std::shared_ptr<IWindow> const &win, Camera const &cam)
-    : window_{win}, m_camera_{cam}
+Opengl::Opengl(const std::shared_ptr<IWindow> &win)
+    : window_{win}
 {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
@@ -72,13 +72,13 @@ Opengl::Opengl(std::shared_ptr<IWindow> const &win, Camera const &cam)
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     info("Creating GL context");
-    gl_context_ = SDL_GL_CreateContext(reinterpret_cast<SDL_Window *>(window_->GetHandler()));
+    gl_context_ = SDL_GL_CreateContext(reinterpret_cast<SDL_Window *>(win->GetHandler()));
     if (gl_context_ == nullptr)
     {
         throw std::runtime_error("Failed to create GL context");
     }
 
-    if (SDL_GL_MakeCurrent(reinterpret_cast<SDL_Window *>(window_->GetHandler()), gl_context_))
+    if (SDL_GL_MakeCurrent(reinterpret_cast<SDL_Window *>(win->GetHandler()), gl_context_))
     {
         throw std::runtime_error("Failed to make gl context current for created window");
     }
@@ -89,7 +89,7 @@ Opengl::Opengl(std::shared_ptr<IWindow> const &win, Camera const &cam)
         throw std::runtime_error("faile to load glad");
     }
 
-    info("GL Version is %s", version().c_str());
+    info("GL Version is %s", Version().c_str());
 
     SetupDebugProc();
     SDL_GL_SetSwapInterval(1);
@@ -113,12 +113,12 @@ std::string Opengl::Version()
     return {(char *)glGetString(GL_VERSION)};
 };
 
-void *opengl::get_handler()
+void *Opengl::GetHandler()
 {
     return gl_context_;
 }
 
-void opengl::end()
+void Opengl::SwapFrame()
 {
-    SDL_GL_SwapWindow(reinterpret_cast<SDL_Window *>(window_->get_handler()));
+    window_->SwapFrame();
 }

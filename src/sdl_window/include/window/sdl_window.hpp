@@ -10,15 +10,15 @@
 class GEODIP_API SdlWindow : public IWindow
 {
 public:
-    void CreateWindow(std::string const &window_name, Vec2 const &size) final;
+    SdlWindow(std::string const &window_name, Vec2 const &size);
     float GetAspectRatio() final;
     bool ShouldQuit() final;
     void *GetHandler() final;
     void Close() final;
-
-    SDL_Window *m_sdl_handler{nullptr};
+    void SwapFrame() final;
 
 private:
+    SDL_Window *sdl_handler_{nullptr};
     Vec2 size_{1280, 720};
-    std::string name_{};
+    bool should_quit_{false};
 };
