@@ -16,10 +16,20 @@ class opengl
 public:
     opengl(std::shared_ptr<IWindow> const &, camera const &);
     ~opengl();
+
     opengl(const opengl &) = delete;
     opengl &operator=(const opengl &) = delete;
 
+    opengl(opengl &&) = delete;
+    opengl &operator=(opengl &&) = delete;
+
+    void begin();
+
+    void end();
+
     void render();
+
+    void *get_handler();
 
     // FIXME: That not should be there
     std::vector<vert> vertex_data{
