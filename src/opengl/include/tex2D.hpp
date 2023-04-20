@@ -7,25 +7,25 @@
 
 #include <string>
 
-class tex2D
+class Tex2D
 {
 public:
-    tex2D() = default;
+    Tex2D() = default;
     /**
      * @brief Инициализирует текстуру
      *
      * @param path Путь к текстуре
      */
-    tex2D(std::string path);
+    explicit Tex2D(std::string path);
 
     // FIXME: Shouldn't pass program id
-    void bind(int idx)
+    void Bind(int idx)
     {
         glActiveTexture(GL_TEXTURE0 + idx);
-        glBindTexture(GL_TEXTURE_2D, m_id);
+        glBindTexture(GL_TEXTURE_2D, id_);
     }
 
 private:
-    GLuint m_id;
-    int m_w, m_h, m_number_of_comp;
+    GLuint id_;
+    int w_, h_, number_of_comp_;
 };

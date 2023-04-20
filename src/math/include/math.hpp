@@ -4,19 +4,19 @@
 #include <cmath>
 #include <numbers>
 
-static inline constexpr float eps{1e-4};
+static inline constexpr float kEps{1e-4};
 
-constexpr inline float radians(float degrees)
+constexpr inline float Radians(float degrees)
 {
     return degrees * std::numbers::pi / 180.f;
 }
 
-struct vec4
+struct Vec4
 {
 
-    constexpr vec4()
+    constexpr Vec4()
         : x_{0}, y_{0}, z_{0}, w_{0} {};
-    constexpr vec4(float x, float y, float z, float w)
+    constexpr Vec4(float x, float y, float z, float w)
         : x_{x}, y_{y}, z_{z}, w_{w} {};
 
     constexpr float &operator[](int i)
@@ -37,33 +37,35 @@ struct vec4
         return data[i];
     }
 
-    constexpr bool operator==(const vec4 &rhs) const
+    constexpr bool operator==(const Vec4 &rhs) const
     {
-        return std::abs(x_ - rhs.x_) < eps &&
-               std::abs(y_ - rhs.y_) < eps &&
-               std::abs(z_ - rhs.z_) < eps &&
-               std::abs(w_ - rhs.w_) < eps;
+        return std::abs(x_ - rhs.x_) < kEps &&
+               std::abs(y_ - rhs.y_) < kEps &&
+               std::abs(z_ - rhs.z_) < kEps &&
+               std::abs(w_ - rhs.w_) < kEps;
     }
 
-    constexpr bool operator!=(const vec4 &rhs) const
+    constexpr bool operator!=(const Vec4 &rhs) const
     {
         return !(*this == rhs);
     }
 
-    constexpr vec4 &operator*=(const float k)
+    constexpr Vec4 &operator*=(const float k)
     {
         for (auto &elem : data)
+        {
             elem *= k;
+        }
 
         return *this;
     }
 
-    float *begin()
+    float *Begin()
     {
         return data;
     }
 
-    float *end()
+    float *End()
     {
         return data + sizeof(data) / sizeof(data[0]);
     }
@@ -79,53 +81,55 @@ struct vec4
     };
 };
 
-constexpr vec4 operator*(const float k, const vec4 &rhs)
+constexpr Vec4 operator*(const float k, const Vec4 &rhs)
 {
-    vec4 res{};
+    Vec4 res{};
     for (int i{0}; i < 4; ++i)
         res[i] = k * rhs[i];
 
     return res;
 }
 
-constexpr vec4 operator*(const vec4 &rhs, const float k)
+constexpr Vec4 operator*(const Vec4 &rhs, const float k)
 {
-    vec4 res{};
+    Vec4 res{};
     for (int i{0}; i < 4; ++i)
         res[i] = k * rhs[i];
 
     return res;
 }
 
-constexpr vec4 operator/(const vec4 &rhs, const float k)
+constexpr Vec4 operator/(const Vec4 &rhs, const float k)
 {
-    vec4 res{};
+    Vec4 res{};
     for (int i{0}; i < 4; ++i)
+    {
         res[i] = rhs[i] / k;
+    }
 
     return res;
 }
 
-struct vec3
+struct Vec3
 {
     float x, y, z;
 };
 
-struct vec2
+struct Vec2
 {
     float x, y;
 };
 
-struct mat4x4
+struct Mat4x4
 {
-    static const mat4x4 I;
-    constexpr mat4x4()
+    static const Mat4x4 kI;
+    constexpr Mat4x4()
     {
-        *this = I;
+        *this = kI;
     }
 
-    constexpr mat4x4(
-        std::initializer_list<vec4> il)
+    constexpr Mat4x4(
+        std::initializer_list<Vec4> il)
     {
         for (std::size_t i = 0; i < il.size(); ++i)
         {
@@ -133,7 +137,7 @@ struct mat4x4
         }
     }
 
-    constexpr mat4x4(
+    constexpr Mat4x4(
         std::initializer_list<float> il)
     {
         for (std::size_t i = 0; i < 4; ++i)
@@ -143,44 +147,44 @@ struct mat4x4
             }
     }
 
-    constexpr bool operator==(const mat4x4 &rhs) const
+    constexpr bool operator==(const Mat4x4 &rhs) const
     {
         for (std::size_t i = 0; i < 16; ++i)
-            if (std::abs(data[i] - rhs.data[i]) > eps)
+            if (std::abs(data[i] - rhs.data[i]) > kEps)
                 return false;
         return true;
     }
 
-    constexpr vec4 &operator[](std::size_t index)
+    constexpr Vec4 &operator[](std::size_t index)
     {
         return rows[index];
     }
 
-    constexpr vec4 operator[](std::size_t index) const
+    constexpr Vec4 operator[](std::size_t index) const
     {
         return rows[index];
     }
 
-    constexpr vec4 *begin()
+    constexpr Vec4 *begin()
     {
         return rows;
     }
 
-    constexpr vec4 *end()
+    constexpr Vec4 *end()
     {
         return rows + sizeof(rows) / sizeof(rows[0]);
     }
 
-    constexpr mat4x4 inverse();
+    constexpr Mat4x4 Inverse();
 
-    static mat4x4 get_rotation_matrix(vec3 euler_angles);
-    static mat4x4 get_projection_matrix(float n, float f, float fov, float aspect_ratio);
+    static Mat4x4 GetRotationMatrix(Vec3 euler_angles);
+    static Mat4x4 GetProjectionMatrix(float n, float f, float fov, float aspect_ratio);
 
-    constexpr static mat4x4 get_translation_matrix(const vec3 &translate);
+    constexpr static Mat4x4 GetTranslationMatrix(const Vec3 &translate);
 
-    constexpr mat4x4 transpose()
+    constexpr Mat4x4 Transpose()
     {
-        mat4x4 res{};
+        Mat4x4 res{};
         for (int i{0}; i < 4; ++i)
             for (int j{0}; j < 4; ++j)
             {
@@ -191,15 +195,15 @@ struct mat4x4
 
     union
     {
-        vec4 rows[4]{};
+        Vec4 rows[4]{};
         float data[16];
     };
 };
 
-constexpr mat4x4 operator*(const mat4x4 &lhs, const float k)
+constexpr Mat4x4 operator*(const Mat4x4 &lhs, const float k)
 {
-    mat4x4 res{lhs};
-    for (vec4 &row : res)
+    Mat4x4 res{lhs};
+    for (Vec4 &row : res)
     {
         row *= k;
     }
@@ -207,10 +211,10 @@ constexpr mat4x4 operator*(const mat4x4 &lhs, const float k)
     return res;
 }
 
-constexpr mat4x4 operator*(const float k, const mat4x4 &rhs)
+constexpr Mat4x4 operator*(const float k, const Mat4x4 &rhs)
 {
-    mat4x4 res{rhs};
-    for (vec4 &row : res)
+    Mat4x4 res{rhs};
+    for (Vec4 &row : res)
     {
         row = row * k;
     }
@@ -218,9 +222,9 @@ constexpr mat4x4 operator*(const float k, const mat4x4 &rhs)
     return res;
 }
 
-constexpr mat4x4 operator*(const mat4x4 &lhs, const mat4x4 &rhs)
+constexpr Mat4x4 operator*(const Mat4x4 &lhs, const Mat4x4 &rhs)
 {
-    return mat4x4{
+    return Mat4x4{
         rhs[0][0] * lhs[0][0] + rhs[1][0] * lhs[0][1] + rhs[2][0] * lhs[0][2] + rhs[3][0] * lhs[0][3],
         rhs[0][0] * lhs[1][0] + rhs[1][0] * lhs[1][1] + rhs[2][0] * lhs[1][2] + rhs[3][0] * lhs[1][3],
         rhs[0][0] * lhs[2][0] + rhs[1][0] * lhs[2][1] + rhs[2][0] * lhs[2][2] + rhs[3][0] * lhs[2][3],
@@ -239,49 +243,49 @@ constexpr mat4x4 operator*(const mat4x4 &lhs, const mat4x4 &rhs)
         rhs[0][3] * lhs[3][0] + rhs[1][3] * lhs[3][1] + rhs[2][3] * lhs[3][2] + rhs[3][3] * lhs[3][3]};
 }
 
-inline mat4x4 mat4x4::get_projection_matrix(float n, float f, float fov, float aspect_ratio)
+inline Mat4x4 Mat4x4::GetProjectionMatrix(float n, float f, float fov, float aspect_ratio)
 {
-    float focal_length{1.f / std::tan(radians(fov))};
+    float focal_length{1.f / std::tan(Radians(fov))};
     float r = n / focal_length;
     float l = -r;
     float t = aspect_ratio * n / focal_length;
     float b = -t;
-    return mat4x4{
-        vec4{2.0f * n / (r - l), 0, (r + l) / (r - l), 0},
-        vec4{0, 2.0f * n / (t - b), (t + b) / (t - b), 0},
-        vec4{0, 0, -(f + n) / (f - n), -2.0f * n * f / (f - n)},
-        vec4{0, 0, -1, 0},
+    return Mat4x4{
+        Vec4{2.0f * n / (r - l), 0, (r + l) / (r - l), 0},
+        Vec4{0, 2.0f * n / (t - b), (t + b) / (t - b), 0},
+        Vec4{0, 0, -(f + n) / (f - n), -2.0f * n * f / (f - n)},
+        Vec4{0, 0, -1, 0},
     };
 }
 
-constexpr mat4x4 project(float n, float f, float l, float r, float b, float t)
+constexpr Mat4x4 Project(float n, float f, float l, float r, float b, float t)
 {
-    return mat4x4{
-        vec4{-2.0f * n / (r - l), 0, -(r + l) / (r - l), 0},
-        vec4{0, -2.0f / (t - b), -(t + b) / (t - b), 0},
-        vec4{0, 0, (f + n) / (f - b), 2.0f * n * f / (f - n)},
-        vec4{0, 0, 1, 0},
+    return Mat4x4{
+        Vec4{-2.0f * n / (r - l), 0, -(r + l) / (r - l), 0},
+        Vec4{0, -2.0f / (t - b), -(t + b) / (t - b), 0},
+        Vec4{0, 0, (f + n) / (f - b), 2.0f * n * f / (f - n)},
+        Vec4{0, 0, 1, 0},
     };
 }
 
-constexpr mat4x4 translate(const vec4 &v)
+constexpr Mat4x4 Translate(const Vec4 &v)
 {
-    return mat4x4{
-        vec4{1, 0, 0, v.x_},
-        vec4{0, 1, 0, v.y_},
-        vec4{0, 0, 1, v.z_},
-        vec4{0, 0, 0, 1},
+    return Mat4x4{
+        Vec4{1, 0, 0, v.x_},
+        Vec4{0, 1, 0, v.y_},
+        Vec4{0, 0, 1, v.z_},
+        Vec4{0, 0, 0, 1},
     };
 }
 
-constexpr inline mat4x4 mat4x4::I = {
-    vec4{1, 0, 0, 0},
-    vec4{0, 1, 0, 0},
-    vec4{0, 0, 1, 0},
-    vec4{0, 0, 0, 1},
+constexpr inline Mat4x4 Mat4x4::kI = {
+    Vec4{1, 0, 0, 0},
+    Vec4{0, 1, 0, 0},
+    Vec4{0, 0, 1, 0},
+    Vec4{0, 0, 0, 1},
 };
 
-constexpr mat4x4 mat4x4::inverse()
+constexpr Mat4x4 Mat4x4::Inverse()
 {
     float a11{(*this)[0][0]};
     float a12{(*this)[0][1]};
@@ -311,7 +315,7 @@ constexpr mat4x4 mat4x4::inverse()
     float k{1.f / (a11 * det11 - a12 * det12 + a13 * det13 - a14 * det14)};
     [[maybe_unused]] float det{(a11 * det11 - a12 * det12 + a13 * det13 - a14 * det14)};
 
-    return k * mat4x4{
+    return k * Mat4x4{
                    det11,
                    -det12,
                    det13,
@@ -332,28 +336,28 @@ constexpr mat4x4 mat4x4::inverse()
                    -(a11 * (a22 * a34 - a24 * a32) + a12 * (a24 * a31 - a21 * a33) + a14 * (a21 * a32 - a22 * a31)),
                    a11 * (a22 * a33 - a23 * a32) + a12 * (a23 * a31 - a21 * a33) + a13 * (a21 * a32 - a22 * a31),
                }
-                   .transpose();
+                   .Transpose();
 }
 
-inline mat4x4 mat4x4::get_rotation_matrix(vec3 euler_angles)
+inline Mat4x4 Mat4x4::GetRotationMatrix(Vec3 euler_angles)
 {
-    auto x_rad{radians(euler_angles.x)};
-    auto y_rad{radians(euler_angles.y)};
-    auto z_rad{radians(euler_angles.z)};
+    auto x_rad{Radians(euler_angles.x)};
+    auto y_rad{Radians(euler_angles.y)};
+    auto z_rad{Radians(euler_angles.z)};
 
-    mat4x4 rot_around_x{
+    Mat4x4 rot_around_x{
         {1, 0, 0, 0},
         {0, std::cos(x_rad), -std::sin(x_rad), 0},
         {0, std::sin(x_rad), std::cos(x_rad), 0},
         {0, 0, 0, 1}};
 
-    mat4x4 rot_around_y{
+    Mat4x4 rot_around_y{
         {std::cos(y_rad), 0, std::sin(y_rad), 0},
         {0, 1, 0, 0},
         {-std::sin(y_rad), 0, std::cos(y_rad), 0},
         {0, 0, 0, 1}};
 
-    mat4x4 rot_around_z{
+    Mat4x4 rot_around_z{
         {std::cos(z_rad), -std::sin(z_rad), 0, 0},
         {std::sin(z_rad), std::cos(z_rad), 0, 0},
         {0, 0, 1, 0},
@@ -362,9 +366,9 @@ inline mat4x4 mat4x4::get_rotation_matrix(vec3 euler_angles)
     return rot_around_z * rot_around_y * rot_around_x;
 }
 
-inline constexpr mat4x4 mat4x4::get_translation_matrix(const vec3 &translate)
+inline constexpr Mat4x4 Mat4x4::GetTranslationMatrix(const Vec3 &translate)
 {
-    mat4x4 res{};
+    Mat4x4 res{};
     res[0][3] = translate.x;
     res[1][3] = translate.y;
     res[2][3] = translate.z;
@@ -372,9 +376,9 @@ inline constexpr mat4x4 mat4x4::get_translation_matrix(const vec3 &translate)
     return res;
 }
 
-inline constexpr vec4 operator*(const mat4x4 &rot, const vec4 &vec)
+inline constexpr Vec4 operator*(const Mat4x4 &rot, const Vec4 &vec)
 {
-    return vec4{
+    return Vec4{
         rot[0][0] * vec[0] + rot[0][1] * vec[1] + rot[0][2] * vec[2] + rot[0][3] * vec[3],
         rot[1][0] * vec[0] + rot[1][1] * vec[1] + rot[1][2] * vec[2] + rot[1][3] * vec[3],
         rot[2][0] * vec[0] + rot[2][1] * vec[1] + rot[2][2] * vec[2] + rot[2][3] * vec[3],
@@ -382,12 +386,12 @@ inline constexpr vec4 operator*(const mat4x4 &rot, const vec4 &vec)
     };
 }
 
-inline constexpr vec4 rotate_vec(const mat4x4 &rot, const vec4 &vec4)
+inline constexpr Vec4 RotateVec(const Mat4x4 &rot, const Vec4 &vec4)
 {
     return rot * vec4;
 }
 
-inline constexpr vec4 translate_vec(const mat4x4 &translation_mat, const vec4 &vec4)
+inline constexpr Vec4 TranslateVec(const Mat4x4 &translation_mat, const Vec4 &vec4)
 {
     return translation_mat * vec4;
 }

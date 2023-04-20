@@ -2,8 +2,8 @@
 
 #include <string>
 
-void log(std::string fmt, ...);
-std::string get_file_name(std::string file_path);
+void Log(std::string fmt, ...);
+std::string GetFileName(std::string file_path);
 
 #ifdef DEBUG_ 
 

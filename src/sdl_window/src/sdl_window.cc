@@ -1,8 +1,8 @@
 #include "window/sdl_window.hpp"
 
-void sdl_window::create_window(std::string const &window_name, vec2 const &size)
+void SdlWindow::CreateWindow(std::string const &window_name, Vec2 const &size)
 {
-    m_size = size;
+    size_ = size;
     info("Initializing SDL");
     if (SDL_Init(SDL_INIT_EVERYTHING))
     {
@@ -20,12 +20,12 @@ void sdl_window::create_window(std::string const &window_name, vec2 const &size)
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
 }
 
-float sdl_window::get_aspect_ratio()
+float SdlWindow::GetAspectRatio()
 {
-    return m_size.y / m_size.x;
+    return size_.y / size_.x;
 }
 
-bool sdl_window::should_quit()
+bool SdlWindow::ShouldQuit()
 {
     SDL_Event e;
     bool should_quit{false};
@@ -46,7 +46,7 @@ bool sdl_window::should_quit()
     return should_quit;
 }
 
-void *sdl_window::get_handler()
+void *SdlWindow::GetHandler()
 {
     return m_sdl_handler;
 }

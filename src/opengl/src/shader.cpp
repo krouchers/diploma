@@ -3,7 +3,12 @@
 
 #include <cmath>
 
-void shader::load(const std::string vertex, const std::string fragment)
+Shader::Shader(const std::string &vertex, const std::string &fragment)
+{
+    Load(vertex, fragment);
+}
+
+void Shader::Load(const std::string vertex, const std::string fragment)
 {
     vertex_ = glCreateShader(GL_VERTEX_SHADER);
     fragment_ = glCreateShader(GL_FRAGMENT_SHADER);
@@ -15,8 +20,8 @@ void shader::load(const std::string vertex, const std::string fragment)
     glCompileShader(vertex_);
     glCompileShader(fragment_);
 
-    validate(vertex_);
-    validate(fragment_);
+    Validate(vertex_);
+    Validate(fragment_);
 
     program_ = glCreateProgram();
     glAttachShader(program_, vertex_);
@@ -33,7 +38,7 @@ void shader::load(const std::string vertex, const std::string fragment)
     }
 }
 
-bool shader::validate(GLuint shader_id)
+bool Shader::Validate(GLuint shader_id)
 {
     GLint is_compiled;
     glGetShaderiv(shader_id, GL_COMPILE_STATUS, &is_compiled);
@@ -43,35 +48,36 @@ bool shader::validate(GLuint shader_id)
         glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &len);
         char *msg{new char[len]};
         glGetShaderInfoLog(shader_id, len, nullptr, msg);
-        warn("Failed to compile %d shader: %s", shader, msg);
+        warn("Failed to compile %d Shader: %s", Shader, msg);
     }
     return is_compiled == GL_TRUE;
 }
 
-void shader::set(const char *uniform_name, float value)
+void Shader::Set(const char *uniform_name, float value)
 {
     // FIXME: should be better logic
     glUniform4f(glGetUniformLocation(program_, uniform_name), 0, value, 0, 1);
 }
 
-void shader::set(const char *uniform_name, int value)
+void Shader::Set(const char *uniform_name, int value)
 {
-    bind();
+    Bind();
     glUniform1i(glGetUniformLocation(program_, uniform_name), value);
 }
 
-void shader::set(const char *uniform_name, const mat4x4 &value)
+void Shader::Set(const char *uniform_name, const Mat4x4 &value)
 {
-    bind();
+    Bind();
     auto id = glGetUniformLocation(program_, uniform_name);
-    if(id == GL_INVALID_VALUE or id == GL_INVALID_OPERATION){
-        warn("Failed to pass matrix to shader");
+    if (id == GL_INVALID_VALUE or id == GL_INVALID_OPERATION)
+    {
+        warn("Failed to pass matrix to Shader");
     }
     // glUniformMatrix4fv(glGetUniformLocation(program_, uniform_name), 1, GL_FALSE, value.data);
     glUniformMatrix4fv(id, 1, GL_FALSE, value.data);
 }
 
-shader::~shader()
+Shader::~Shader()
 {
     glDeleteShader(fragment_);
     glDeleteShader(vertex_);

@@ -4,12 +4,13 @@ set(MODULES
     interfaces
     sdl_window
     app
+    scene
     glad
     math)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set(MODULE_COMPILE_FLAGS "/Wall")
-elseif()
+else()
     set(MODULE_COMPILE_FLAGS "-Wall -Wextra -Werror -Wshadow")
 endif()
 
