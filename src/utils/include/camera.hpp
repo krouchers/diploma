@@ -17,6 +17,12 @@ private:
     // vec3 m_position, m_rotation;
     float fov_, near_plane_, far_plane_, aspect_ratio_;
 
+    /**
+     * @brief Отвечают за скорость перемещения камеры.
+     * 
+     */
+    float rotation_speed_, radius_speed_, translation_speed_;
+
     // Vec2 dim_;
 
     // Mat4x4 m_view, m_iview;

@@ -6,6 +6,7 @@
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
 
+
 DearGui::DearGui(const std::shared_ptr<Opengl> &gl,
                  const std::shared_ptr<IWindow> &window)
     : window_{window}, gl_{gl}
@@ -26,16 +27,13 @@ void DearGui::AddSlider(const std::string &name, float &value)
     ImGui::SliderFloat(name.c_str(), &value, 0.0f, 1.0f, "ratio = %.3f");
 }
 
+void DearGui::ProcessEvent(const Event &e)
+{
+    ImGui_ImplSDL2_ProcessEvent(reinterpret_cast<const SDL_Event *>(e.GetEventRawHandle()));
+}
+
 void DearGui::Render()
 {
-    SDL_Event e;
-    while (SDL_PollEvent(&e))
-    {
-        ImGui_ImplSDL2_ProcessEvent(&e);
-        if (e.type == SDL_QUIT)
-            window_->Close();
-    }
-
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
