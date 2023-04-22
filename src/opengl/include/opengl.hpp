@@ -8,7 +8,7 @@
 #include "mesh.hpp"
 #include "tex2D.hpp"
 #include "camera.hpp"
-#include "window/sdl_window.hpp"
+#include "sdl_window/window.hpp"
 #include "shader.hpp"
 
 class Opengl

@@ -1,4 +1,4 @@
-#include "window/sdl_window.hpp"
+#include "sdl_window/window.hpp"
 
 SdlWindow::SdlWindow(std::string const &name, Vec2 const &size)
     : size_{size}

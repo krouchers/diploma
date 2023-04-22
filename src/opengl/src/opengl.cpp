@@ -4,7 +4,7 @@
 #include <utility>
 
 #include "opengl.hpp"
-#include "window/sdl_window.hpp"
+#include "sdl_window/window.hpp"
 #include "log.hpp"
 #include "glad.hpp"
 #include "mesh.hpp"

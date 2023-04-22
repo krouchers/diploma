@@ -1,6 +1,7 @@
 #include "app.hpp"
 #include "log.hpp"
-#include "window/sdl_window.hpp"
+#include "sdl_window/window.hpp"
+#include "sdl_window/event.hpp"
 #include "opengl.hpp"
 #include "math.hpp"
 #include "gui/gui.hpp"
@@ -9,9 +10,9 @@
 #include "scene/item.hpp"
 
 App::App()
-    : window_{new SdlWindow{"Geodip", {1280, 720}}},
-      gl_{new Opengl{window_}},
-      gui_{new DearGui{gl_, window_}},
+    : window_{std::make_shared<SdlWindow>("Geodip", Vec2{1280, 720})},
+      gl_{std::make_shared<Opengl>(window_)},
+      gui_{std::make_shared<DearGui>(gl_, window_)},
       camera_{{1280, 720}}
 
 {
@@ -32,6 +33,19 @@ void App::Run()
 {
     while (!window_->ShouldQuit())
     {
+        SDLEvent e;
+        SDL_Event sdl_e;
+        while (SDL_PollEvent(&sdl_e))
+        {
+            e.e_ = sdl_e;
+            gui_->ProcessEvent(e);
+            switch (sdl_e.type)
+            {
+            case SDL_QUIT:
+                window_->Close();
+                break;
+            }
+        }
         auto &r = scene::Renderer::Get();
         r.Clear();
         r.Render3D(scene_, camera_);

@@ -2,7 +2,7 @@
 #include <memory>
 
 #include "camera.hpp"
-#include "window_interface.hpp"
+#include "interfaces/window.hpp"
 #include "gui/gui.hpp"
 #include "scene/scene.hpp"
 
