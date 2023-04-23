@@ -1,4 +1,6 @@
 #include "scene/renderer.hpp"
+#include "glm/mat4x4.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 #include <memory>
 
@@ -9,7 +11,7 @@ namespace scene
     {
     }
 
-    void Renderer::Mesh(gl::Mesh &mesh, const Mat4x4 &view)
+    void Renderer::Mesh(gl::Mesh &mesh, const glm::mat4x4 &view)
     {
         mesh_shader_.Bind();
         mesh_shader_.Set("transform", view);
@@ -18,8 +20,9 @@ namespace scene
 
     void Renderer::Render3D(Scene &scene, Camera &cam)
     {
+        (void)cam;
         scene.ForItems([&](scene::Item &item)
-                       { item.Render(cam.GetProjection()); });
+                       { item.Render(glm::perspective(glm::radians(90.f), 1280.f / 720.f, .1f, 100.f) * cam.GetView()); });
     }
 
     void Renderer::Clear()

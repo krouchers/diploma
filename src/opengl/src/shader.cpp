@@ -1,6 +1,8 @@
 #include "shader.hpp"
 #include "log.hpp"
 
+#include "glm/mat4x4.hpp"
+
 #include <cmath>
 
 Shader::Shader(const std::string &vertex, const std::string &fragment)
@@ -65,7 +67,7 @@ void Shader::Set(const char *uniform_name, int value)
     glUniform1i(glGetUniformLocation(program_, uniform_name), value);
 }
 
-void Shader::Set(const char *uniform_name, const Mat4x4 &value)
+void Shader::Set(const char *uniform_name, const glm::mat4x4 &value)
 {
     Bind();
     auto id = glGetUniformLocation(program_, uniform_name);
@@ -74,7 +76,7 @@ void Shader::Set(const char *uniform_name, const Mat4x4 &value)
         warn("Failed to pass matrix to Shader");
     }
     // glUniformMatrix4fv(glGetUniformLocation(program_, uniform_name), 1, GL_FALSE, value.data);
-    glUniformMatrix4fv(id, 1, GL_FALSE, value.data);
+    glUniformMatrix4fv(id, 1, GL_FALSE, &value[0][0]);
 }
 
 Shader::~Shader()

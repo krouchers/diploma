@@ -21,10 +21,20 @@ private:
     App(App &&) = delete;
     App &operator=(App &&) = delete;
 
+    void ProcessEvents();
+
     std::shared_ptr<IWindow> window_;
     std::shared_ptr<Opengl> gl_;
     std::shared_ptr<IGui> gui_;
 
+    enum class CameraMode
+    {
+        none,
+        orbit,
+        move
+    };
+
+    CameraMode camera_mode{CameraMode::none};
     Camera camera_;
 
     Scene scene_;

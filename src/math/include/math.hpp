@@ -4,6 +4,21 @@
 #include <cmath>
 #include <numbers>
 
+struct Vec2;
+struct Vec3;
+struct Vec4;
+struct Mat3x3;
+struct Mat4x4;
+
+constexpr Vec4 operator*(const float k, const Vec4 &rhs);
+constexpr Vec4 operator*(const Vec4 &rhs, const float k);
+constexpr Vec4 operator/(const Vec4 &rhs, const float k);
+
+constexpr Vec3 operator*(const Mat3x3 &m, const Vec3 &v);
+constexpr Vec3 operator==(const Mat3x3 &m, const Vec3 &v);
+
+constexpr Mat3x3 operator*(const Mat3x3 &lhs, const Mat3x3 &rhs);
+
 static inline constexpr float kEps{1e-4};
 
 constexpr inline float Radians(float degrees)
@@ -101,19 +116,82 @@ constexpr Vec4 operator*(const Vec4 &rhs, const float k)
 
 constexpr Vec4 operator/(const Vec4 &rhs, const float k)
 {
-    Vec4 res{};
-    for (int i{0}; i < 4; ++i)
+    return rhs * (1.f / k);
+}
+
+struct Mat3x3
+{
+    float data[3][3];
+    Vec3 &operator[](int i)
     {
-        res[i] = rhs[i] / k;
+        return (*reinterpret_cast<Vec3 *>(data[i]));
     }
 
-    return res;
-}
+    const Vec3 &operator[](int i) const
+    {
+        return (*reinterpret_cast<const Vec3 *>(data[i]));
+    }
+
+    bool operator==(const Mat3x3 &rhs) const
+    {
+        for (int i = 0; i < 3; ++i)
+            for (int j = 0; j < 3; ++j)
+            {
+                if ((data[i][j] - rhs.data[i][j]) > kEps)
+                {
+                    return false;
+                }
+            }
+        return true;
+    }
+
+    inline operator Mat4x4();
+
+    static Mat3x3 GetRotationMatrix(Vec3 euler_angles);
+    inline static Mat3x3 GetRotationAroundAxis(Vec3 axis, float angle);
+};
 
 struct Vec3
 {
-    float x, y, z;
+    constexpr Vec3() {}
+    constexpr Vec3(float x, float y, float z) : x_{x}, y_{y}, z_{z} {}
+    union
+    {
+        struct
+        {
+            float x_, y_, z_;
+        };
+        float data[3];
+    };
+
+    float operator[](int i)
+    {
+        return data[i];
+    }
+
+    float operator[](int i) const
+    {
+        return data[i];
+    }
+
+    Vec3 &operator*(float k)
+    {
+        for (int i = 0; i < 3; ++i)
+        {
+            data[i] *= k;
+        }
+        return *this;
+    }
 };
+
+constexpr Vec3 operator*(const Mat3x3 &m, const Vec3 &v)
+{
+    Vec3 res{};
+    res.x_ = m[0][0] * v[0] + m[0][1] * v[1] + m[0][2] * v[2];
+    res.y_ = m[1][0] * v[0] + m[1][1] * v[1] + m[1][2] * v[2];
+    res.z_ = m[2][0] * v[0] + m[2][1] * v[1] + m[2][2] * v[2];
+    return res;
+}
 
 struct Vec2
 {
@@ -225,22 +303,25 @@ constexpr Mat4x4 operator*(const float k, const Mat4x4 &rhs)
 constexpr Mat4x4 operator*(const Mat4x4 &lhs, const Mat4x4 &rhs)
 {
     return Mat4x4{
-        rhs[0][0] * lhs[0][0] + rhs[1][0] * lhs[0][1] + rhs[2][0] * lhs[0][2] + rhs[3][0] * lhs[0][3],
-        rhs[0][0] * lhs[1][0] + rhs[1][0] * lhs[1][1] + rhs[2][0] * lhs[1][2] + rhs[3][0] * lhs[1][3],
-        rhs[0][0] * lhs[2][0] + rhs[1][0] * lhs[2][1] + rhs[2][0] * lhs[2][2] + rhs[3][0] * lhs[2][3],
-        rhs[0][0] * lhs[3][0] + rhs[1][0] * lhs[3][1] + rhs[2][0] * lhs[3][2] + rhs[3][0] * lhs[3][3],
-        rhs[0][1] * lhs[0][0] + rhs[1][1] * lhs[0][1] + rhs[2][1] * lhs[0][2] + rhs[3][1] * lhs[0][3],
-        rhs[0][1] * lhs[1][0] + rhs[1][1] * lhs[1][1] + rhs[2][1] * lhs[1][2] + rhs[3][1] * lhs[1][3],
-        rhs[0][1] * lhs[2][0] + rhs[1][1] * lhs[2][1] + rhs[2][1] * lhs[2][2] + rhs[3][1] * lhs[2][3],
-        rhs[0][1] * lhs[3][0] + rhs[1][1] * lhs[3][1] + rhs[2][1] * lhs[3][2] + rhs[3][1] * lhs[3][3],
-        rhs[0][2] * lhs[0][0] + rhs[1][2] * lhs[0][1] + rhs[2][2] * lhs[0][2] + rhs[3][2] * lhs[0][3],
-        rhs[0][2] * lhs[1][0] + rhs[1][2] * lhs[1][1] + rhs[2][2] * lhs[1][2] + rhs[3][2] * lhs[1][3],
-        rhs[0][2] * lhs[2][0] + rhs[1][2] * lhs[2][1] + rhs[2][2] * lhs[2][2] + rhs[3][2] * lhs[2][3],
-        rhs[0][2] * lhs[3][0] + rhs[1][2] * lhs[3][1] + rhs[2][2] * lhs[3][2] + rhs[3][2] * lhs[3][3],
-        rhs[0][3] * lhs[0][0] + rhs[1][3] * lhs[0][1] + rhs[2][3] * lhs[0][2] + rhs[3][3] * lhs[0][3],
-        rhs[0][3] * lhs[1][0] + rhs[1][3] * lhs[1][1] + rhs[2][3] * lhs[1][2] + rhs[3][3] * lhs[1][3],
-        rhs[0][3] * lhs[2][0] + rhs[1][3] * lhs[2][1] + rhs[2][3] * lhs[2][2] + rhs[3][3] * lhs[2][3],
-        rhs[0][3] * lhs[3][0] + rhs[1][3] * lhs[3][1] + rhs[2][3] * lhs[3][2] + rhs[3][3] * lhs[3][3]};
+        lhs[0][0] * rhs[0][0] + lhs[0][1] * rhs[1][0] + lhs[0][2] * rhs[2][0] + lhs[0][3] * rhs[3][0],
+        lhs[0][0] * rhs[0][1] + lhs[0][1] * rhs[1][1] + lhs[0][2] * rhs[2][1] + lhs[0][3] * rhs[3][1],
+        lhs[0][0] * rhs[0][2] + lhs[0][1] * rhs[1][2] + lhs[0][2] * rhs[2][2] + lhs[0][3] * rhs[3][2],
+        lhs[0][0] * rhs[0][3] + lhs[0][1] * rhs[1][3] + lhs[0][2] * rhs[2][3] + lhs[0][3] * rhs[3][3],
+
+        lhs[1][0] * rhs[0][0] + lhs[1][1] * rhs[1][0] + lhs[1][2] * rhs[2][0] + lhs[1][3] * rhs[3][0],
+        lhs[1][0] * rhs[0][1] + lhs[1][1] * rhs[1][1] + lhs[1][2] * rhs[2][1] + lhs[1][3] * rhs[3][1],
+        lhs[1][0] * rhs[0][2] + lhs[1][1] * rhs[1][2] + lhs[1][2] * rhs[2][2] + lhs[1][3] * rhs[3][2],
+        lhs[1][0] * rhs[0][3] + lhs[1][1] * rhs[1][3] + lhs[1][2] * rhs[2][3] + lhs[1][3] * rhs[3][3],
+
+        lhs[2][0] * rhs[0][0] + lhs[2][1] * rhs[1][0] + lhs[2][2] * rhs[2][0] + lhs[2][3] * rhs[3][0],
+        lhs[2][0] * rhs[0][1] + lhs[2][1] * rhs[1][1] + lhs[2][2] * rhs[2][1] + lhs[2][3] * rhs[3][1],
+        lhs[2][0] * rhs[0][2] + lhs[2][1] * rhs[1][2] + lhs[2][2] * rhs[2][2] + lhs[2][3] * rhs[3][2],
+        lhs[2][0] * rhs[0][3] + lhs[2][1] * rhs[1][3] + lhs[2][2] * rhs[2][3] + lhs[2][3] * rhs[3][3],
+
+        lhs[3][0] * rhs[0][0] + lhs[3][1] * rhs[1][0] + lhs[3][2] * rhs[2][0] + lhs[3][3] * rhs[3][0],
+        lhs[3][0] * rhs[0][1] + lhs[3][1] * rhs[1][1] + lhs[3][2] * rhs[2][1] + lhs[3][3] * rhs[3][1],
+        lhs[3][0] * rhs[0][2] + lhs[3][1] * rhs[1][2] + lhs[3][2] * rhs[2][2] + lhs[3][3] * rhs[3][2],
+        lhs[3][0] * rhs[0][3] + lhs[3][1] * rhs[1][3] + lhs[3][2] * rhs[2][3] + lhs[3][3] * rhs[3][3]};
 }
 
 inline Mat4x4 Mat4x4::GetProjectionMatrix(float n, float f, float fov, float aspect_ratio)
@@ -287,25 +368,26 @@ constexpr inline Mat4x4 Mat4x4::kI = {
 
 constexpr Mat4x4 Mat4x4::Inverse()
 {
-    float a11{(*this)[0][0]};
-    float a12{(*this)[0][1]};
-    float a13{(*this)[0][2]};
-    float a14{(*this)[0][3]};
+    auto m{*this};
+    float a11{m[0][0]};
+    float a12{m[0][1]};
+    float a13{m[0][2]};
+    float a14{m[0][3]};
 
-    float a21{(*this)[1][0]};
-    float a22{(*this)[1][1]};
-    float a23{(*this)[1][2]};
-    float a24{(*this)[1][3]};
+    float a21{m[1][0]};
+    float a22{m[1][1]};
+    float a23{m[1][2]};
+    float a24{m[1][3]};
 
-    float a31{(*this)[2][0]};
-    float a32{(*this)[2][1]};
-    float a33{(*this)[2][2]};
-    float a34{(*this)[2][3]};
+    float a31{m[2][0]};
+    float a32{m[2][1]};
+    float a33{m[2][2]};
+    float a34{m[2][3]};
 
-    float a41{(*this)[3][0]};
-    float a42{(*this)[3][1]};
-    float a43{(*this)[3][2]};
-    float a44{(*this)[3][3]};
+    float a41{m[3][0]};
+    float a42{m[3][1]};
+    float a43{m[3][2]};
+    float a44{m[3][3]};
 
     float det11{a22 * (a33 * a44 - a34 * a43) + a23 * (a34 * a42 - a32 * a44) + a24 * (a32 * a43 - a33 * a42)};
     float det12{a21 * (a33 * a44 - a34 * a43) + a23 * (a34 * a41 - a31 * a44) + a24 * (a31 * a43 - a33 * a41)};
@@ -339,41 +421,24 @@ constexpr Mat4x4 Mat4x4::Inverse()
                    .Transpose();
 }
 
-inline Mat4x4 Mat4x4::GetRotationMatrix(Vec3 euler_angles)
-{
-    auto x_rad{Radians(euler_angles.x)};
-    auto y_rad{Radians(euler_angles.y)};
-    auto z_rad{Radians(euler_angles.z)};
-
-    Mat4x4 rot_around_x{
-        {1, 0, 0, 0},
-        {0, std::cos(x_rad), -std::sin(x_rad), 0},
-        {0, std::sin(x_rad), std::cos(x_rad), 0},
-        {0, 0, 0, 1}};
-
-    Mat4x4 rot_around_y{
-        {std::cos(y_rad), 0, std::sin(y_rad), 0},
-        {0, 1, 0, 0},
-        {-std::sin(y_rad), 0, std::cos(y_rad), 0},
-        {0, 0, 0, 1}};
-
-    Mat4x4 rot_around_z{
-        {std::cos(z_rad), -std::sin(z_rad), 0, 0},
-        {std::sin(z_rad), std::cos(z_rad), 0, 0},
-        {0, 0, 1, 0},
-        {0, 0, 0, 1}};
-
-    return rot_around_z * rot_around_y * rot_around_x;
-}
-
 inline constexpr Mat4x4 Mat4x4::GetTranslationMatrix(const Vec3 &translate)
 {
     Mat4x4 res{};
-    res[0][3] = translate.x;
-    res[1][3] = translate.y;
-    res[2][3] = translate.z;
+    res[0][3] = translate.x_;
+    res[1][3] = translate.y_;
+    res[2][3] = translate.z_;
 
     return res;
+}
+
+Mat3x3 Mat3x3::GetRotationAroundAxis(Vec3 axis, float angle)
+{
+    float c = std::cos(angle);
+    float s = std::sin(angle);
+
+    return Mat3x3{{{c + (1 - c) * axis.x_ * axis.x_, (1 - c) * axis.x_ * axis.y_ - s * axis.z_, (1 - c) * axis.x_ * axis.z_ + s * axis.y_},
+                   {(1 - c) * axis.x_ * axis.y_ + s * axis.z_, c + (1 - c) * axis.y_ * axis.y_, (1 - c) * axis.y_ * axis.z_ - s * axis.x_},
+                   {(1 - c) * axis.x_ * axis.z_ - s * axis.y_, (1 - c) * axis.y_ * axis.z_ + s * axis.x_, c + (1 - c) * axis.z_ * axis.z_}}};
 }
 
 inline constexpr Vec4 operator*(const Mat4x4 &rot, const Vec4 &vec)
@@ -386,12 +451,72 @@ inline constexpr Vec4 operator*(const Mat4x4 &rot, const Vec4 &vec)
     };
 }
 
-inline constexpr Vec4 RotateVec(const Mat4x4 &rot, const Vec4 &vec4)
+inline constexpr Vec3 RotateVec(const Mat3x3 &rot, const Vec3 &v)
 {
-    return rot * vec4;
+    return rot * v;
 }
 
 inline constexpr Vec4 TranslateVec(const Mat4x4 &translation_mat, const Vec4 &vec4)
 {
     return translation_mat * vec4;
+}
+
+constexpr bool operator==(const Vec3 &lhs, const Vec3 &rhs)
+{
+    for (int i = 0; i < 3; ++i)
+    {
+        if (!(lhs[i] - rhs[i] < kEps))
+            return false;
+    }
+    return true;
+}
+
+inline Mat3x3 Mat3x3::GetRotationMatrix(Vec3 euler_angles)
+{
+    auto x_rad{Radians(euler_angles.x_)};
+    auto y_rad{Radians(euler_angles.y_)};
+    auto z_rad{Radians(euler_angles.z_)};
+
+    Mat3x3 rot_around_x{
+        {{1, 0, 0},
+         {0, std::cos(x_rad), -std::sin(x_rad)},
+         {0, std::sin(x_rad), std::cos(x_rad)}}};
+
+    Mat3x3 rot_around_y{
+        {{std::cos(y_rad), 0, std::sin(y_rad)},
+         {0, 1, 0},
+         {-std::sin(y_rad), 0, std::cos(y_rad)}}};
+
+    Mat3x3 rot_around_z{
+        {{std::cos(z_rad), -std::sin(z_rad), 0},
+         {std::sin(z_rad), std::cos(z_rad), 0},
+         {0, 0, 1}}};
+
+    return rot_around_z * rot_around_y * rot_around_x;
+}
+
+constexpr Mat3x3 operator*(const Mat3x3 &lhs, const Mat3x3 &rhs)
+{
+    return Mat3x3{{
+        {lhs[0][0] * rhs[0][0] + lhs[0][1] * rhs[1][0] + lhs[0][2] * rhs[2][0],
+         lhs[0][0] * rhs[0][1] + lhs[0][1] * rhs[1][1] + lhs[0][2] * rhs[2][1],
+         lhs[0][0] * rhs[0][2] + lhs[0][1] * rhs[1][2] + lhs[0][2] * rhs[2][2]},
+
+        {lhs[1][0] * rhs[0][0] + lhs[1][1] * rhs[1][0] + lhs[1][2] * rhs[2][0],
+         lhs[1][0] * rhs[0][1] + lhs[1][1] * rhs[1][1] + lhs[1][2] * rhs[2][1],
+         lhs[1][0] * rhs[0][2] + lhs[1][1] * rhs[1][2] + lhs[1][2] * rhs[2][2]},
+
+        {lhs[2][0] * rhs[0][0] + lhs[2][1] * rhs[1][0] + lhs[2][2] * rhs[2][0],
+         lhs[2][0] * rhs[0][1] + lhs[2][1] * rhs[1][1] + lhs[2][2] * rhs[2][1],
+         lhs[2][0] * rhs[0][2] + lhs[2][1] * rhs[1][2] + lhs[2][2] * rhs[2][2]},
+    }};
+}
+
+Mat3x3::operator Mat4x4()
+{
+    return Mat4x4{
+        data[0][0], data[0][1], data[0][2], 0,
+        data[1][0], data[1][1], data[1][2], 0,
+        data[2][0], data[2][1], data[2][2], 0,
+        0, 0, 0, 1};
 }

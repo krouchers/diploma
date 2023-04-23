@@ -1,6 +1,8 @@
 #include "scene/item.hpp"
 #include "scene/renderer.hpp"
 
+#include "glm/mat4x4.hpp"
+
 namespace scene
 {
     Item::Item(const gl::Mesh &mesh)
@@ -8,7 +10,7 @@ namespace scene
     {
     }
 
-    void Item::Render(const Mat4x4 &view)
+    void Item::Render(const glm::mat4x4 &view)
     {
         Renderer::Get().Mesh(mesh_, view);
     }

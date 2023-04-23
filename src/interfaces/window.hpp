@@ -11,4 +11,5 @@ public:
     virtual bool ShouldQuit() = 0;
     virtual void *GetHandler() = 0;
     virtual void SwapFrame() = 0;
+    virtual Vec2 GetSize() = 0;
 };

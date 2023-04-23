@@ -17,6 +17,7 @@ public:
     void *GetHandler() final;
     void Close() final;
     void SwapFrame() final;
+    Vec2 GetSize() final;
 
 private:
     SDL_Window *sdl_handler_{nullptr};

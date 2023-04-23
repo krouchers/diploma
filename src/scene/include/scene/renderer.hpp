@@ -19,7 +19,7 @@ namespace scene
         Renderer &operator=(Renderer &&) = delete;
 
         static Renderer &Get();
-        void Mesh(gl::Mesh &mesh, const Mat4x4 &view);
+        void Mesh(gl::Mesh &mesh, const glm::mat4x4 &view);
         void SetProjectionMatrix(const Mat4x4 &proj);
         static void Setup(const std::shared_ptr<Opengl> &gl);
         void Render3D(Scene &, Camera &);

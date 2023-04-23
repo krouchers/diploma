@@ -8,6 +8,6 @@ set(src_files
 
 build_library_with_type(utils STATIC "${MODULE_COMPILE_FLAGS}" "${src_files}")
 
-target_link_libraries(utils PRIVATE math)
+target_link_libraries(utils PUBLIC math glm::glm)
 
 target_include_directories(utils PUBLIC include)

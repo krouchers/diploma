@@ -2,6 +2,7 @@
 
 #include "object.hpp"
 #include "mesh.hpp"
+#include "glm/mat4x4.hpp"
 
 namespace scene
 {
@@ -9,7 +10,7 @@ namespace scene
     {
     public:
         Item(const gl::Mesh &mesh);
-        void Render(const Mat4x4 &view);
+        void Render(const glm::mat4x4 &view);
 
     private:
         gl::Mesh mesh_;

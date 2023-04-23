@@ -1,19 +1,29 @@
 #include "camera.hpp"
+#include "log.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
+static glm::vec4 kUp{0.f, 1.f, 0.f, 0.f};
 
 Camera::Camera(Vec2 dim)
-	: view_{Mat4x4::GetRotationMatrix(Vec3{0, 0, 45})},
-	  proj_{Mat4x4::GetProjectionMatrix(2, 10, 45, dim.y / dim.x)}
 {
+	SetAs(dim.x / dim.y);
 	Reset();
-	SetAs(dim.y / dim.x);
 }
 
 void Camera::Reset()
 {
-	fov_ = 45.f;
-	near_plane_ = 2.f;
-	far_plane_ = 10.f;
-	rotation_speed_ = radius_speed_ = translation_speed_ = 1;
+	fov_ = 90.f;
+	radius_ = 6;
+	near_plane_ = 1.f;
+	far_plane_ = 110.f;
+	rotation_speed_ = radius_speed_ = translation_speed_ = 0.3f;
+
+	rotation_ = glm::rotate(glm::mat4x4(1.f), glm::radians(0.f), glm::vec3(0.f, 0.f, 1.f));
+	projection_ = glm::perspective(glm::radians(fov_), aspect_ratio_, near_plane_, far_plane_);
+
+	UpdatePos();
+	translation_ = glm::translate(glm::mat4x4(1.f), position_);
+	view_ = glm::inverse(translation_ * rotation_);
 }
 
 void Camera::SetAs(float as)
@@ -21,13 +31,48 @@ void Camera::SetAs(float as)
 	aspect_ratio_ = as;
 }
 
-Mat4x4 Camera::GetProjection()
+glm::mat4x4 Camera::GetView()
 {
-	return Mat4x4::GetProjectionMatrix(
-		near_plane_, far_plane_, fov_, aspect_ratio_);
+	return view_;
 }
 
-Mat4x4 Camera::GetView()
+glm::mat4x4 Camera::GetProjection()
 {
-	return Mat4x4::GetRotationMatrix(Vec3{0, 0, 45});
+	return projection_;
+}
+
+glm::vec3 Camera::Front()
+{
+	return glm::normalize(glm::vec3(0.f) - position_);
+}
+
+void Camera::MoveThroughOrbit(Vec2 offset)
+{
+	auto up = rotation_ * kUp;
+	auto dir = Front();
+	auto right = glm::cross(dir, glm::vec3(up));
+	rotation_ = glm::rotate(rotation_, glm::radians(-offset.x * rotation_speed_), glm::vec3(up));
+	rotation_ = glm::rotate(rotation_, glm::radians(offset.y * rotation_speed_), right);
+	UpdatePos();
+	UpdateView();
+
+	info("Orbit is moving");
+}
+
+void Camera::UpdateView()
+{
+	translation_ = glm::translate(glm::mat4x4(1.f), position_);
+	view_ = glm::inverse(translation_ * rotation_);
+}
+
+void Camera::MoveThroughRadius(float offset)
+{
+	radius_ += offset * radius_speed_;
+	UpdatePos();
+	UpdateView();
+}
+void Camera::UpdatePos()
+{
+	position_ = rotation_ * glm::vec4{0.f, 0.f, 1.f, 0.f};
+	position_ = position_ * radius_;
 }

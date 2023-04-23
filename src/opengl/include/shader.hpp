@@ -1,6 +1,8 @@
 #pragma once
 #include "math.hpp"
 
+#include "glm/mat4x4.hpp"
+
 #include <string>
 
 namespace shaders
@@ -72,7 +74,7 @@ public:
      * @param uniform_name Имя юниформ переменной.
      * @param value Привсваемое ей значение.
      */
-    void Set(const char *uniform_name, const Mat4x4 &value);
+    void Set(const char *uniform_name, const glm::mat4x4 &value);
 
     inline GLuint GetProgramId() const noexcept { return program_; };
     inline void Bind() { glUseProgram(program_); }

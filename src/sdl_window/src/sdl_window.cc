@@ -42,3 +42,8 @@ void SdlWindow::SwapFrame()
 {
     SDL_GL_SwapWindow(sdl_handler_);
 }
+
+Vec2 SdlWindow::GetSize()
+{
+    return size_;
+}
