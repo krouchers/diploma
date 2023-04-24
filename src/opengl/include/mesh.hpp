@@ -1,15 +1,16 @@
 #pragma once
 
 #include <vector>
+#include "math/vec3.hpp"
+#include "math/vec2.hpp"
 
-#include "math.hpp"
 #include "glad.hpp"
 
 struct Vert
 {
-    Vec3 pos;
-    Vec3 norm;
-    Vec2 tex_coord;
+    math::Vec3 pos;
+    math::Vec3 norm;
+    math::Vec2 tex_coord;
 };
 
 namespace gl

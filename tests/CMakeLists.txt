@@ -10,7 +10,7 @@ FetchContent_MakeAvailable(googletest)
 
 message(STATUS "Creating tests...")
 
-add_executable(math_test math_tests.cpp)
+add_executable(math_test new_math_tests.cpp)
 
 target_link_libraries(math_test gtest_main math)
 

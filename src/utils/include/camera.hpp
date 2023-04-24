@@ -1,17 +1,16 @@
 #pragma once
 
-#include "math.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
 class Camera
 {
 public:
-    Camera(Vec2 dim);
+    Camera(glm::vec2 const &dim);
 
     glm::mat4x4 GetView();
     glm::mat4x4 GetProjection();
 
-    void MoveThroughOrbit(Vec2 offset);
+    void MoveThroughOrbit(glm::vec2 const &offset);
     void MoveThroughRadius(float offset);
 
 private:

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "shader.hpp"
-#include "math.hpp"
 #include "scene.hpp"
 #include "mesh.hpp"
 #include "camera.hpp"
@@ -20,7 +19,6 @@ namespace scene
 
         static Renderer &Get();
         void Mesh(gl::Mesh &mesh, const glm::mat4x4 &view);
-        void SetProjectionMatrix(const Mat4x4 &proj);
         static void Setup(const std::shared_ptr<Opengl> &gl);
         void Render3D(Scene &, Camera &);
 

@@ -1,6 +1,6 @@
 #include "sdl_window/window.hpp"
 
-SdlWindow::SdlWindow(std::string const &name, Vec2 const &size)
+SdlWindow::SdlWindow(std::string const &name, glm::vec2 const &size)
     : size_{size}
 {
     info("Initializing SDL");
@@ -20,7 +20,7 @@ SdlWindow::SdlWindow(std::string const &name, Vec2 const &size)
 
 float SdlWindow::GetAspectRatio()
 {
-    return size_.y / size_.x;
+    return size_[1] / size_[0];
 }
 
 bool SdlWindow::ShouldQuit()
@@ -43,7 +43,7 @@ void SdlWindow::SwapFrame()
     SDL_GL_SwapWindow(sdl_handler_);
 }
 
-Vec2 SdlWindow::GetSize()
+glm::vec2 SdlWindow::GetSize()
 {
     return size_;
 }

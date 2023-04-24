@@ -1,7 +1,6 @@
 #include <iostream>
 
 #include "app.hpp"
-#include "math.hpp"
 
 int main(int argc, char **argv)
 {

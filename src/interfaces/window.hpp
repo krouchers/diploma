@@ -1,7 +1,6 @@
 #pragma once
-#include <optional>
 
-#include "math.hpp"
+#include "glm/vec2.hpp"
 
 class IWindow
 {
@@ -11,5 +10,5 @@ public:
     virtual bool ShouldQuit() = 0;
     virtual void *GetHandler() = 0;
     virtual void SwapFrame() = 0;
-    virtual Vec2 GetSize() = 0;
+    virtual glm::vec2 GetSize() = 0;
 };

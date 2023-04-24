@@ -3,14 +3,13 @@
 #include "sdl_window/window.hpp"
 #include "sdl_window/event.hpp"
 #include "opengl.hpp"
-#include "math.hpp"
 #include "gui/gui.hpp"
 #include "opengl.hpp"
 #include "scene/renderer.hpp"
 #include "scene/item.hpp"
 
 App::App()
-    : window_{std::make_shared<SdlWindow>("Geodip", Vec2{1280, 720})},
+    : window_{std::make_shared<SdlWindow>("Geodip", glm::vec2{1280, 720})},
       gl_{std::make_shared<Opengl>(window_)},
       gui_{std::make_shared<DearGui>(gl_, window_)},
       camera_{{window_->GetSize()}}
@@ -33,7 +32,6 @@ void App::Run()
 {
     while (!window_->ShouldQuit())
     {
-        glViewport(0, 0, window_->GetSize().x, window_->GetSize().y);
         ProcessEvents();
         auto &r = scene::Renderer::Get();
         r.Clear();
@@ -65,8 +63,8 @@ void App::ProcessEvents()
             if (camera_mode == CameraMode::orbit)
             {
                 camera_.MoveThroughOrbit(
-                    Vec2{static_cast<float>(sdl_e.motion.xrel),
-                         static_cast<float>(sdl_e.motion.yrel)});
+                    glm::vec2{static_cast<float>(sdl_e.motion.xrel),
+                              static_cast<float>(sdl_e.motion.yrel)});
                 info("mouse moved from to %d with delta %d", sdl_e.motion.x, sdl_e.motion.xrel);
             }
             break;

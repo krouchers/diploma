@@ -4,7 +4,7 @@
 
 static glm::vec4 kUp{0.f, 1.f, 0.f, 0.f};
 
-Camera::Camera(Vec2 dim)
+Camera::Camera(glm::vec2 const &dim)
 {
 	SetAs(dim.x / dim.y);
 	Reset();
@@ -46,7 +46,7 @@ glm::vec3 Camera::Front()
 	return glm::normalize(glm::vec3(0.f) - position_);
 }
 
-void Camera::MoveThroughOrbit(Vec2 offset)
+void Camera::MoveThroughOrbit(glm::vec2 const &offset)
 {
 	auto up = rotation_ * kUp;
 	auto dir = Front();

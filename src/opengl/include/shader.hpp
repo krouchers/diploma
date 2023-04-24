@@ -1,6 +1,4 @@
 #pragma once
-#include "math.hpp"
-
 #include "glm/mat4x4.hpp"
 
 #include <string>
