@@ -1,6 +1,7 @@
 #pragma once
 
 #include "glm/gtc/matrix_transform.hpp"
+#include "math/quat.hpp"
 
 class Camera
 {
@@ -32,6 +33,7 @@ private:
 
     // Vec2 dim_;
 
-    glm::mat4x4 rotation_, view_, projection_;
+    glm::mat4x4 view_, projection_;
+    math::Quat rotation_;
     glm::mat4x4 translation_;
 };

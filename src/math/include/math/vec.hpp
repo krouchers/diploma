@@ -7,6 +7,7 @@ namespace math
     template <size_t dim>
     struct Vec
     {
+        constexpr Vec normilize() noexcept;
         constexpr float &operator[](int i)
         {
             return data[i];
@@ -20,7 +21,7 @@ namespace math
         constexpr bool operator==(const Vec &rhs) const
         {
             for (size_t i{0}; i < dim; ++i)
-                if (std::abs(data[i] - rhs[i]) < kEps)
+                if (std::abs(data[i] - rhs[i]) > kEps)
                     return false;
             return true;
         }
@@ -50,7 +51,7 @@ namespace math
             return data + sizeof(data) / sizeof(data[0]);
         }
 
-        float data[dim];
+        float data[dim]{};
     };
 
     template <size_t dim>

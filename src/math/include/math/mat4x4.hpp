@@ -25,10 +25,20 @@ namespace math
 
         Mat4x4 Inverse();
 
-        float data[4][4];
+        float data[4][4]{0};
     };
 
-    constexpr Vec4 operator*(const Mat4x4 &rot, const Vec4 &vec) noexcept;
+    constexpr Vec4 operator*(const Mat4x4 &m, const Vec4 &v) noexcept
+    {
+
+        Vec4 res{};
+        for (size_t i{0}; i < 4; ++i)
+        {
+            for (size_t j{0}; j < 4; ++j)
+                res[i] += m[i][j] * v[j];
+        }
+        return res;
+    }
 
     Mat4x4 operator*(float k, const Mat4x4 &lhs);
 

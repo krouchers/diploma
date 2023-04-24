@@ -89,17 +89,6 @@ namespace math
         return res;
     }
 
-    constexpr Vec4 operator*(const Mat4x4 &m, const Vec4 &v) noexcept
-    {
-        Vec4 res{};
-        for (size_t i{0}; i < 4; ++i)
-        {
-            for (size_t j{0}; j < 4; ++j)
-                res[i] += m[i][j] * v[j];
-        }
-        return res;
-    }
-
     bool Mat4x4::operator==(Mat4x4 const &rhs) const
     {
         for (size_t i{0}; i < 4; ++i)
