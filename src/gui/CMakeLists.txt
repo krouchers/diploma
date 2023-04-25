@@ -21,8 +21,8 @@ set(src_files
     src/gui.cc
 )
 
-build_library_with_type(dear_gui SHARED "${MODULE_COMPILE_FLAGS}" "${src_files}")
-target_link_libraries(dear_gui PRIVATE IGui imgui opengl)
+build_library_with_type(dear_gui STATIC "${MODULE_COMPILE_FLAGS}" "${src_files}")
+target_link_libraries(dear_gui PRIVATE IGui imgui opengl scene)
 target_include_directories(dear_gui PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/src/common)

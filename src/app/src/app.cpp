@@ -11,9 +11,8 @@
 App::App()
     : window_{std::make_shared<SdlWindow>("Geodip", glm::vec2{1280, 720})},
       gl_{std::make_shared<Opengl>(window_)},
-      gui_{std::make_shared<DearGui>(gl_, window_)},
-      camera_{{window_->GetSize()}}
-
+      camera_{std::make_shared<Camera>(window_->GetSize())},
+      gui_{std::make_shared<DearGui>(gl_, window_, camera_)}
 {
     scene::Renderer::Setup(gl_);
     std::vector<Vert> vertex_data{
@@ -35,8 +34,8 @@ void App::Run()
         ProcessEvents();
         auto &r = scene::Renderer::Get();
         r.Clear();
-        r.Render3D(scene_, camera_);
-        gui_->Render();
+        gui_->Render3D(scene_);
+        gui_->RenderUi();
         window_->SwapFrame();
     }
 }
@@ -62,7 +61,7 @@ void App::ProcessEvents()
         {
             if (camera_mode == CameraMode::orbit)
             {
-                camera_.MoveThroughOrbit(
+                camera_->MoveThroughOrbit(
                     glm::vec2{static_cast<float>(sdl_e.motion.xrel),
                               static_cast<float>(sdl_e.motion.yrel)});
                 info("mouse moved from to %d with delta %d", sdl_e.motion.x, sdl_e.motion.xrel);
@@ -76,7 +75,7 @@ void App::ProcessEvents()
         }
         case SDL_MOUSEWHEEL:
         {
-            camera_.MoveThroughRadius(sdl_e.wheel.y);
+            camera_->MoveThroughRadius(sdl_e.wheel.y);
             break;
         }
         case SDL_QUIT:

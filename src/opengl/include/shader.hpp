@@ -5,7 +5,7 @@
 
 namespace shaders
 {
-    inline const std::string kVertexShader{
+    inline const std::string kMeshVertexShader{
         R"(#version 410 core
         layout(location = 0) in vec3 vec_pos;
         layout(location = 1) in vec3 vec_col;
@@ -19,7 +19,7 @@ namespace shaders
             t_coord = t_coord_in;
         }
         )"};
-    inline const std::string kFragmentShader{
+    inline const std::string kMeshFragmentShader{
         R"(#version 410 core
         in vec2 t_coord;
         out vec4 out_color;
@@ -29,6 +29,29 @@ namespace shaders
         
         void main(){
             out_color = texture(tex1, t_coord);
+        }
+        )"};
+
+    inline const std::string kLinesVertexShader{
+        R"(#version 410 core
+        layout(location = 0) in vec3 vec_pos;
+        layout(location = 1) in vec3 vec_col;
+
+        out vec4 f_col;
+        uniform mat4 mvp;
+
+        void main(){
+            gl_Position = mvp * vec4(vec_pos, 1.0);
+            f_col = vec4(vec_col, 1.0);
+        }
+        )"};
+    inline const std::string kLinesFragmentShader{
+        R"(#version 410 core
+        in vec4 f_col;
+        out vec4 out_color;
+        
+        void main(){
+            out_color = f_col;
         }
         )"};
 }

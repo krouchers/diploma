@@ -7,7 +7,8 @@
 namespace scene
 {
     Renderer::Renderer()
-        : mesh_shader_{shaders::kVertexShader, shaders::kFragmentShader}
+        : mesh_shader_{shaders::kMeshVertexShader, shaders::kMeshFragmentShader},
+          lines_shader_{shaders::kLinesVertexShader, shaders::kLinesFragmentShader}
     {
     }
 
@@ -18,27 +19,27 @@ namespace scene
         mesh.Render();
     }
 
-    void Renderer::Render3D(Scene &scene, Camera &cam)
-    {
-        (void)cam;
-        scene.ForItems([&](scene::Item &item)
-                       { item.Render(glm::perspective(glm::radians(90.f), 1280.f / 720.f, .1f, 100.f) * cam.GetView()); });
-    }
-
     void Renderer::Clear()
     {
-        glClearColor(1, 1, 1, 1);
+        glClearColor(50.f / 255.f, 58.f / 255.f, 58.f / 255.f, 1);
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
     void Renderer::Setup(const std::shared_ptr<Opengl> &gl)
     {
-        instance_ = std::unique_ptr<scene::Renderer>(new scene::Renderer{});
+        instance_ = new scene::Renderer{};
         instance_->gl_ = gl;
     }
 
     scene::Renderer &Renderer::Get()
     {
         return *instance_;
+    }
+
+    void Renderer::Lines(gl::Lines &lines, const glm::mat4x4 &view)
+    {
+        lines_shader_.Bind();
+        lines_shader_.Set("mvp", view);
+        lines.Render();
     }
 }

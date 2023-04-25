@@ -18,7 +18,7 @@ void Camera::Reset()
 	far_plane_ = 110.f;
 	rotation_speed_ = radius_speed_ = translation_speed_ = 9.f;
 
-	rotation_ = math::Quat::euler(glm::vec3{-45.f, 45.f, 0});
+	rotation_ = math::Quat::euler(glm::vec3{0.f, 0.f, 0});
 	projection_ = glm::perspective(glm::radians(fov_), aspect_ratio_, near_plane_, far_plane_);
 
 	UpdatePos();
@@ -43,16 +43,17 @@ glm::mat4x4 Camera::GetProjection()
 
 glm::vec3 Camera::Front()
 {
-	return glm::normalize(glm::vec3(0.f) - position_);
+	return glm::normalize(position_ - glm::vec3(0.f, 0.f, 0.f));
 }
 
 void Camera::MoveThroughOrbit(glm::vec2 const &offset)
 {
-	auto up = rotation_.rotate(kUp);
+	auto up = glm::normalize(rotation_.rotate(kUp));
 	auto dir = Front();
-	auto right = glm::cross(dir, glm::vec3(up));
-	rotation_ = math::Quat::axis_angle(up, glm::radians(-offset.x * rotation_speed_)) *
-				math::Quat::axis_angle(right, glm::radians(offset.y * rotation_speed_)) * rotation_;
+	auto right = glm::normalize(glm::cross(glm::vec3(up), dir));
+	rotation_ = math::Quat::axis_angle(kUp, glm::radians(-offset.x * rotation_speed_)) *
+				math::Quat::axis_angle(right, glm::radians(offset.y * rotation_speed_)) *
+				rotation_;
 	UpdatePos();
 	UpdateView();
 
@@ -73,6 +74,6 @@ void Camera::MoveThroughRadius(float offset)
 }
 void Camera::UpdatePos()
 {
-	position_ = rotation_.rotate(glm::vec4{0.f, 0.f, 1.f, 0.f});
+	position_ = glm::normalize(rotation_.rotate(glm::vec4{0.f, 0.f, 1.f, 0.f}));
 	position_ = position_ * radius_;
 }

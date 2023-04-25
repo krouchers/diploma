@@ -5,6 +5,7 @@
 #include "mesh.hpp"
 #include "camera.hpp"
 #include "opengl.hpp"
+#include "lines.hpp"
 
 namespace scene
 {
@@ -19,18 +20,18 @@ namespace scene
 
         static Renderer &Get();
         void Mesh(gl::Mesh &mesh, const glm::mat4x4 &view);
+        void Lines(gl::Lines &mesh, const glm::mat4x4 &view);
         static void Setup(const std::shared_ptr<Opengl> &gl);
-        void Render3D(Scene &, Camera &);
 
         void Clear();
 
     private:
         Renderer();
 
-        static inline std::unique_ptr<scene::Renderer> instance_;
+        static inline scene::Renderer *instance_;
 
         std::shared_ptr<Opengl> gl_;
 
-        Shader mesh_shader_;
+        Shader mesh_shader_, lines_shader_;
     };
 }

@@ -5,6 +5,7 @@ set(src_files
    src/shader.cpp
    src/mesh.cc
    src/tex2D.cc
+   src/lines.cc
 )
 
 build_library_with_type(opengl STATIC "${MODULE_COMPILE_FLAGS}" "${src_files}")

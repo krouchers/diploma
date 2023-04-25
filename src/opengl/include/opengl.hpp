@@ -4,7 +4,6 @@
 #include <string>
 #include <utility>
 
-#include "SDL.h"
 #include "mesh.hpp"
 #include "tex2D.hpp"
 #include "camera.hpp"
@@ -14,7 +13,7 @@
 class Opengl
 {
 public:
-    Opengl(const std::shared_ptr<IWindow> &);
+    Opengl(std::shared_ptr<IWindow> &);
     ~Opengl();
 
     Opengl(const Opengl &) = delete;

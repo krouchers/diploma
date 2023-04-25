@@ -63,7 +63,7 @@ DebugProc(GLenum source,
     warn("Source: %s, Type: %s: %s", src.c_str(), tp.c_str(), message);
 }
 
-Opengl::Opengl(const std::shared_ptr<IWindow> &win)
+Opengl::Opengl(std::shared_ptr<IWindow> &win)
     : window_{win}
 {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
