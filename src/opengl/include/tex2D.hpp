@@ -3,8 +3,6 @@
 #include "glad.hpp"
 #include "utils/log.hpp"
 
-#include "utils/stb_loader.hpp"
-
 #include <string>
 
 class Tex2D

@@ -1,5 +1,4 @@
 #include "gui/gui.hpp"
-#include "utils/log.hpp"
 #include "opengl.hpp"
 #include "SDL.h"
 #include "scene/renderer.hpp"
