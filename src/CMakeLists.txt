@@ -6,6 +6,7 @@ set(MODULES
     app
     scene
     glad
+    geometry
     gui
     math)
 

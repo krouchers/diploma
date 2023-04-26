@@ -1,15 +1,16 @@
 #pragma once
 
+#include "definitions.hpp"
 #include "shader.hpp"
 #include "scene.hpp"
-#include "mesh.hpp"
+#include "geometry/mesh.hpp"
 #include "utils/camera.hpp"
 #include "opengl.hpp"
 #include "lines.hpp"
 
 namespace scene
 {
-    class Renderer
+    class GEODIP_API Renderer
     {
     public:
         Renderer(const Renderer &) = delete;

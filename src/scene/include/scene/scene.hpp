@@ -1,11 +1,12 @@
 #pragma once
 
+#include "definitions.hpp"
 #include "item.hpp"
 #include "functional"
 
 using Scene_ID = unsigned int;
 
-class Scene
+class GEODIP_API Scene
 {
 public:
     void ForItems(std::function<void(scene::Item &)> f);

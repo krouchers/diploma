@@ -18,7 +18,7 @@ namespace Color
     inline glm::vec3 baseplane{glm::vec3{71, 71, 71} / 255.f};
     inline glm::vec3 white{glm::vec3{1, 1, 1}};
 }
-class DearGui : public IGui
+class GEODIP_API DearGui : public IGui
 {
 
 public:
