@@ -1,5 +1,5 @@
-#include "camera.hpp"
-#include "log.hpp"
+#include "utils/camera.hpp"
+#include "utils/log.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
 static glm::vec4 kUp{0.f, 1.f, 0.f, 0.f};

@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 
-#include "camera.hpp"
+#include "utils/camera.hpp"
 #include "interfaces/window.hpp"
 #include "gui/gui.hpp"
 #include "scene/scene.hpp"
@@ -9,7 +9,7 @@
 class App
 {
 public:
-    App();
+    App(std::string exe_path);
     void Run();
 
     ~App();
@@ -27,6 +27,7 @@ private:
     std::shared_ptr<Opengl> gl_;
     std::shared_ptr<Camera> camera_;
     std::shared_ptr<IGui> gui_;
+    std::shared_ptr<Scene> scene_;
 
     enum class CameraMode
     {
@@ -37,5 +38,4 @@ private:
 
     CameraMode camera_mode{CameraMode::none};
 
-    Scene scene_;
 };

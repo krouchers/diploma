@@ -1,5 +1,5 @@
 #include "app.hpp"
-#include "log.hpp"
+#include "utils/log.hpp"
 #include "sdl_window/window.hpp"
 #include "sdl_window/event.hpp"
 #include "opengl.hpp"
@@ -7,22 +7,17 @@
 #include "opengl.hpp"
 #include "scene/renderer.hpp"
 #include "scene/item.hpp"
+#include "glm/vec3.hpp"
 
-App::App()
+App::App(std::string exe_path)
     : window_{std::make_shared<SdlWindow>("Geodip", glm::vec2{1280, 720})},
       gl_{std::make_shared<Opengl>(window_)},
       camera_{std::make_shared<Camera>(window_->GetSize())},
-      gui_{std::make_shared<DearGui>(gl_, window_, camera_)}
+      scene_{std::make_shared<Scene>()},
+      gui_{std::make_shared<DearGui>(gl_, window_, camera_, scene_, exe_path)}
 {
+    gl_->InitGlobalParams();
     scene::Renderer::Setup(gl_);
-    std::vector<Vert> vertex_data{
-        {{-5.f, -5.f, -0.f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-        {{5.f, -5.f, -0.f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-        {{5.f, 5.f, -0.f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-        {{-5.f, 5.f, -0.f}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}}};
-    std::vector<GLuint> indices{0, 1, 2, 0, 2, 3};
-
-    scene_.Add(scene::Item(gl::Mesh(std::move(vertex_data), std::move(indices))));
 }
 
 App::~App() = default;
@@ -34,7 +29,7 @@ void App::Run()
         ProcessEvents();
         auto &r = scene::Renderer::Get();
         r.Clear();
-        gui_->Render3D(scene_);
+        gui_->Render3D(*scene_);
         gui_->RenderUi();
         window_->SwapFrame();
     }
