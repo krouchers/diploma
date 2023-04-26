@@ -1,10 +1,8 @@
 cmake_minimum_required(VERSION 3.24)
 
-
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 project(test-bed LANGUAGES CXX)
-add_definitions(-DUNICODE -D_UNICODE)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(MY_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")

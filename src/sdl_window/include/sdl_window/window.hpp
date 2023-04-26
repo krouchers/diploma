@@ -8,7 +8,7 @@
 #include "SDL.h"
 #include "utils/log.hpp"
 
-class GEODIP_API SdlWindow : public IWindow
+class  SdlWindow : public IWindow
 {
 public:
     SdlWindow(std::string const &window_name, glm::vec2 const &size);

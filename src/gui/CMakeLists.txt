@@ -22,7 +22,7 @@ set(src_files
 )
 
 build_library_with_type(dear_gui STATIC "${MODULE_COMPILE_FLAGS}" "${src_files}")
-target_link_libraries(dear_gui PUBLIC IGui imgui opengl scene geometry)
+target_link_libraries(dear_gui PUBLIC IGui imgui opengl scene)
 target_include_directories(dear_gui PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/src/common)

@@ -7,7 +7,6 @@ set(MODULES
     scene
     glad
     gui
-    geometry
     math)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")

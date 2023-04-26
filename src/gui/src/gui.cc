@@ -44,12 +44,11 @@ void DearGui::RenderUi()
 
     bool show_demo_window = true;
     ImGui::ShowDemoWindow(&show_demo_window);
-    static float angle{0};
-    AddSlider("angle", angle);
+
+
+
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-    scene::Renderer::Get().Lines(baseline_, camera_->GetView());
 }
 
 void DearGui::CreateBaseLine()
