@@ -6,7 +6,7 @@
 #include "interfaces/gui.hpp"
 #include "interfaces/window.hpp"
 #include "lines.hpp"
-#include "camera.hpp"
+#include "utils/camera.hpp"
 #include "scene/scene.hpp"
 
 class Opengl;

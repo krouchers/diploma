@@ -6,7 +6,7 @@
 
 #include "mesh.hpp"
 #include "tex2D.hpp"
-#include "camera.hpp"
+#include "utils/camera.hpp"
 #include "sdl_window/window.hpp"
 #include "shader.hpp"
 

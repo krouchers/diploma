@@ -1,5 +1,5 @@
 #include "shader.hpp"
-#include "log.hpp"
+#include "utils/log.hpp"
 
 #include "glm/mat4x4.hpp"
 

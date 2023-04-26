@@ -3,7 +3,7 @@
 #include "shader.hpp"
 #include "scene.hpp"
 #include "mesh.hpp"
-#include "camera.hpp"
+#include "utils/camera.hpp"
 #include "opengl.hpp"
 #include "lines.hpp"
 

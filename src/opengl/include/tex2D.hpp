@@ -1,9 +1,9 @@
 #pragma once
 
 #include "glad.hpp"
-#include "log.hpp"
+#include "utils/log.hpp"
 
-#include "stb_loader.hpp"
+#include "utils/stb_loader.hpp"
 
 #include <string>
 

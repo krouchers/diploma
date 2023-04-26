@@ -1,5 +1,5 @@
 #include "framebuffer.hpp"
-#include "log.hpp"
+#include "utils/log.hpp"
 
 #include <stdexcept>
 

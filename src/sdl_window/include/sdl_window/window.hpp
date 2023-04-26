@@ -6,7 +6,7 @@
 #include "definitions.hpp"
 #include "interfaces/window.hpp"
 #include "SDL.h"
-#include "log.hpp"
+#include "utils/log.hpp"
 
 class GEODIP_API SdlWindow : public IWindow
 {

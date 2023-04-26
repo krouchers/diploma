@@ -6,7 +6,7 @@ int main(int argc, char **argv)
 {
     try
     {
-        App application{};
+        App application{argv[0]};
         application.Run();
     }
     catch (const std::exception &e)

@@ -5,7 +5,7 @@
 
 #include "opengl.hpp"
 #include "sdl_window/window.hpp"
-#include "log.hpp"
+#include "utils/log.hpp"
 #include "glad.hpp"
 #include "mesh.hpp"
 #include "shader.hpp"
