@@ -1,23 +1,22 @@
 #pragma once
 
-#include <vector>
-#include "math/vec3.hpp"
-#include "math/vec2.hpp"
-
+#include "glm/vec3.hpp"
 #include "glad.hpp"
 
-struct Vert
-{
-    math::Vec3 pos;
-    math::Vec3 norm;
-    math::Vec2 tex_coord;
-};
+#include <vector>
 
 namespace gl
 {
     class Mesh
     {
     public:
+        using Index = GLuint;
+        struct Vert
+        {
+            glm::vec3 pos;
+            glm::vec3 norm;
+            GLuint id;
+        };
         Mesh() = default;
         /**
          * @brief Construct a new Mesh object

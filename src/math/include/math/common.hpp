@@ -1,5 +1,4 @@
 #pragma once
-#include <numbers>
 
 namespace math
 {
@@ -7,6 +6,6 @@ namespace math
 
     constexpr float Radians(float degrees) noexcept
     {
-        return degrees * std::numbers::pi / 180.f;
+        return degrees * 3.1415926535f / 180.f;
     }
 }
