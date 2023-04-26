@@ -5,7 +5,7 @@
 #include "geometry/vertex.hpp"
 #include "geometry/halfedge.hpp"
 
-#include "mesh.hpp"
+#include "geometry/mesh.hpp"
 
 #include <list>
 

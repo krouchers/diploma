@@ -7,7 +7,6 @@
 #include "sdl_window/window.hpp"
 #include "utils/log.hpp"
 #include "glad.hpp"
-#include "mesh.hpp"
 #include "shader.hpp"
 
 void APIENTRY

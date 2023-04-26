@@ -3,7 +3,6 @@ include(cmake_utils)
 set(src_files
    src/opengl.cpp
    src/shader.cpp
-   src/mesh.cc
    src/tex2D.cc
    src/lines.cc
 )

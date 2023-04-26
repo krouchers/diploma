@@ -4,7 +4,6 @@
 #include <string>
 #include <utility>
 
-#include "mesh.hpp"
 #include "tex2D.hpp"
 #include "utils/camera.hpp"
 #include "sdl_window/window.hpp"

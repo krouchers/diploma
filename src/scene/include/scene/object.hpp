@@ -1,11 +1,12 @@
 #pragma once
 
-#include "mesh.hpp"
+#include "definitions.hpp"
+#include "geometry/mesh.hpp"
 #include "glm/mat4x4.hpp"
 
 namespace scene
 {
-    class Object
+    class GEODIP_API Object
     {
     public:
         void Render(const glm::mat4x4 &view);
