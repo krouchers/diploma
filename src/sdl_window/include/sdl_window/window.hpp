@@ -18,6 +18,7 @@ public:
     void Close() final;
     void SwapFrame() final;
     glm::vec2 GetSize() final;
+    virtual ~SdlWindow() = default;
 
 private:
     SDL_Window *sdl_handler_{nullptr};

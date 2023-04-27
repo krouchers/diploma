@@ -2,7 +2,7 @@
 namespace gl
 {
 
-    Mesh::Mesh(std::vector<Vert> && vertices, std::vector<GLuint> && indices) : vertices_{vertices}, indices_{indices}
+    Mesh::Mesh(std::vector<Vert> &&vertices, std::vector<GLuint> &&indices) : vertices_{vertices}, indices_{indices}
     {
         SetupVao();
     }
@@ -38,5 +38,15 @@ namespace gl
         glBindVertexArray(vao_);
         glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, nullptr);
         glBindVertexArray(0);
+    }
+
+    std::vector<Mesh::Vert> Mesh::Vertices()
+    {
+        return vertices_;
+    }
+
+    std::vector<Mesh::Index> Mesh::Indices()
+    {
+        return indices_;
     }
 }

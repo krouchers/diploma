@@ -1,7 +1,6 @@
 include(cmake_utils)
 
 set(src_files
-    src/halfedge_mesh.cc
     src/mesh.cc
 )
 

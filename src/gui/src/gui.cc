@@ -2,6 +2,11 @@
 #include "utils/log.hpp"
 #include "opengl.hpp"
 #include "SDL.h"
+
+#include "utils/generate_primitives.hpp"
+
+#include "geometry/halfedge_mesh.hpp"
+
 #include "scene/renderer.hpp"
 #include "scene/scene.hpp"
 
@@ -10,20 +15,22 @@
 
 DearGui::DearGui(std::shared_ptr<Opengl> &gl,
                  std::shared_ptr<IWindow> &window,
-                 std::shared_ptr<Camera> &cam)
+                 std::shared_ptr<Camera> &cam,
+                 std::string const &exe_path)
     : window_{window}, gl_{gl}, camera_{cam}
 {
     info("Initializing DearGui...");
 
     ImGui::CreateContext();
     auto &io{ImGui::GetIO()};
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.Fonts->AddFontFromFileTTF(
+        std::filesystem::path{exe_path}.parent_path().parent_path().append("fonts").append("Anonymous_Pro.ttf").string().c_str(), 16.0f,
+        nullptr, io.Fonts->GetGlyphRangesCyrillic());
+
     ImGui_ImplSDL2_InitForOpenGL(
         reinterpret_cast<SDL_Window *>(window_->GetHandler()),
         reinterpret_cast<SDL_GLContext *>(gl_->GetHandler()));
     ImGui_ImplOpenGL3_Init(nullptr);
-
-    CreateBaseLine();
 }
 
 void DearGui::AddSlider(const std::string &name, float &value)
@@ -42,10 +49,7 @@ void DearGui::RenderUi()
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
-    bool show_demo_window = true;
-    ImGui::ShowDemoWindow(&show_demo_window);
-
-
+    UIMenu();
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -79,8 +83,49 @@ void DearGui::CreateBaseLine()
 
 void DearGui::Render3D(Scene &scene)
 {
+    CreateBaseLine();
+
     scene.ForItems([&](scene::Item &item)
                    { item.Render(camera_->GetProjection() * camera_->GetView()); });
 
     scene::Renderer::Get().Lines(baseline_, camera_->GetProjection() * camera_->GetView());
+}
+
+void DearGui::UIMenu()
+{
+    if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::Button("Добавить фигуру"))
+        {
+            newObjWindow = true;
+        }
+        ImGui::EndMainMenuBar();
+    }
+
+    if (newObjWindow)
+    {
+        UINewObj();
+    }
+}
+
+void DearGui::UINewObj()
+{
+    auto AddMesh{
+        [](gl::Mesh &&mesh)
+        {
+            geometry::HalfedgeMesh hm{};
+            hm.CreateFromMesh(std::move(mesh));
+        }};
+    ImGui::Begin("Добавить фигуру", &newObjWindow);
+    if (ImGui::CollapsingHeader("Куб"))
+    {
+        static float edgeLenght{};
+        ImGui::SliderFloat("Длина ребра", &edgeLenght, 1.0f, 10.0f);
+        if (ImGui::Button("Добавить"))
+        {
+            auto [verts, inds]{utils::GenerateCube(edgeLenght / 2)};
+            AddMesh(gl::Mesh{std::move(verts), std::move(inds)});
+        }
+    }
+    ImGui::End();
 }

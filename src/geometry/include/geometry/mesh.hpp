@@ -31,6 +31,9 @@ namespace gl
          */
         void Render();
 
+        std::vector<Vert> Vertices();
+        std::vector<Index> Indices();
+
     private:
         /**
          * @brief Set the up opengl vao

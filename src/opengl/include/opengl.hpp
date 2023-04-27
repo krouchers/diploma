@@ -23,6 +23,7 @@ public:
 
     void *GetHandler();
     void SwapFrame();
+    void InitGlobalParams();
 
 private:
     void SetupDebugProc();

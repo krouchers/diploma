@@ -121,3 +121,8 @@ void Opengl::SwapFrame()
 {
     window_->SwapFrame();
 }
+
+void Opengl::InitGlobalParams()
+{
+    glEnable(GL_DEPTH_TEST);
+}
