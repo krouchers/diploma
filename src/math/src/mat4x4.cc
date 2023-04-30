@@ -66,7 +66,8 @@ namespace math
         for (size_t i{0}; i < 4; ++i)
             for (size_t j{0}; j < 4; ++j)
                 std::swap(m[i][j], res[j][i]);
-        return res;
+        std::copy(&res.data[0][0], &res.data[0][0] + 16, &this->data[0][0]);
+        return *this;
     }
 
     Mat4x4 Mat4x4::operator*(const Mat4x4 &rhs)
@@ -85,7 +86,7 @@ namespace math
         Mat4x4 res{};
         for (size_t i{0}; i < 4; ++i)
             for (size_t j{0}; j < 4; ++j)
-                res[i][j] = res[i][j] * k;
+                res[i][j] = lhs[i][j] * k;
         return res;
     }
 
