@@ -26,6 +26,7 @@ public:
     DearGui(std::shared_ptr<Opengl> &gl,
             std::shared_ptr<IWindow> &window,
             std::shared_ptr<Camera> &cam,
+            std::shared_ptr<Scene> &scene,
             std::string const &exe_path);
     void AddSlider(const std::string &name, float &value);
     void ProcessEvent(const Event &) final;
@@ -41,6 +42,7 @@ private:
     std::shared_ptr<IWindow> window_;
     std::shared_ptr<Opengl> gl_;
     std::shared_ptr<Camera> camera_;
+    std::shared_ptr<Scene> scene_;
 
     bool newObjWindow{false};
 

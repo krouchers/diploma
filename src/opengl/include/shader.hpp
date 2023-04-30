@@ -8,27 +8,20 @@ namespace shaders
     inline const std::string kMeshVertexShader{
         R"(#version 410 core
         layout(location = 0) in vec3 vec_pos;
-        layout(location = 1) in vec3 vec_col;
-        layout(location = 2) in vec2 t_coord_in;
 
         out vec2 t_coord;
         uniform mat4 transform;
 
         void main(){
             gl_Position = transform * vec4(vec_pos, 1.0);
-            t_coord = t_coord_in;
         }
         )"};
     inline const std::string kMeshFragmentShader{
         R"(#version 410 core
-        in vec2 t_coord;
         out vec4 out_color;
         
-        uniform sampler2D tex1;
-        uniform sampler2D tex2;
-        
         void main(){
-            out_color = texture(tex1, t_coord);
+            out_color = vec4(0.5f, 0.5f, 0.5f, 1.0f);
         }
         )"};
 

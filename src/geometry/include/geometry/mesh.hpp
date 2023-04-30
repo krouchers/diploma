@@ -5,6 +5,10 @@
 
 #include <vector>
 
+namespace utils{
+    struct Data;
+}
+
 namespace gl
 {
     class Mesh
@@ -17,7 +21,7 @@ namespace gl
             glm::vec3 norm;
             GLuint id;
         };
-        Mesh() = default;
+        Mesh(utils::Data const &data);
         /**
          * @brief Construct a new Mesh object
          *

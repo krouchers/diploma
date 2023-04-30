@@ -6,7 +6,7 @@
 
 namespace geometry
 {
-    class HalfedgeMesh
+    struct HalfedgeMesh
     {
         struct Vertex;
         struct Edge;
@@ -18,33 +18,37 @@ namespace geometry
         using FaceRef = std::list<Face>::iterator;
         using HalfedgeRef = std::list<Halfedge>::iterator;
 
-        using VertexCRef = std::list<Vertex>::const_iterator;
-        using EdgeCRef = std::list<Edge>::const_iterator;
-        using FaceCRef = std::list<Face>::const_iterator;
-        using HalfedgeCRef = std::list<Halfedge>::const_iterator;
-
         using Index = size_t;
         using Size = size_t;
 
         struct Vertex
         {
             HalfedgeRef halfedge_;
+            glm::vec3 pos_;
+            Index index;
         };
 
         struct Edge
         {
+            HalfedgeRef halfedge_;
         };
 
         struct Face
         {
+            bool isBoundary_;
+            HalfedgeRef halfedge_;
         };
 
         struct Halfedge
         {
+            VertexRef vertex_;
             FaceRef face_;
+            EdgeRef edge_;
+            HalfedgeRef next_, twin_;
+            using IndexPair = std::pair<Index, Index>;
+            IndexPair pair;
         };
 
-    public:
         void CreateFromMesh(gl::Mesh &&mesh)
         {
             auto meshIdxs{mesh.Indices()};
@@ -73,8 +77,10 @@ namespace geometry
                     if (indToVer.find(ind) == indToVer.end())
                     {
                         VertexRef v = NewVertex();
-                        v->halfedge_ = halfeges_.end(); // Вершина пока не указывает на халф
+                        v->halfedge_ = halfedges_.end(); // Вершина пока не указывает на халф
                         indToVer[ind] = v;
+
+                        v->index = ind; // debug
                     }
                 }
             }
@@ -91,7 +97,7 @@ namespace geometry
             FaceRef f;
             for (p = polygons.begin(), f = faces_.begin(); p != polygons.end(); ++p, ++f)
             {
-                std::vector<Halfedge> faceHalfedges;
+                std::vector<HalfedgeRef> faceHalfedges;
 
                 Size degree = p->size();
 
@@ -105,27 +111,119 @@ namespace geometry
                     hab = NewHalfedge();
                     pairToHalfedge[ab] = hab;
                     hab->face_ = f;
+                    hab->face_->halfedge_ = hab;
+                    hab->pair = ab; // debug
+
+                    hab->vertex_ = indToVer[a];
+                    hab->vertex_->halfedge_ = hab;
+
+                    IndexPair twin(b, a);
+                    auto iba = pairToHalfedge.find(twin);
+                    if (iba != pairToHalfedge.end())
+                    {
+                        auto hba = iba->second;
+                        hba->twin_ = hab;
+                        hab->twin_ = hba;
+
+                        EdgeRef e = NewEdge();
+                        hba->edge_ = e;
+                        hab->edge_ = e;
+                        e->halfedge_ = hab;
+                    }
+                    else
+                        hab->twin_ = halfedges_.end();
+
+                    faceHalfedges.push_back(hab);
                 }
+
+                for (Index i{0}; i < degree; ++i)
+                {
+                    Index j{(i + 1) % degree};
+                    faceHalfedges[i]->next_ = faceHalfedges[j];
+                }
+            }
+
+            for (VertexRef v = vertices_.begin(); v != vertices_.end(); ++v)
+            {
+                HalfedgeRef h = v->halfedge_;
+                do
+                {
+                    if (h->twin_ == halfedges_.end())
+                    {
+                        v->halfedge_ = h;
+                        break;
+                    }
+
+                    h = h->twin_->next_;
+                } while (h != v->halfedge_);
+            }
+
+            for (HalfedgeRef h = halfedges_.begin(); h != halfedges_.end(); ++h)
+            {
+                if (h->twin_ == halfedges_.end())
+                {
+                    FaceRef b = NewFace(true);
+                    std::vector<HalfedgeRef> boundaryLoop;
+
+                    HalfedgeRef i = h;
+                    do
+                    {
+                        HalfedgeRef t = NewHalfedge();
+                        boundaryLoop.push_back(t);
+
+                        i->twin_ = t;
+                        t->twin_ = i;
+
+                        t->face_ = b;
+                        t->vertex_ = i->next_->vertex_;
+
+                        EdgeRef e = NewEdge();
+                        i->edge_ = e;
+                        t->edge_ = e;
+                        e->halfedge_ = i;
+
+                        i = i->next_;
+                        while (i->twin_ != halfedges_.end() && i != h)
+                        {
+                            i = i->twin_->next_;
+                        }
+
+                    } while (i != h);
+
+                    b->halfedge_ = boundaryLoop.front();
+
+                    Size degree = boundaryLoop.size();
+                    for (Size id{0}; id < degree; ++id)
+                        boundaryLoop[id]->next_ = boundaryLoop[(degree - 1 + id) % degree];
+                }
+            }
+            for (auto v = indToVer.begin(); v != indToVer.end(); ++v)
+            {
+                v->second->pos_ = meshVerts[v->first].pos;
             }
         }
 
-    private:
         VertexRef NewVertex()
         {
             return vertices_.insert(vertices_.end(), Vertex());
         }
-        FaceRef NewFace()
+        FaceRef NewFace(bool isBoundary = false)
         {
-            return faces_.insert(faces_.end(), Face());
+            return faces_.insert(faces_.end(), Face{isBoundary, halfedges_.end()});
         }
         HalfedgeRef NewHalfedge()
         {
-            return halfeges_.insert(halfeges_.end(), Halfedge());
+            return halfedges_.insert(halfedges_.end(), Halfedge());
+        }
+
+        EdgeRef NewEdge()
+        {
+            return edges_.insert(edges_.end(), Edge());
         }
 
         std::list<Vertex> vertices_;
         std::list<Edge> edges_;
         std::list<Face> faces_;
-        std::list<Halfedge> halfeges_;
+        std::list<Halfedge> halfedges_;
     };
 }

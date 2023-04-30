@@ -26,8 +26,8 @@ private:
     std::shared_ptr<IWindow> window_;
     std::shared_ptr<Opengl> gl_;
     std::shared_ptr<Camera> camera_;
-    std::shared_ptr<IGui> gui_;
     std::shared_ptr<Scene> scene_;
+    std::shared_ptr<IGui> gui_;
 
     enum class CameraMode
     {

@@ -13,8 +13,8 @@ App::App(std::string exe_path)
     : window_{std::make_shared<SdlWindow>("Geodip", glm::vec2{1280, 720})},
       gl_{std::make_shared<Opengl>(window_)},
       camera_{std::make_shared<Camera>(window_->GetSize())},
-      gui_{std::make_shared<DearGui>(gl_, window_, camera_, exe_path)},
-      scene_{std::make_shared<Scene>()}
+      scene_{std::make_shared<Scene>()},
+      gui_ { std::make_shared<DearGui>(gl_, window_, camera_, scene_, exe_path) }
 {
     gl_->InitGlobalParams();
     scene::Renderer::Setup(gl_);

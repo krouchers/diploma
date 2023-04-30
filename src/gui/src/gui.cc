@@ -16,8 +16,9 @@
 DearGui::DearGui(std::shared_ptr<Opengl> &gl,
                  std::shared_ptr<IWindow> &window,
                  std::shared_ptr<Camera> &cam,
+                 std::shared_ptr<Scene> &scene,
                  std::string const &exe_path)
-    : window_{window}, gl_{gl}, camera_{cam}
+    : window_{window}, gl_{gl}, camera_{cam}, scene_{scene}
 {
     info("Initializing DearGui...");
 
@@ -31,6 +32,8 @@ DearGui::DearGui(std::shared_ptr<Opengl> &gl,
         reinterpret_cast<SDL_Window *>(window_->GetHandler()),
         reinterpret_cast<SDL_GLContext *>(gl_->GetHandler()));
     ImGui_ImplOpenGL3_Init(nullptr);
+
+    CreateBaseLine();
 }
 
 void DearGui::AddSlider(const std::string &name, float &value)
@@ -83,7 +86,6 @@ void DearGui::CreateBaseLine()
 
 void DearGui::Render3D(Scene &scene)
 {
-    CreateBaseLine();
 
     scene.ForItems([&](scene::Item &item)
                    { item.Render(camera_->GetProjection() * camera_->GetView()); });
@@ -111,10 +113,11 @@ void DearGui::UIMenu()
 void DearGui::UINewObj()
 {
     auto AddMesh{
-        [](gl::Mesh &&mesh)
+        [this](gl::Mesh &&mesh)
         {
             geometry::HalfedgeMesh hm{};
             hm.CreateFromMesh(std::move(mesh));
+            scene_->Add(mesh);
         }};
     ImGui::Begin("Добавить фигуру", &newObjWindow);
     if (ImGui::CollapsingHeader("Куб"))
@@ -125,6 +128,18 @@ void DearGui::UINewObj()
         {
             auto [verts, inds]{utils::GenerateCube(edgeLenght / 2)};
             AddMesh(gl::Mesh{std::move(verts), std::move(inds)});
+        }
+    }
+    if (ImGui::CollapsingHeader("Конус"))
+    {
+        static float R = 0.5f, H = 2.0f;
+        static int S = 12;
+        ImGui::SliderFloat("Радиус", &R, 0.01f, 10.0f, "%.2f");
+        ImGui::SliderFloat("Высота", &H, 0.01f, 10.0f, "%.2f");
+        ImGui::SliderInt("Стороны", &S, 3, 100);
+        if (ImGui::Button("Добавить"))
+        {
+            AddMesh(utils::GenerateCone(R, H, S, 12, true));
         }
     }
     ImGui::End();
