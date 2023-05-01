@@ -5,7 +5,8 @@
 
 #include <vector>
 
-namespace utils{
+namespace utils
+{
     struct Data;
 }
 
@@ -21,6 +22,8 @@ namespace gl
             glm::vec3 norm;
             GLuint id;
         };
+        Mesh();
+        Mesh(Mesh &&);
         Mesh(utils::Data const &data);
         /**
          * @brief Construct a new Mesh object
@@ -28,11 +31,16 @@ namespace gl
          * @param vertices Vertices vector
          * @param indices  Indexes vector
          */
-        Mesh(std::vector<Vert> &&vertices, std::vector<GLuint> &&indices);
+        Mesh(std::vector<Vert> &&vertices, std::vector<Index> &&indices);
         /**
          * @brief Вызывает openGL draw функцию
          *
          */
+
+        Mesh &operator=(Mesh &&src);
+        Mesh &operator=(const Mesh &src) = delete;
+        void Update();
+        void Destroy();
         void Render();
 
         std::vector<Vert> Vertices();
@@ -44,6 +52,8 @@ namespace gl
          *
          */
         void SetupVao();
+
+        bool dirty{true};
 
         GLuint vao_, vbo_, veo_;
         std::vector<Vert> vertices_;
