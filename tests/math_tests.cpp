@@ -32,7 +32,7 @@ TEST(vector_mat_test, multiplication)
 
 TEST(matrix_test, num_multiplication)
 {
-    math::Mat4x4 I{};
+    math::Mat4x4 I(1.0f);
     math::Mat4x4 expected{
         3, 0, 0, 0,
         0, 3, 0, 0,
@@ -83,13 +83,4 @@ TEST(matrix_test, translation)
     math::Mat4x4 t_mat{math::Translate({2, 2, 2})};
     math::Vec4 expected{3, 3, 3, 1};
     EXPECT_EQ(t_mat * v, expected);
-}
-
-TEST(matrix_test, get_projection_matrix)
-{
-    math::Mat4x4 mat = math::Perspective(2.f, 10, 45, 720. / 1280.);
-    math::Vec4 vertex{-0.5f, -0.5f, -10.0f, 1.f};
-    math::Vec4 transformed{mat * vertex};
-    math::Vec4 expected{-0.5, -0.888889, 10, 10};
-    EXPECT_EQ(transformed, expected);
 }

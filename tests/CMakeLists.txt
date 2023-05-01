@@ -21,6 +21,8 @@ enable_testing()
 add_test(NAME math_test COMMAND math_test)
 add_test(NAME halfedge_test COMMAND halfedge_test)
 
+file(COPY_FILE ${PROJECT_SOURCE_DIR}/bin/glad.dll ${PROJECT_BINARY_DIR}/tests/glad.dll)
+
 # Mark the test as failed if any gtest test fails
 set_tests_properties(math_test PROPERTIES FAIL_REGULAR_EXPRESSION ".*\\[  FAILED  \\].*")
 set_tests_properties(halfedge_test PROPERTIES FAIL_REGULAR_EXPRESSION ".*\\[  FAILED  \\].*")
