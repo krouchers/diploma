@@ -1,8 +1,12 @@
 #pragma once
 
 #include "geometry/mesh.hpp"
+#include "utils/generate_primitives.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 #include <list>
 #include <map>
+#include <stdexcept>
 
 namespace geometry
 {
@@ -49,10 +53,48 @@ namespace geometry
             IndexPair pair;
         };
 
-        void CreateFromMesh(gl::Mesh &&mesh)
+        gl::Mesh ToMesh()
         {
-            auto meshIdxs{mesh.Indices()};
-            auto meshVerts{mesh.Vertices()};
+            std::vector<gl::Mesh::Vert> mesh_verts;
+            std::vector<gl::Mesh::Index> mesh_indexes;
+
+            for (auto f = faces_.begin(); f != faces_.end(); ++f)
+            {
+                if (f->isBoundary_)
+                    continue;
+                HalfedgeRef h = f->halfedge_;
+                HalfedgeRef i = h;
+
+                std::vector<glm::vec3> verts;
+                do
+                {
+                    verts.push_back(i->vertex_->pos_);
+                    i = i->next_;
+                } while (i != h);
+
+                auto p0 = verts[0];
+                auto p1 = verts[1];
+                auto p2 = verts[2];
+                auto n = glm::normalize(glm::cross(p2 - p0, p1 - p0));
+
+                mesh_verts.push_back({p0, n, 0});
+                mesh_verts.push_back({p1, n, 0});
+                mesh_verts.push_back({p2, n, 0});
+
+                // FIXME: Need to optimize
+                auto ind = mesh_indexes.size();
+                mesh_indexes.push_back(ind);
+                mesh_indexes.push_back(ind + 1);
+                mesh_indexes.push_back(ind + 2);
+            }
+
+            return gl::Mesh(std::move(mesh_verts), std::move(mesh_indexes));
+        }
+
+        void CreateFromData(utils::Data data)
+        {
+            auto meshIdxs{data.indices_};
+            auto meshVerts{data.vertices_};
 
             using IndexList = std::vector<Index>;
             // using IndexListCRef = std::vector<Index>::const_iterator;
@@ -173,6 +215,7 @@ namespace geometry
 
                         i->twin_ = t;
                         t->twin_ = i;
+                        t->pair = {i->pair.second, i->pair.first};
 
                         t->face_ = b;
                         t->vertex_ = i->next_->vertex_;
@@ -201,6 +244,23 @@ namespace geometry
             {
                 v->second->pos_ = meshVerts[v->first].pos;
             }
+        }
+
+        bool CreateFromMesh(gl::Mesh &&mesh)
+        {
+            CreateFromData({mesh.Vertices(), mesh.Indices()});
+            return validate();
+        }
+
+        bool validate()
+        {
+            for (auto vertex : vertices_)
+            {
+                auto pos{vertex.pos_};
+                if (!(std::isfinite(pos.x) && std::isfinite(pos.y) && std::isfinite(pos.z)))
+                    return false;
+            }
+            return true;
         }
 
         VertexRef NewVertex()
