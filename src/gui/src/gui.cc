@@ -117,7 +117,7 @@ void DearGui::UINewObj()
         {
             geometry::HalfedgeMesh hm{};
             hm.CreateFromMesh(std::move(mesh));
-            scene_->Add(mesh);
+            scene_->Add(scene::Item(std::move(hm)));
         }};
     ImGui::Begin("Добавить фигуру", &newObjWindow);
     if (ImGui::CollapsingHeader("Куб"))
