@@ -4,6 +4,7 @@ set(src_files
     src/scene.cc
     src/renderer.cc
     src/item.cc
+    src/pose.cc
 )
 
 build_library_with_type(scene SHARED "${MODULE_COMPILE_FLAGS}" "${src_files}")

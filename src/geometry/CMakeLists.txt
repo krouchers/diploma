@@ -1,8 +1,8 @@
 include(cmake_utils)
 
 set(src_files
-    src/halfedge_mesh.cc
     src/mesh.cc
+    src/halfedge_mesh.cc
 )
 
 build_library_with_type(geometry STATIC "$MODULE_COMPILE_FLAGS" "${src_files}")

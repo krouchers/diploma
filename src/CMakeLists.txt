@@ -15,6 +15,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 else()
     set(MODULE_COMPILE_FLAGS "-Wall -Wextra -Werror -Wshadow")
 endif()
+# set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address")
 
 foreach(MODULE ${MODULES})
     add_subdirectory(${MODULE})

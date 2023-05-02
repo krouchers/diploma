@@ -8,27 +8,27 @@ namespace shaders
     inline const std::string kMeshVertexShader{
         R"(#version 410 core
         layout(location = 0) in vec3 vec_pos;
-        layout(location = 1) in vec3 vec_col;
-        layout(location = 2) in vec2 t_coord_in;
+        layout(location = 1) in vec3 vec_norm;
 
-        out vec2 t_coord;
-        uniform mat4 transform;
+        out vec3 f_norm;
+        uniform mat4 mv;
+        uniform mat4 p;
 
         void main(){
-            gl_Position = transform * vec4(vec_pos, 1.0);
-            t_coord = t_coord_in;
+            gl_Position = p * mv * vec4(vec_pos, 1.0);
+            f_norm = (mv * vec4(vec_norm, 0.0f)).xyz;
         }
         )"};
     inline const std::string kMeshFragmentShader{
         R"(#version 410 core
-        in vec2 t_coord;
         out vec4 out_color;
-        
-        uniform sampler2D tex1;
-        uniform sampler2D tex2;
+        in vec3 f_norm;
+        uniform vec3 color;
         
         void main(){
-            out_color = texture(tex1, t_coord);
+            float ndotl = abs(f_norm.z);
+            float diffuse = max(ndotl, 0.4f);
+            out_color = diffuse * vec4(color, 1.0f);
         }
         )"};
 
@@ -37,6 +37,7 @@ namespace shaders
         layout(location = 0) in vec3 vec_pos;
         layout(location = 1) in vec3 vec_col;
 
+        in vec3 f_light;
         out vec4 f_col;
         uniform mat4 mvp;
 
@@ -88,6 +89,8 @@ public:
      * @param value Привсваемое ей значение.
      */
     void Set(const char *uniform_name, int value);
+
+    void Set(const char *uniform_name, glm::vec3 const &value);
 
     /**
      * @brief Обновляет значение юниформ объекта формата "матрица".

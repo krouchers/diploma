@@ -6,7 +6,20 @@ namespace math
 {
     struct Mat4x4
     {
-    public:
+        constexpr Mat4x4() : data{0}
+        {
+        }
+        constexpr Mat4x4(float n) : Mat4x4()
+        {
+            for (size_t i{0}; i < 4; ++i)
+            {
+                data[i][i] = n;
+            }
+        }
+        constexpr Mat4x4(std::initializer_list<float> il)
+        {
+            std::copy(il.begin(), il.begin() + 16, &data[0][0]);
+        }
         const float *operator[](size_t index) const
         {
             return data[index];

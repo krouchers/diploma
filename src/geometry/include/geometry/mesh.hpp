@@ -1,9 +1,15 @@
 #pragma once
 
 #include "glm/vec3.hpp"
+#include "glm/mat4x4.hpp"
 #include "glad.hpp"
 
 #include <vector>
+
+namespace utils
+{
+    struct Data;
+}
 
 namespace gl
 {
@@ -17,19 +23,29 @@ namespace gl
             glm::vec3 norm;
             GLuint id;
         };
-        Mesh() = default;
+        Mesh();
+        Mesh(Mesh &&);
+        Mesh(utils::Data const &data);
         /**
          * @brief Construct a new Mesh object
          *
          * @param vertices Vertices vector
          * @param indices  Indexes vector
          */
-        Mesh(std::vector<Vert> &&vertices, std::vector<GLuint> &&indices);
+        Mesh(std::vector<Vert> &&vertices, std::vector<Index> &&indices);
         /**
          * @brief Вызывает openGL draw функцию
          *
          */
+
+        Mesh &operator=(Mesh &&src);
+        Mesh &operator=(const Mesh &src) = delete;
+        void Update();
+        void Destroy();
         void Render();
+
+        std::vector<Vert> Vertices();
+        std::vector<Index> Indices();
 
     private:
         /**
@@ -38,6 +54,7 @@ namespace gl
          */
         void SetupVao();
 
+        bool dirty{true};
         GLuint vao_, vbo_, veo_;
         std::vector<Vert> vertices_;
         std::vector<GLuint> indices_;
