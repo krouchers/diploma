@@ -10,6 +10,7 @@ public:
 
     glm::mat4x4 GetView();
     glm::mat4x4 GetProjection();
+    glm::vec3 GetPosition();
 
     void MoveThroughOrbit(glm::vec2 const &offset);
     void MoveThroughRadius(float offset);

@@ -41,6 +41,9 @@ namespace gl
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertices_[0]), reinterpret_cast<void *>(0));
         glEnableVertexAttribArray(0);
 
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vertices_[0]), reinterpret_cast<void *>(offsetof(Vert, norm)));
+        glEnableVertexAttribArray(1);
+
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, veo_);
         glBindVertexArray(0);
     }

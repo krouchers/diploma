@@ -16,7 +16,8 @@ void Camera::Reset()
 	radius_ = 12;
 	near_plane_ = 1.f;
 	far_plane_ = 110.f;
-	rotation_speed_ = radius_speed_ = translation_speed_ = 9.f;
+	rotation_speed_ = translation_speed_ = 9.f;
+	radius_speed_ = 4.0f;
 
 	rotation_ = math::Quat::euler(glm::vec3{0.f, 0.f, 0});
 	projection_ = glm::perspective(glm::radians(fov_), aspect_ratio_, near_plane_, far_plane_);
@@ -76,4 +77,9 @@ void Camera::UpdatePos()
 {
 	position_ = glm::normalize(rotation_.rotate(glm::vec4{0.f, 0.f, 1.f, 0.f}));
 	position_ = position_ * radius_;
+}
+
+glm::vec3 Camera::GetPosition()
+{
+	return position_;
 }

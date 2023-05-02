@@ -14,10 +14,10 @@ App::App(std::string exe_path)
       gl_{std::make_shared<Opengl>(window_)},
       camera_{std::make_shared<Camera>(window_->GetSize())},
       scene_{std::make_shared<Scene>()},
-      gui_ { std::make_shared<DearGui>(gl_, window_, camera_, scene_, exe_path) }
+      gui_{std::make_shared<DearGui>(gl_, window_, camera_, scene_, exe_path)}
 {
     gl_->InitGlobalParams();
-    scene::Renderer::Setup(gl_);
+    scene::Renderer::Setup(gl_, camera_);
 }
 
 App::~App() = default;
