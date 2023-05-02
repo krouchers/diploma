@@ -1,14 +1,14 @@
 #include "scene/scene.hpp"
 
-void Scene::ForItems(std::function<void(scene::Item &)> f)
+void Scene::ForItems(std::function<void(SceneID, scene::Item &)> f)
 {
-    for (auto &item : objs_)
+    for (auto &[id, item] : objs_)
     {
-        f(item);
+        f(id, item);
     }
 }
 
 void Scene::Add(scene::Item &&item)
 {
-    objs_.push_back(std::move(item));
+    objs_.emplace(nextSceneID++, std::move(item));
 }

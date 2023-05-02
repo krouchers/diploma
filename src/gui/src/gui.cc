@@ -87,7 +87,7 @@ void DearGui::CreateBaseLine()
 void DearGui::Render3D(Scene &scene)
 {
 
-    scene.ForItems([&](scene::Item &item)
+    scene.ForItems([&](SceneID id, scene::Item &item)
                    { item.Render(true, camera_->GetView()); });
 
     scene::Renderer::Get().Lines(baseline_, camera_->GetProjection() * camera_->GetView());

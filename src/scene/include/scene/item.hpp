@@ -15,10 +15,10 @@ namespace scene
     class GEODIP_API Item
     {
     public:
-        Item(geometry::HalfedgeMesh &&mesh);
+        Item(SceneID id, geometry::HalfedgeMesh &&mesh);
         Item(Item &&item);
 
-    void Render(bool posed, const glm::mat4x4 &view);
+        void Render(bool posed, const glm::mat4x4 &view);
 
     private:
         void SyncMesh();
@@ -27,6 +27,7 @@ namespace scene
         gl::Mesh mesh_;
 
         Pose pose_;
+        SceneID id_;
         bool mesh_dirty = true;
     };
 }

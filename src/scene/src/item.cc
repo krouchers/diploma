@@ -5,8 +5,8 @@
 
 namespace scene
 {
-    Item::Item(geometry::HalfedgeMesh &&mesh)
-        : halfedge_mesh_{std::move(mesh)}, mesh_{}
+    Item::Item(SceneID id, geometry::HalfedgeMesh &&mesh)
+        : halfedge_mesh_{std::move(mesh)}, mesh_{}, id_{id}
     {
         SyncMesh();
     }
@@ -16,6 +16,7 @@ namespace scene
         scene::Renderer::Opts opts;
         opts.model_view_ = posed ? view * pose_.transform() : view;
         opts.color_ = {0.0f, 1.0f, 0.0f};
+        opts.id_ = id_;
         Renderer::Get().Mesh(mesh_, opts);
     }
 

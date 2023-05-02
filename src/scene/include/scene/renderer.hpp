@@ -18,6 +18,7 @@ namespace scene
         {
             glm::mat4x4 model_view_;
             glm::vec3 color_;
+            SceneID id_;
         };
 
         Renderer(const Renderer &) = delete;
