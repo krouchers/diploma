@@ -7,12 +7,19 @@
 #include "utils/camera.hpp"
 #include "opengl.hpp"
 #include "lines.hpp"
+#include "glm/mat4x4.hpp"
 
 namespace scene
 {
     class GEODIP_API Renderer
     {
     public:
+        struct Opts
+        {
+            glm::mat4x4 model_view_;
+            glm::vec3 color_;
+        };
+
         Renderer(const Renderer &) = delete;
         Renderer &operator=(const Renderer &) = delete;
 
@@ -20,9 +27,10 @@ namespace scene
         Renderer &operator=(Renderer &&) = delete;
 
         static Renderer &Get();
-        void Mesh(gl::Mesh &mesh, const glm::mat4x4 &view);
+        void Mesh(gl::Mesh &mesh, Opts const &opts);
         void Lines(gl::Lines &mesh, const glm::mat4x4 &view);
-        static void Setup(const std::shared_ptr<Opengl> &gl);
+        static void Setup(const std::shared_ptr<Opengl> &gl,
+                          std::shared_ptr<Camera> const &camera);
 
         void Clear();
 
@@ -32,6 +40,7 @@ namespace scene
         static inline scene::Renderer *instance_;
 
         std::shared_ptr<Opengl> gl_;
+        std::shared_ptr<Camera> camera_;
 
         Shader mesh_shader_, lines_shader_;
     };

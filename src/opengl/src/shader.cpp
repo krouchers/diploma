@@ -67,6 +67,12 @@ void Shader::Set(const char *uniform_name, int value)
     glUniform1i(glGetUniformLocation(program_, uniform_name), value);
 }
 
+void Shader::Set(const char *uniform_name, glm::vec3 const &value)
+{
+    Bind();
+    glUniform3fv(glGetUniformLocation(program_, uniform_name), 1, &value[0]);
+}
+
 void Shader::Set(const char *uniform_name, const glm::mat4x4 &value)
 {
     Bind();

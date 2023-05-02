@@ -12,10 +12,13 @@ namespace scene
     {
     }
 
-    void Renderer::Mesh(gl::Mesh &mesh, const glm::mat4x4 &view)
+    void Renderer::Mesh(gl::Mesh &mesh, const Opts &opts)
     {
         mesh_shader_.Bind();
-        mesh_shader_.Set("transform", view);
+        mesh_shader_.Set("mv", opts.model_view_);
+        mesh_shader_.Set("p", camera_->GetProjection());
+        mesh_shader_.Set("color", opts.color_);
+        mesh_shader_.Set("light_pos", camera_->GetPosition());
         mesh.Render();
     }
 
@@ -25,10 +28,12 @@ namespace scene
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void Renderer::Setup(const std::shared_ptr<Opengl> &gl)
+    void Renderer::Setup(const std::shared_ptr<Opengl> &gl,
+                         std::shared_ptr<Camera> const &camera)
     {
         instance_ = new scene::Renderer{};
         instance_->gl_ = gl;
+        instance_->camera_ = camera;
     }
 
     scene::Renderer &Renderer::Get()

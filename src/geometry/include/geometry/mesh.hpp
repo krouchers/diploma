@@ -1,6 +1,7 @@
 #pragma once
 
 #include "glm/vec3.hpp"
+#include "glm/mat4x4.hpp"
 #include "glad.hpp"
 
 #include <vector>
@@ -54,7 +55,6 @@ namespace gl
         void SetupVao();
 
         bool dirty{true};
-
         GLuint vao_, vbo_, veo_;
         std::vector<Vert> vertices_;
         std::vector<GLuint> indices_;
