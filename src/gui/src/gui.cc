@@ -88,7 +88,7 @@ void DearGui::Render3D(Scene &scene)
 {
 
     scene.ForItems([&](scene::Item &item)
-                   { item.Render(camera_->GetProjection() * camera_->GetView()); });
+                   { item.Render(true, camera_->GetView()); });
 
     scene::Renderer::Get().Lines(baseline_, camera_->GetProjection() * camera_->GetView());
 }
@@ -118,6 +118,7 @@ void DearGui::UINewObj()
             geometry::HalfedgeMesh hm{};
             hm.CreateFromMesh(std::move(mesh));
             scene_->Add(scene::Item(std::move(hm)));
+            newObjWindow = false;
         }};
     ImGui::Begin("Добавить фигуру", &newObjWindow);
     if (ImGui::CollapsingHeader("Куб"))
@@ -130,16 +131,11 @@ void DearGui::UINewObj()
             AddMesh(gl::Mesh{std::move(verts), std::move(inds)});
         }
     }
-    if (ImGui::CollapsingHeader("Конус"))
+    if (ImGui::CollapsingHeader("Свет"))
     {
-        static float R = 0.5f, H = 2.0f;
-        static int S = 12;
-        ImGui::SliderFloat("Радиус", &R, 0.01f, 10.0f, "%.2f");
-        ImGui::SliderFloat("Высота", &H, 0.01f, 10.0f, "%.2f");
-        ImGui::SliderInt("Стороны", &S, 3, 100);
         if (ImGui::Button("Добавить"))
         {
-            AddMesh(utils::GenerateCone(R, H, S, 12, true));
+            AddMesh(utils::GenerateCube(0.1f));
         }
     }
     ImGui::End();
