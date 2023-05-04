@@ -8,6 +8,7 @@ set(MODULES
     glad
     geometry
     gui
+    common
     math)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
