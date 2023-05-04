@@ -8,24 +8,26 @@ namespace scene
 {
     Renderer::Renderer()
         : mesh_shader_{shaders::kMeshVertexShader, shaders::kMeshFragmentShader},
-          lines_shader_{shaders::kLinesVertexShader, shaders::kLinesFragmentShader}
+          lines_shader_{shaders::kLinesVertexShader, shaders::kLinesFragmentShader},
+          outline_shader_{shaders::kLinesVertexShader, shaders::kLinesFragmentShader},
+          framebuffer_{2}, id_resolve_{1}
     {
     }
 
-    void Renderer::Mesh(gl::Mesh &mesh, const Opts &opts)
+    void Renderer::Mesh(gl::Mesh &mesh, const Opts &opts) 
     {
         mesh_shader_.Bind();
         mesh_shader_.Set("mv", opts.model_view_);
         mesh_shader_.Set("p", camera_->GetProjection());
+        mesh_shader_.Set("id", 1u);
         mesh_shader_.Set("color", opts.color_);
-        mesh_shader_.Set("light_pos", camera_->GetPosition());
         mesh.Render();
     }
 
     void Renderer::Clear()
     {
-        glClearColor(50.f / 255.f, 58.f / 255.f, 58.f / 255.f, 1);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        framebuffer_.Clear();
+        id_resolve_.Clear();
     }
 
     void Renderer::Setup(const std::shared_ptr<Opengl> &gl,
@@ -46,5 +48,31 @@ namespace scene
         lines_shader_.Bind();
         lines_shader_.Set("mvp", view);
         lines.Render();
+    }
+
+    void Renderer::Begin()
+    {
+        framebuffer_.Bind();
+    }
+
+    void Renderer::Complete()
+    {
+        framebuffer_.BlitToScreen();
+        framebuffer_.BlitTo(id_resolve_, 1);
+    }
+
+    SceneID Renderer::ReadID(glm::vec2 const &pos)
+    {
+        int x = pos.x;
+        int y = 720 - pos.y + 1;
+        auto id = id_resolve_.ReadAt({x, y});
+        return id[0];
+    }
+
+    void Renderer::Outline(scene::Item &item)
+    {
+        framebuffer_.ClearDepth();
+        item.Render(true, camera_->GetView());
+        effects_.Outline(framebuffer_, framebuffer_);
     }
 }

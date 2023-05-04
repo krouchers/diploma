@@ -1,12 +1,14 @@
 #pragma once
 
 #include "definitions.hpp"
-#include "shader.hpp"
+#include "opengl/shader.hpp"
 #include "scene.hpp"
 #include "geometry/mesh.hpp"
 #include "utils/camera.hpp"
-#include "opengl.hpp"
-#include "lines.hpp"
+#include "opengl/opengl.hpp"
+#include "opengl/framebuffer.hpp"
+#include "opengl/lines.hpp"
+#include "opengl/effects.hpp"
 #include "glm/mat4x4.hpp"
 
 namespace scene
@@ -34,6 +36,10 @@ namespace scene
                           std::shared_ptr<Camera> const &camera);
 
         void Clear();
+        void Begin();
+        void Complete();
+        void Outline(scene::Item &item);
+        SceneID ReadID(glm::vec2 const &pos);
 
     private:
         Renderer();
@@ -43,6 +49,9 @@ namespace scene
         std::shared_ptr<Opengl> gl_;
         std::shared_ptr<Camera> camera_;
 
-        Shader mesh_shader_, lines_shader_;
+        Shader mesh_shader_, lines_shader_, outline_shader_;
+        Framebuffer framebuffer_, id_resolve_;
+
+        Effects effects_;
     };
 }
