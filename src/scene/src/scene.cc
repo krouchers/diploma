@@ -1,14 +1,24 @@
 #include "scene/scene.hpp"
 
-void Scene::ForItems(std::function<void(SceneID, scene::Item &)> f)
+#include <optional>
+
+void Scene::ForItems(std::function<void(scene::Item &)> f)
 {
-    for (auto &[id, item] : objs_)
+    for (auto &item : objs_)
     {
-        f(id, item);
+        f(item.second);
     }
 }
 
 void Scene::Add(scene::Item &&item)
 {
     objs_.emplace(nextSceneID++, std::move(item));
+}
+
+MayBeItem Scene::Get(SceneID id)
+{
+    auto entry = objs_.find(id);
+    if (entry == objs_.end())
+        return std::nullopt;
+    return entry->second;
 }

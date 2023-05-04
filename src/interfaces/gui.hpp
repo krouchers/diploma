@@ -9,4 +9,5 @@ public:
     virtual void Render3D(Scene &) = 0;
     virtual void RenderUi() = 0;
     virtual void ProcessEvent(const Event &) = 0;
+    virtual void SetSelectedItem(SceneID) = 0;
 };

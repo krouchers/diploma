@@ -1,4 +1,4 @@
-#include "shader.hpp"
+#include "opengl/shader.hpp"
 #include "utils/log.hpp"
 
 #include "glm/mat4x4.hpp"
@@ -55,25 +55,37 @@ bool Shader::Validate(GLuint shader_id)
     return is_compiled == GL_TRUE;
 }
 
-void Shader::Set(const char *uniform_name, float value)
+void Shader::Set(const char *uniform_name, float value) const 
 {
     // FIXME: should be better logic
     glUniform4f(glGetUniformLocation(program_, uniform_name), 0, value, 0, 1);
 }
 
-void Shader::Set(const char *uniform_name, int value)
+void Shader::Set(const char *uniform_name, int value) const 
 {
     Bind();
     glUniform1i(glGetUniformLocation(program_, uniform_name), value);
 }
 
-void Shader::Set(const char *uniform_name, glm::vec3 const &value)
+void Shader::Set(const char *uniform_name, unsigned int value) const 
+{
+    Bind();
+    glUniform1ui(glGetUniformLocation(program_, uniform_name), value);
+}
+
+void Shader::Set(const char *uniform_name, glm::vec3 const &value) const
 {
     Bind();
     glUniform3fv(glGetUniformLocation(program_, uniform_name), 1, &value[0]);
 }
 
-void Shader::Set(const char *uniform_name, const glm::mat4x4 &value)
+void Shader::Set(const char *uniform_name, glm::vec2 const &value) const
+{
+    Bind();
+    glUniform2fv(glGetUniformLocation(program_, uniform_name), 1, &value[0]);
+}
+
+void Shader::Set(const char *uniform_name, const glm::mat4x4 &value) const
 {
     Bind();
     auto id = glGetUniformLocation(program_, uniform_name);

@@ -5,8 +5,8 @@
 
 namespace scene
 {
-    Item::Item(SceneID id, geometry::HalfedgeMesh &&mesh)
-        : halfedge_mesh_{std::move(mesh)}, mesh_{}, id_{id}
+    Item::Item(geometry::HalfedgeMesh &&mesh)
+        : halfedge_mesh_{std::move(mesh)}, mesh_{}
     {
         SyncMesh();
     }

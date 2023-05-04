@@ -1,20 +1,22 @@
 #include "app.hpp"
 #include "utils/log.hpp"
+#include "glm/vec3.hpp"
+
 #include "sdl_window/window.hpp"
 #include "sdl_window/event.hpp"
-#include "opengl.hpp"
+
+#include "opengl/opengl.hpp"
 #include "gui/gui.hpp"
-#include "opengl.hpp"
+
 #include "scene/renderer.hpp"
 #include "scene/item.hpp"
-#include "glm/vec3.hpp"
 
 App::App(std::string exe_path)
     : window_{std::make_shared<SdlWindow>("Geodip", glm::vec2{1280, 720})},
       gl_{std::make_shared<Opengl>(window_)},
       camera_{std::make_shared<Camera>(window_->GetSize())},
       scene_{std::make_shared<Scene>()},
-      gui_{std::make_shared<DearGui>(gl_, window_, camera_, scene_, exe_path)}
+      gui_{std::make_shared<gui::DearGui>(gl_, window_, camera_, scene_, exe_path)}
 {
     gl_->InitGlobalParams();
     scene::Renderer::Setup(gl_, camera_);
@@ -29,7 +31,9 @@ void App::Run()
         ProcessEvents();
         auto &r = scene::Renderer::Get();
         r.Clear();
+        r.Begin();
         gui_->Render3D(*scene_);
+        r.Complete();
         gui_->RenderUi();
         window_->SwapFrame();
     }
@@ -43,6 +47,7 @@ void App::ProcessEvents()
     while (SDL_PollEvent(&sdl_e))
     {
         e.e_ = sdl_e;
+        auto &r = scene::Renderer::Get();
         gui_->ProcessEvent(e);
         switch (sdl_e.type)
         {
@@ -50,6 +55,8 @@ void App::ProcessEvents()
         {
             if (sdl_e.button.button == SDL_BUTTON_MIDDLE)
                 camera_mode = CameraMode::orbit;
+            if (sdl_e.button.button == SDL_BUTTON_LEFT)
+                gui_->SetSelectedItem(r.ReadID({sdl_e.button.x, sdl_e.button.y}));
             break;
         }
         case SDL_MOUSEMOTION:

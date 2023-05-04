@@ -1,9 +1,11 @@
 #pragma once
-#include <gui/gui.hpp>
+
+using SceneID = unsigned int;
 
 namespace gui
 {
-    enum class WidgetsIds {
-
+    enum class WidgetsIds : SceneID
+    {
+        none = 0
     };
 }

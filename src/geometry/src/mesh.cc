@@ -44,6 +44,9 @@ namespace gl
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vertices_[0]), reinterpret_cast<void *>(offsetof(Vert, norm)));
         glEnableVertexAttribArray(1);
 
+        glVertexAttribPointer(3, 1, GL_UNSIGNED_INT, GL_FALSE, sizeof(vertices_[0]), reinterpret_cast<void *>(offsetof(Vert, id)));
+        glEnableVertexAttribArray(2);
+
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, veo_);
         glBindVertexArray(0);
     }
@@ -59,7 +62,7 @@ namespace gl
         dirty = false;
     }
 
-    void Mesh::Render()
+    void Mesh::Render() 
     {
         if (dirty)
             Update();

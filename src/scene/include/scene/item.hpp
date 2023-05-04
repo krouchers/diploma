@@ -10,12 +10,14 @@
 
 #include "scene/pose.hpp"
 
+using SceneID = unsigned int;
+
 namespace scene
 {
     class GEODIP_API Item
     {
     public:
-        Item(SceneID id, geometry::HalfedgeMesh &&mesh);
+        Item(geometry::HalfedgeMesh &&mesh);
         Item(Item &&item);
 
         void Render(bool posed, const glm::mat4x4 &view);

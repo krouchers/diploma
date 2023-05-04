@@ -18,10 +18,11 @@ set(imgui_sources
 
 set(src_files
     src/gui.cc
+    src/editor.cc
 )
 
 build_library_with_type(dear_gui SHARED "${MODULE_COMPILE_FLAGS}" "${src_files};${imgui_sources}")
-target_link_libraries(dear_gui PUBLIC IGui scene utils)
+target_link_libraries(dear_gui PUBLIC IGui scene utils common)
 target_link_libraries(dear_gui PRIVATE opengl)
 target_include_directories(dear_gui PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include

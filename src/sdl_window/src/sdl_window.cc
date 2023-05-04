@@ -16,6 +16,7 @@ SdlWindow::SdlWindow(std::string const &name, glm::vec2 const &size)
     {
         throw std::runtime_error("Failed to create window");
     }
+    SDL_SetHintWithPriority(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "1", SDL_HINT_OVERRIDE);
 }
 
 float SdlWindow::GetAspectRatio()

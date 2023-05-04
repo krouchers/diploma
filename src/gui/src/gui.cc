@@ -1,6 +1,6 @@
 #include "gui/gui.hpp"
 #include "utils/log.hpp"
-#include "opengl.hpp"
+#include "opengl/opengl.hpp"
 #include "SDL.h"
 
 #include "utils/generate_primitives.hpp"
@@ -9,134 +9,152 @@
 
 #include "scene/renderer.hpp"
 #include "scene/scene.hpp"
+#include "scene/item.hpp"
 
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
 
-DearGui::DearGui(std::shared_ptr<Opengl> &gl,
-                 std::shared_ptr<IWindow> &window,
-                 std::shared_ptr<Camera> &cam,
-                 std::shared_ptr<Scene> &scene,
-                 std::string const &exe_path)
-    : window_{window}, gl_{gl}, camera_{cam}, scene_{scene}
+namespace gui
 {
-    info("Initializing DearGui...");
 
-    ImGui::CreateContext();
-    auto &io{ImGui::GetIO()};
-    io.Fonts->AddFontFromFileTTF(
-        std::filesystem::path{exe_path}.parent_path().parent_path().append("fonts").append("Anonymous_Pro.ttf").string().c_str(), 16.0f,
-        nullptr, io.Fonts->GetGlyphRangesCyrillic());
-
-    ImGui_ImplSDL2_InitForOpenGL(
-        reinterpret_cast<SDL_Window *>(window_->GetHandler()),
-        reinterpret_cast<SDL_GLContext *>(gl_->GetHandler()));
-    ImGui_ImplOpenGL3_Init(nullptr);
-
-    CreateBaseLine();
-}
-
-void DearGui::AddSlider(const std::string &name, float &value)
-{
-    ImGui::SliderFloat(name.c_str(), &value, 0.0f, 1.0f, "ratio = %.3f");
-}
-
-void DearGui::ProcessEvent(const Event &e)
-{
-    ImGui_ImplSDL2_ProcessEvent(reinterpret_cast<const SDL_Event *>(e.GetEventRawHandle()));
-}
-
-void DearGui::RenderUi()
-{
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplSDL2_NewFrame();
-    ImGui::NewFrame();
-
-    UIMenu();
-
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
-
-void DearGui::CreateBaseLine()
-{
-    int z, x;
-    z = x = 20;
-    float length{40};
-    for (int i = -z; i <= z; ++i)
+    DearGui::DearGui(std::shared_ptr<Opengl> &gl,
+                     std::shared_ptr<IWindow> &window,
+                     std::shared_ptr<Camera> &cam,
+                     std::shared_ptr<Scene> &scene,
+                     std::string const &exe_path)
+        : window_{window}, gl_{gl}, camera_{cam}, scene_{scene}
     {
-        if (i == 0)
+        info("Initializing DearGui...");
+
+        ImGui::CreateContext();
+        auto &io{ImGui::GetIO()};
+        io.Fonts->AddFontFromFileTTF(
+            std::filesystem::path{exe_path}.parent_path().parent_path().append("fonts").append("Anonymous_Pro.ttf").string().c_str(), 16.0f,
+            nullptr, io.Fonts->GetGlyphRangesCyrillic());
+
+        ImGui_ImplSDL2_InitForOpenGL(
+            reinterpret_cast<SDL_Window *>(window_->GetHandler()),
+            reinterpret_cast<SDL_GLContext *>(gl_->GetHandler()));
+        ImGui_ImplOpenGL3_Init(nullptr);
+
+        CreateBaseLine();
+    }
+
+    void DearGui::AddSlider(const std::string &name, float &value)
+    {
+        ImGui::SliderFloat(name.c_str(), &value, 0.0f, 1.0f, "ratio = %.3f");
+    }
+
+    void DearGui::ProcessEvent(const Event &e)
+    {
+        ImGui_ImplSDL2_ProcessEvent(reinterpret_cast<const SDL_Event *>(e.GetEventRawHandle()));
+    }
+
+    void DearGui::RenderUi()
+    {
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplSDL2_NewFrame();
+        ImGui::NewFrame();
+
+        UIMenu();
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    }
+
+    void DearGui::CreateBaseLine()
+    {
+        int z, x;
+        z = x = 20;
+        float length{40};
+        for (int i = -z; i <= z; ++i)
         {
-            baseline_.Add({-length / 2, 0, i}, {length / 2, 0, i}, {Color::red});
-            continue;
+            if (i == 0)
+            {
+                baseline_.Add({-length / 2, 0, i}, {length / 2, 0, i}, {Color::red});
+                continue;
+            }
+            baseline_.Add({-length / 2, 0, i}, {length / 2, 0, i}, {Color::baseplane});
         }
-        baseline_.Add({-length / 2, 0, i}, {length / 2, 0, i}, {Color::baseplane});
-    }
 
-    for (int i = -x; i <= x; ++i)
-    {
-        if (i == 0)
+        for (int i = -x; i <= x; ++i)
         {
-            baseline_.Add({i, 0, -length / 2}, {i, 0, length / 2}, {Color::blue});
-            continue;
-        }
-        baseline_.Add({i, 0, -length / 2}, {i, 0, length / 2}, {Color::baseplane});
-    }
-}
-
-void DearGui::Render3D(Scene &scene)
-{
-
-    scene.ForItems([&](SceneID id, scene::Item &item)
-                   { item.Render(true, camera_->GetView()); });
-
-    scene::Renderer::Get().Lines(baseline_, camera_->GetProjection() * camera_->GetView());
-}
-
-void DearGui::UIMenu()
-{
-    if (ImGui::BeginMainMenuBar())
-    {
-        if (ImGui::Button("Добавить фигуру"))
-        {
-            newObjWindow = true;
-        }
-        ImGui::EndMainMenuBar();
-    }
-
-    if (newObjWindow)
-    {
-        UINewObj();
-    }
-}
-
-void DearGui::UINewObj()
-{
-    auto AddMesh{
-        [this](gl::Mesh &&mesh)
-        {
-            geometry::HalfedgeMesh hm{};
-            hm.CreateFromMesh(std::move(mesh));
-            scene_->Add(scene::Item(std::move(hm)));
-            newObjWindow = false;
-        }};
-    ImGui::Begin("Добавить фигуру", &newObjWindow);
-    if (ImGui::CollapsingHeader("Куб"))
-    {
-        static float edgeLenght{};
-        ImGui::SliderFloat("Длина ребра", &edgeLenght, 1.0f, 10.0f);
-        if (ImGui::Button("Добавить"))
-        {
-            auto [verts, inds]{utils::GenerateCube(edgeLenght / 2)};
-            AddMesh(gl::Mesh{std::move(verts), std::move(inds)});
+            if (i == 0)
+            {
+                baseline_.Add({i, 0, -length / 2}, {i, 0, length / 2}, {Color::blue});
+                continue;
+            }
+            baseline_.Add({i, 0, -length / 2}, {i, 0, length / 2}, {Color::baseplane});
         }
     }
-    if (ImGui::CollapsingHeader("Свет"))
+
+    void DearGui::Render3D(Scene &scene)
     {
-        if (ImGui::Button("Добавить"))
+
+        scene.ForItems([&](scene::Item &item)
+                       { item.Render(true, camera_->GetView()); });
+
+        scene::Renderer::Get().Lines(baseline_, camera_->GetProjection() * camera_->GetView());
+
+        editor_.Render(scene_->Get(editor_.GetSelectedSceneID()));
+    }
+
+    void DearGui::UIMenu()
+    {
+        if (ImGui::BeginMainMenuBar())
         {
-            AddMesh(utils::GenerateCube(0.1f));
+            if (ImGui::Button("Добавить фигуру"))
+            {
+                newObjWindow = true;
+            }
+            ImGui::EndMainMenuBar();
+        }
+
+        if (newObjWindow)
+        {
+            UINewObj();
         }
     }
-    ImGui::End();
+
+    void DearGui::UINewObj()
+    {
+        auto AddMesh{
+            [this](gl::Mesh &&mesh)
+            {
+                geometry::HalfedgeMesh hm{};
+                hm.CreateFromMesh(std::move(mesh));
+                scene_->Add(scene::Item(std::move(hm)));
+                newObjWindow = false;
+            }};
+        ImGui::Begin("Добавить фигуру", &newObjWindow);
+        if (ImGui::CollapsingHeader("Куб"))
+        {
+            static float edgeLenght{};
+            ImGui::SliderFloat("Длина ребра", &edgeLenght, 1.0f, 10.0f);
+            if (ImGui::Button("Добавить"))
+            {
+                auto [verts, inds]{utils::GenerateCube(edgeLenght / 2)};
+                AddMesh(gl::Mesh{std::move(verts), std::move(inds)});
+            }
+        }
+        if (ImGui::CollapsingHeader("Свет"))
+        {
+            if (ImGui::Button("Добавить"))
+            {
+                AddMesh(utils::GenerateCube(0.1f));
+            }
+        }
+        ImGui::End();
+    }
+
+    void DearGui::SetSelectedItem(SceneID id)
+    {
+        editor_.Select(id);
+    }
+
+    bool DearGui::WantCaptureMouse()
+    {
+        auto &IO = ImGui::GetIO();
+        return IO.WantCaptureMouse;
+    }
 }

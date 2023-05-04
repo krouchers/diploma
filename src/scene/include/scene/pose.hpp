@@ -7,7 +7,7 @@ namespace scene
     class Pose
     {
     public:
-        glm::mat4x4 transform();
+        glm::mat4x4 transform() const;
 
     private:
         glm::vec3 euler_{};
