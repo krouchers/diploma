@@ -1,4 +1,4 @@
-#include "tex2D.hpp"
+#include "opengl/tex2D.hpp"
 
 Tex2D::Tex2D(std::string path)
 {

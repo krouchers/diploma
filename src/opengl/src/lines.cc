@@ -1,5 +1,5 @@
-#include "lines.hpp"
-#include "opengl.hpp"
+#include "opengl/lines.hpp"
+#include "opengl/opengl.hpp"
 
 namespace gl
 {
