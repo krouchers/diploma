@@ -1,38 +1,86 @@
-#include "framebuffer.hpp"
+#include "opengl/framebuffer.hpp"
 #include "utils/log.hpp"
 
 #include <stdexcept>
 
-framebuffer::framebuffer(unsigned count_of_textures)
+Framebuffer::Framebuffer(unsigned count_of_textures)
 {
     info("Creating framebuffer");
-    
-    m_out_textures.resize(count_of_textures);
 
-    glGenFramebuffers(1, &m_framebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
+    textures_.resize(count_of_textures);
 
-    glGenTextures(m_out_textures.size(), m_out_textures.data());
+    glGenFramebuffers(1, &framebuffer_);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
 
-    for (unsigned i{0}; i < m_out_textures.size(); ++i)
+    glGenTextures(textures_.size(), textures_.data());
+
+    std::vector<GLuint> draw_buffers;
+    for (unsigned i{0}; i < textures_.size(); ++i)
     {
-        glBindTexture(GL_TEXTURE_2D, m_out_textures[i]);
+        glBindTexture(GL_TEXTURE_2D, textures_[i]);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1280, 720, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, m_out_textures[i], 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, textures_[i], 0);
         glBindTexture(GL_TEXTURE_2D, 0);
+        draw_buffers.push_back(GL_COLOR_ATTACHMENT0 + i);
     }
 
-    glGenRenderbuffers(1, &m_rbo);
-    glBindRenderbuffer(GL_RENDERBUFFER, m_rbo);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1280, 720);
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    glGenTextures(1, &depth_);
+    glBindTexture(GL_TEXTURE_2D, depth_);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1280, 720, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth_, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_rbo);
-
-    if (!glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE)
-    {
-        throw std::runtime_error("Frame buffer is not complete");
-    }
-
+    glDrawBuffers(draw_buffers.size(), draw_buffers.data());
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Framebuffer::Bind() const
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
+}
+
+void Framebuffer::Clear()
+{
+    Bind();
+    float color[]{50.f / 255.f, 58.f / 255.f, 58.f / 255.f, 1.0f};
+    float id[]{0.0f, 0.0f, 0.0f, 1.0f};
+    glClearBufferfv(GL_COLOR, 0, color);
+    glClearBufferfv(GL_COLOR, 1, id);
+    glClear(GL_DEPTH_BUFFER_BIT);
+}
+
+void Framebuffer::BlitTo(Framebuffer to, GLuint buf)
+{
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer_);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, to.GetID());
+    glReadBuffer(GL_COLOR_ATTACHMENT0 + buf);
+    glBlitFramebuffer(0, 0, 1280, 720, 0, 0, 1280, 720, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Framebuffer::BlitToScreen()
+{
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer_);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    glReadBuffer(GL_COLOR_ATTACHMENT0);
+    glBlitFramebuffer(0, 0, 1280, 720, 0, 0, 1280, 720, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+std::array<GLubyte, 4> Framebuffer::ReadAt(const glm::vec2 &pos)
+{
+    std::array<GLubyte, 4> data;
+    glGetTextureSubImage(textures_[0], 0, pos.x, pos.y, 0, 1, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, sizeof(data), data.data());
+    return data;
+}
+
+GLuint Framebuffer::GetDepth() const
+{
+    return depth_;
+}
+
+void Framebuffer::ClearDepth()
+{
+    Bind();
+    glClear(GL_DEPTH_BUFFER_BIT);
 }
