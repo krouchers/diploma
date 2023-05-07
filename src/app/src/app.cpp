@@ -53,9 +53,9 @@ void App::ProcessEvents()
         {
         case SDL_MOUSEBUTTONDOWN:
         {
-            if (sdl_e.button.button == SDL_BUTTON_MIDDLE)
-                camera_mode = CameraMode::orbit;
             if (sdl_e.button.button == SDL_BUTTON_LEFT)
+                camera_mode = CameraMode::orbit;
+            if (sdl_e.button.button == SDL_BUTTON_RIGHT)
                 gui_->SetSelectedItem(r.ReadID({sdl_e.button.x, sdl_e.button.y}));
             break;
         }

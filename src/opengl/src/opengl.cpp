@@ -64,7 +64,7 @@ DebugProc(GLenum source,
 
 Opengl::Opengl(std::shared_ptr<IWindow> &win)
     : window_{win}
-{  
+{
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
@@ -127,4 +127,6 @@ void Opengl::InitGlobalParams()
 {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_DEBUG_OUTPUT);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }

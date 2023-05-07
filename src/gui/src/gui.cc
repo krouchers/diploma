@@ -151,10 +151,4 @@ namespace gui
     {
         editor_.Select(id);
     }
-
-    bool DearGui::WantCaptureMouse()
-    {
-        auto &IO = ImGui::GetIO();
-        return IO.WantCaptureMouse;
-    }
 }

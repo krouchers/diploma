@@ -26,7 +26,11 @@ Framebuffer::Framebuffer(unsigned count_of_textures)
 
     glGenTextures(1, &depth_);
     glBindTexture(GL_TEXTURE_2D, depth_);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1280, 720, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, 1280, 720, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth_, 0);
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -63,7 +67,7 @@ void Framebuffer::BlitToScreen()
     glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer_);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     glReadBuffer(GL_COLOR_ATTACHMENT0);
-    glBlitFramebuffer(0, 0, 1280, 720, 0, 0, 1280, 720, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    glBlitFramebuffer(0, 0, 1280, 720, 0, 0, 1280, 720, GL_COLOR_BUFFER_BIT, GL_LINEAR);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

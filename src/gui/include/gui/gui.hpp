@@ -34,7 +34,6 @@ namespace gui
         void UIMenu();
         void UINewObj();
         void UISideMenu();
-        bool WantCaptureMouse() final;
         virtual ~DearGui() = default;
 
     private:

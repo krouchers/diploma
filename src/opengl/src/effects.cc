@@ -4,10 +4,11 @@
 
 void Effects::Outline(Framebuffer const &from, Framebuffer const &to)
 {
+    glFlush();
     outline_shader_.Bind();
     to.Bind();
     glBindTexture(GL_TEXTURE_2D, from.GetDepth());
-    outline_shader_.Set("icoord", 1.0f / glm::vec2{1280, 720});
+    outline_shader_.Set("icoord", 1.0f / glm::vec2{1280.0f, 720.0f});
     outline_shader_.Set("color", Color::outline);
     outline_shader_.Set("depth", 0);
 
