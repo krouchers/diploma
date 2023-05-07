@@ -12,4 +12,5 @@ namespace utils
 
     Data GenerateCube(float edgeLenght);
     Data GenerateCone(float bradius, float tradius, float height, int sides, bool caps);
+    Data GenerateArrow();
 }

@@ -3,7 +3,7 @@
 
 namespace scene
 {
-    glm::mat4x4 Pose::transform() const
+    glm::mat4x4 Pose::Transform() const
     {
         glm::mat4x4 result(1.0f);
 

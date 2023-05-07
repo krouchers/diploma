@@ -58,7 +58,7 @@ namespace geometry
         return gl::Mesh(std::move(mesh_verts), std::move(mesh_indexes));
     }
 
-    void HalfedgeMesh::CreateFromData(utils::Data data)
+    void HalfedgeMesh::CreateFromData(utils::Data &&data)
     {
         auto meshIdxs{data.indices_};
         auto meshVerts{data.vertices_};
@@ -211,5 +211,10 @@ namespace geometry
         {
             v->second->pos_ = meshVerts[v->first].pos;
         }
+    }
+
+    HalfedgeMesh::HalfedgeMesh(utils::Data &&data)
+    {
+        CreateFromData(std::move(data));
     }
 }

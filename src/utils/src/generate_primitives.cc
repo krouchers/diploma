@@ -6,6 +6,14 @@
 
 namespace utils
 {
+    Data merge(Data &&l, Data &&r)
+    {
+        for (auto &i : r.indices_)
+            i += l.vertices_.size();
+        l.vertices_.insert(l.vertices_.end(), r.vertices_.begin(), r.vertices_.end());
+        l.indices_.insert(l.indices_.end(), r.indices_.begin(), r.indices_.end());
+        return l;
+    }
 
     Data GenerateCube(float edgeLenght)
     {
@@ -20,12 +28,8 @@ namespace utils
                  {glm::vec3{-r, r, r}, glm::normalize(glm::vec3{-r, r, r}), 0}},
                 {0, 1, 3, 3, 1, 2, 1, 5, 2, 2, 5, 6, 5, 4, 6, 6, 4, 7,
                  4, 0, 7, 7, 0, 3, 3, 2, 7, 7, 2, 6, 4, 5, 0, 0, 5, 1}};
-        // return {{{glm::vec3{-r, -r, -0}, glm::normalize(glm::vec3{-r, -r, -r}), 0},
-        //          {glm::vec3{r, -r, -0}, glm::normalize(glm::vec3{-r, -r, -r}), 0},
-        //          {glm::vec3{r, r, -0}, glm::normalize(glm::vec3{-r, -r, -r}), 0},
-        //          {glm::vec3{-r, r, -0}, glm::normalize(glm::vec3{-r, -r, -r}), 0}},
-        //         {0, 1, 2, 2, 3, 0}};
     }
+
     Data GenerateCone(float bradius, float tradius, float height, int sides, bool caps)
     {
 
@@ -152,5 +156,17 @@ namespace utils
             verts.push_back({vertices[j], normals[j], 0});
         }
         return {verts, triangles};
+    }
+    Data GenerateArrow()
+    {
+        float baseRad = 0.7f;
+        float arrowLength = 6.0f;
+        float basePart = 0.65;
+        float tipPart = 1 - 0.65;
+        auto base = GenerateCone(baseRad, baseRad, arrowLength * basePart, 10, true);
+        auto tip = GenerateCone(baseRad * 1.75, 0.01f, arrowLength * tipPart, 10, true);
+        for (auto &v : tip.vertices_)
+            v.pos.y += arrowLength * basePart;
+        return merge(std::move(base), std::move(tip));
     }
 }

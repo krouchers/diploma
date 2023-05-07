@@ -2,6 +2,9 @@
 
 #include "definitions.hpp"
 #include "scene/item.hpp"
+#include "common/widgets_ids.hpp"
+#include "geometry/halfedge_mesh.hpp"
+
 #include <functional>
 #include <map>
 #include <optional>
@@ -12,7 +15,7 @@ class GEODIP_API Scene
 public:
     Scene(){};
     void ForItems(std::function<void(scene::Item &)> f);
-    void Add(scene::Item &&item);
+    void Add(geometry::HalfedgeMesh &&item);
     MayBeItem Get(SceneID id);
 
     Scene(const Scene &) = delete;
@@ -20,5 +23,5 @@ public:
 
 private:
     std::map<SceneID, scene::Item> objs_;
-    SceneID nextSceneID{1};
+    SceneID nextSceneID{(SceneID)gui::WidgetsIds::count};
 };

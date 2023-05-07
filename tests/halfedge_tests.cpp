@@ -17,7 +17,7 @@ TEST(HalfEdge, construct_from_mesh_plane)
                       {glm::vec3{-4, 4, -0}, {0, 0, 0}, 0}},
                      {0, 1, 2, 2, 3, 0}};
     geometry::HalfedgeMesh hmesh{};
-    hmesh.CreateFromData(data);
+    hmesh.CreateFromData(std::move(data));
     EXPECT_EQ(hmesh.vertices_.size(), 4);
     EXPECT_EQ(hmesh.edges_.size(), 5);
     EXPECT_EQ(hmesh.faces_.size(), 3);
@@ -37,7 +37,7 @@ TEST(HalfEdge, construct_from_mesh_cube)
                      {0, 1, 3, 3, 1, 2, 1, 5, 2, 2, 5, 6, 5, 4, 6, 6, 4, 7,
                       4, 0, 7, 7, 0, 3, 3, 2, 7, 7, 2, 6, 4, 5, 0, 0, 5, 1}};
     geometry::HalfedgeMesh hmesh{};
-    hmesh.CreateFromData(data);
+    hmesh.CreateFromData(std::move(data));
     EXPECT_EQ(hmesh.vertices_.size(), 8);
     EXPECT_EQ(hmesh.edges_.size(), 18);
     EXPECT_EQ(hmesh.faces_.size(), 12);

@@ -19,6 +19,7 @@ set(imgui_sources
 set(src_files
     src/gui.cc
     src/editor.cc
+    src/widgets.cc
 )
 
 build_library_with_type(dear_gui SHARED "${MODULE_COMPILE_FLAGS}" "${src_files};${imgui_sources}")

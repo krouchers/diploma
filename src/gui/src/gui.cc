@@ -92,11 +92,11 @@ namespace gui
     {
 
         scene.ForItems([&](scene::Item &item)
-                       { item.Render(true, camera_->GetView()); });
+                       { item.Render(camera_->GetView()); });
 
         scene::Renderer::Get().Lines(baseline_, camera_->GetProjection() * camera_->GetView());
 
-        editor_.Render(scene_->Get(editor_.GetSelectedSceneID()));
+        editor_.Render(scene_->Get(editor_.GetSelectedSceneID()), camera_->GetView());
     }
 
     void DearGui::UIMenu()
@@ -110,6 +110,10 @@ namespace gui
             ImGui::EndMainMenuBar();
         }
 
+        ImGui::Begin("debug");
+        auto pos = camera_->GetPosition();
+        ImGui::Text("Camera pos: (%f, %f, %f)", pos.x, pos.y, pos.z);
+        ImGui::End();
         if (newObjWindow)
         {
             UINewObj();
@@ -123,7 +127,7 @@ namespace gui
             {
                 geometry::HalfedgeMesh hm{};
                 hm.CreateFromMesh(std::move(mesh));
-                scene_->Add(scene::Item(std::move(hm)));
+                scene_->Add(std::move(hm));
                 newObjWindow = false;
             }};
         ImGui::Begin("Добавить фигуру", &newObjWindow);
@@ -137,11 +141,11 @@ namespace gui
                 AddMesh(gl::Mesh{std::move(verts), std::move(inds)});
             }
         }
-        if (ImGui::CollapsingHeader("Свет"))
+        if (ImGui::CollapsingHeader("Стрелку"))
         {
             if (ImGui::Button("Добавить"))
             {
-                AddMesh(utils::GenerateCube(0.1f));
+                AddMesh(utils::GenerateArrow());
             }
         }
         ImGui::End();

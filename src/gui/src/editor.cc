@@ -15,13 +15,15 @@ namespace gui
         return selected_object_;
     }
 
-    void Editor::Render(MayBeItem obj_opt)
+    void Editor::Render(MayBeItem obj_opt, const glm::mat4x4 &view)
     {
         if (obj_opt)
         {
             scene::Item &item = obj_opt.value();
             auto &r = scene::Renderer::Get();
             r.Outline(item);
+            (void)view;
+            // widgets_.Render(item.pose_.pos_, view);
         }
     }
 }

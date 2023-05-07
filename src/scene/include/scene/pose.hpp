@@ -4,12 +4,15 @@
 
 namespace scene
 {
-    class Pose
+    struct Pose
     {
-    public:
-        glm::mat4x4 transform() const;
+        glm::mat4x4 Transform() const;
 
-    private:
+        static Pose Rotated(const glm::vec3 &euler)
+        {
+            return Pose{euler, {}, {1.0f, 1.0f, 1.0f}};
+        }
+
         glm::vec3 euler_{};
         glm::vec3 pos_{};
         glm::vec3 scale_{};

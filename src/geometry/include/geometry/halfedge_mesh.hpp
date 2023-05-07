@@ -53,13 +53,17 @@ namespace geometry
             IndexPair pair;
         };
 
+        HalfedgeMesh() = default;
+        HalfedgeMesh(utils::Data &&data);
+
         gl::Mesh ToMesh();
 
-        void CreateFromData(utils::Data data);
+        void CreateFromData(utils::Data &&data);
 
         bool CreateFromMesh(gl::Mesh &&mesh)
         {
-            CreateFromData({mesh.Vertices(), mesh.Indices()});
+            CreateFromData({mesh.Vertices(),
+                            mesh.Indices()});
             return validate();
         }
 
