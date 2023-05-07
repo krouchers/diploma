@@ -15,15 +15,18 @@ namespace gui
         return selected_object_;
     }
 
-    void Editor::Render(MayBeItem obj_opt, const glm::mat4x4 &view)
+    void Editor::Render(MayBeItem obj_opt)
     {
         if (obj_opt)
         {
             scene::Item &item = obj_opt.value();
             auto &r = scene::Renderer::Get();
+            auto cam_pos = r.GetCameraPos();
+            auto obj_pos = item.pose_.pos_;
+            auto length = glm::length(obj_pos - cam_pos);
             r.Outline(item);
-            (void)view;
-            // widgets_.Render(item.pose_.pos_, view);
+            float scale = length / 50.0f;
+            widgets_.Render(obj_pos, scale);
         }
     }
 }

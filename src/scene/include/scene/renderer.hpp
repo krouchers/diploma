@@ -18,7 +18,7 @@ namespace scene
     public:
         struct Opts
         {
-            glm::mat4x4 model_view_;
+            glm::mat4x4 pose_;
             glm::vec3 color_;
             SceneID id_;
         };
@@ -36,8 +36,10 @@ namespace scene
                           std::shared_ptr<Camera> const &camera);
 
         void Clear();
+        void ClearDepth();
         void Begin();
         void Complete();
+        glm::vec3 GetCameraPos();
         void Outline(scene::Item &item);
         SceneID ReadID(glm::vec2 const &pos);
 

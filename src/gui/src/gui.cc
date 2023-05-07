@@ -92,11 +92,11 @@ namespace gui
     {
 
         scene.ForItems([&](scene::Item &item)
-                       { item.Render(camera_->GetView()); });
+                       { item.Render(); });
 
         scene::Renderer::Get().Lines(baseline_, camera_->GetProjection() * camera_->GetView());
 
-        editor_.Render(scene_->Get(editor_.GetSelectedSceneID()), camera_->GetView());
+        editor_.Render(scene_->Get(editor_.GetSelectedSceneID()));
     }
 
     void DearGui::UIMenu()

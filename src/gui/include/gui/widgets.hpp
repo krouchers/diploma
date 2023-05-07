@@ -10,7 +10,7 @@ namespace gui
     {
     public:
         Widgets();
-        void Render(const glm::vec3 &pos, const glm::mat4x4 &view);
+        void Render(const glm::vec3 &pos, float scale);
 
     private:
         scene::Item x_move;

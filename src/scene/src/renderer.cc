@@ -14,10 +14,10 @@ namespace scene
     {
     }
 
-    void Renderer::Mesh(gl::Mesh &mesh, const Opts &opts) 
+    void Renderer::Mesh(gl::Mesh &mesh, const Opts &opts)
     {
         mesh_shader_.Bind();
-        mesh_shader_.Set("mv", opts.model_view_);
+        mesh_shader_.Set("mv", camera_->GetView() * opts.pose_);
         mesh_shader_.Set("p", camera_->GetProjection());
         mesh_shader_.Set("id", opts.id_);
         mesh_shader_.Set("color", opts.color_);
@@ -72,7 +72,17 @@ namespace scene
     void Renderer::Outline(scene::Item &item)
     {
         framebuffer_.ClearDepth();
-        item.Render( camera_->GetView());
+        item.Render();
         effects_.Outline(framebuffer_, framebuffer_);
+    }
+
+    void Renderer::ClearDepth()
+    {
+        framebuffer_.ClearDepth();
+    }
+
+    glm::vec3 Renderer::GetCameraPos()
+    {
+        return camera_->GetPosition();
     }
 }

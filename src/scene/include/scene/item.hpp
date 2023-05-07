@@ -1,6 +1,7 @@
 #pragma once
 
 #include "glm/mat4x4.hpp"
+#include "common/colors.hpp"
 
 #include "definitions.hpp"
 #include "object.hpp"
@@ -22,9 +23,10 @@ namespace scene
         Item(SceneID id, Pose pose, utils::Data &&meshData);
         Item(Item &&item);
 
-        void Render(const glm::mat4x4 &view);
+        void Render();
 
         Pose pose_;
+        glm::vec3 color_{Color::white};
 
     private:
         void SyncMesh();
@@ -32,6 +34,7 @@ namespace scene
         SceneID id_;
         geometry::HalfedgeMesh halfedge_mesh_;
         gl::Mesh mesh_;
+
         bool mesh_dirty = true;
     };
 }

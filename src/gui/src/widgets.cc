@@ -1,8 +1,13 @@
 #include "gui/widgets.hpp"
 #include "glm/gtx/transform.hpp"
+
 #include "scene/pose.hpp"
+#include "scene/renderer.hpp"
+
 #include "utils/generate_primitives.hpp"
+
 #include "common/widgets_ids.hpp"
+#include "common/colors.hpp"
 
 namespace gui
 {
@@ -15,15 +20,25 @@ namespace gui
     {
     }
 
-    void Widgets::Render(const glm::vec3 &pos, const glm::mat4x4 &view)
+    void Widgets::Render(const glm::vec3 &pos, float scale)
     {
+        auto &r = scene::Renderer::Get();
+        r.ClearDepth();
+        glm::vec3 scl{scale};
+
         x_move.pose_.pos_ = pos;
-        x_move.Render(view);
+        x_move.pose_.scale_ = scl;
+        x_move.Render();
+        x_move.color_ = Color::red;
 
         y_move.pose_.pos_ = pos;
-        y_move.Render(view);
+        y_move.pose_.scale_ = scl;
+        y_move.Render();
+        y_move.color_ = Color::green;
 
         z_move.pose_.pos_ = pos;
-        z_move.Render(view);
+        z_move.pose_.scale_ = scl;
+        z_move.Render();
+        z_move.color_ = Color::blue;
     }
 }

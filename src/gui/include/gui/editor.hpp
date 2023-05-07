@@ -9,7 +9,7 @@ namespace gui
     {
     public:
         void Select(SceneID id);
-        void Render(MayBeItem obj_opt, const glm::mat4x4 &view);
+        void Render(MayBeItem obj_opt);
         SceneID GetSelectedSceneID();
 
     private:

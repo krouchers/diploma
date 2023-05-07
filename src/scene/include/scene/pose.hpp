@@ -15,6 +15,6 @@ namespace scene
 
         glm::vec3 euler_{};
         glm::vec3 pos_{};
-        glm::vec3 scale_{};
+        glm::vec3 scale_{1, 1, 1};
     };
 }

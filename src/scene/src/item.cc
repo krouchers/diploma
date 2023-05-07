@@ -11,11 +11,11 @@ namespace scene
         SyncMesh();
     }
 
-    void Item::Render(const glm::mat4x4 &view)
+    void Item::Render()
     {
         scene::Renderer::Opts opts;
-        opts.model_view_ = view * pose_.Transform();
-        opts.color_ = {0.0f, 1.0f, 0.0f};
+        opts.pose_ = pose_.Transform();
+        opts.color_ = color_;
         opts.id_ = id_;
         Renderer::Get().Mesh(mesh_, opts);
     }
