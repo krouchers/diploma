@@ -19,7 +19,7 @@ namespace scene
         mesh_shader_.Bind();
         mesh_shader_.Set("mv", opts.model_view_);
         mesh_shader_.Set("p", camera_->GetProjection());
-        mesh_shader_.Set("id", 1u);
+        mesh_shader_.Set("id", opts.id_);
         mesh_shader_.Set("color", opts.color_);
         mesh.Render();
     }
@@ -72,7 +72,7 @@ namespace scene
     void Renderer::Outline(scene::Item &item)
     {
         framebuffer_.ClearDepth();
-        item.Render(true, camera_->GetView());
+        item.Render( camera_->GetView());
         effects_.Outline(framebuffer_, framebuffer_);
     }
 }

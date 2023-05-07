@@ -10,9 +10,10 @@ void Scene::ForItems(std::function<void(scene::Item &)> f)
     }
 }
 
-void Scene::Add(scene::Item &&item)
+void Scene::Add(geometry::HalfedgeMesh &&mesh)
 {
-    objs_.emplace(nextSceneID++, std::move(item));
+    auto id = nextSceneID++;
+    objs_.emplace(id, scene::Item{id, std::move(mesh)});
 }
 
 MayBeItem Scene::Get(SceneID id)
