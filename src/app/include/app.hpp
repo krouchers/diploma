@@ -37,5 +37,4 @@ private:
     };
 
     CameraMode camera_mode{CameraMode::none};
-
 };

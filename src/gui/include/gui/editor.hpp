@@ -5,15 +5,16 @@
 
 namespace gui
 {
-    class Editor
+    struct Editor
     {
-    public:
         void Select(SceneID id);
-        void Render(MayBeItem obj_opt);
+        void Render(MayBeItem obj_opt, Widgets &widgets);
         SceneID GetSelectedSceneID();
+        void ClearSelection()
+        {
+            selected_object_ = (SceneID)WidgetsIds::none;
+        }
 
-    private:
         SceneID selected_object_ = (SceneID)WidgetsIds::none;
-        Widgets widgets_;
     };
 }

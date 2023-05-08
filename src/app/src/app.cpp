@@ -47,16 +47,13 @@ void App::ProcessEvents()
     while (SDL_PollEvent(&sdl_e))
     {
         e.e_ = sdl_e;
-        auto &r = scene::Renderer::Get();
         gui_->ProcessEvent(e);
         switch (sdl_e.type)
         {
         case SDL_MOUSEBUTTONDOWN:
         {
-            if (sdl_e.button.button == SDL_BUTTON_LEFT)
+            if (sdl_e.button.button == SDL_BUTTON_MIDDLE)
                 camera_mode = CameraMode::orbit;
-            if (sdl_e.button.button == SDL_BUTTON_RIGHT)
-                gui_->SetSelectedItem(r.ReadID({sdl_e.button.x, sdl_e.button.y}));
             break;
         }
         case SDL_MOUSEMOTION:

@@ -30,7 +30,7 @@ namespace gui
         void CreateBaseLine();
         void Render3D(Scene &) final;
         void RenderUi() final;
-        void SetSelectedItem(SceneID) final;
+        void Drag() final;
         void UIMenu();
         void UINewObj();
         void UISideMenu();
@@ -47,5 +47,8 @@ namespace gui
         gl::Lines baseline_{};
 
         Editor editor_;
+        Widgets widgets_;
+
+        bool unselection_{false};
     };
 }

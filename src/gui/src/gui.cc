@@ -47,7 +47,45 @@ namespace gui
 
     void DearGui::ProcessEvent(const Event &e)
     {
-        ImGui_ImplSDL2_ProcessEvent(reinterpret_cast<const SDL_Event *>(e.GetEventRawHandle()));
+        const SDL_Event *event = reinterpret_cast<const SDL_Event *>(e.GetEventRawHandle());
+        ImGui_ImplSDL2_ProcessEvent(event);
+        switch (event->type)
+        {
+        case SDL_MOUSEBUTTONDOWN:
+        {
+            if (event->button.button == SDL_BUTTON_LEFT)
+            {
+                auto &r = scene::Renderer::Get();
+                SceneID id = r.ReadID({event->button.x, event->button.y});
+                editor_.Select(id);
+                widgets_.Select(id);
+                if (id == 0)
+                    unselection_ = true;
+            }
+            break;
+        }
+        case SDL_MOUSEMOTION:
+        {
+            if (widgets_.dragging_)
+            {
+                Drag();
+            }
+            break;
+        }
+        case SDL_MOUSEBUTTONUP:
+        {
+            if (unselection_)
+            {
+                editor_.ClearSelection();
+                unselection_ = false;
+            }
+            if (widgets_.dragging_)
+            {
+                widgets_.dragging_ = false;
+            }
+            break;
+        }
+        }
     }
 
     void DearGui::RenderUi()
@@ -96,7 +134,7 @@ namespace gui
 
         scene::Renderer::Get().Lines(baseline_, camera_->GetProjection() * camera_->GetView());
 
-        editor_.Render(scene_->Get(editor_.GetSelectedSceneID()));
+        editor_.Render(scene_->Get(editor_.GetSelectedSceneID()), widgets_);
     }
 
     void DearGui::UIMenu()
@@ -113,6 +151,9 @@ namespace gui
         ImGui::Begin("debug");
         auto pos = camera_->GetPosition();
         ImGui::Text("Camera pos: (%f, %f, %f)", pos.x, pos.y, pos.z);
+        ImGui::Text("Current selection: %d", editor_.GetSelectedSceneID());
+        ImGui::Text("Axis selection: %d", widgets_.axis_);
+        ImGui::Text("Started Dragging?: %d", widgets_.dragging_);
         ImGui::End();
         if (newObjWindow)
         {
@@ -151,8 +192,7 @@ namespace gui
         ImGui::End();
     }
 
-    void DearGui::SetSelectedItem(SceneID id)
+    void DearGui::Drag()
     {
-        editor_.Select(id);
     }
 }

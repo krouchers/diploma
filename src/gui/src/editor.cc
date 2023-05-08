@@ -4,18 +4,12 @@
 
 namespace gui
 {
-
-    void Editor::Select(SceneID id)
-    {
-        selected_object_ = id;
-    }
-
     SceneID Editor::GetSelectedSceneID()
     {
         return selected_object_;
     }
 
-    void Editor::Render(MayBeItem obj_opt)
+    void Editor::Render(MayBeItem obj_opt, Widgets &widgets)
     {
         if (obj_opt)
         {
@@ -26,7 +20,13 @@ namespace gui
             auto length = glm::length(obj_pos - cam_pos);
             r.Outline(item);
             float scale = length / 50.0f;
-            widgets_.Render(obj_pos, scale);
+            widgets.Render(obj_pos, scale);
         }
+    }
+
+    void Editor::Select(SceneID id)
+    {
+        if (id >= (SceneID)WidgetsIds::count)
+            selected_object_ = id;
     }
 }

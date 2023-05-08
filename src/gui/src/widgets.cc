@@ -41,4 +41,28 @@ namespace gui
         z_move.Render();
         z_move.color_ = Color::blue;
     }
+
+    void Widgets::Select(SceneID id)
+    {
+        dragging_ = true;
+        switch (id)
+        {
+        case (SceneID)WidgetsIds::x_move:
+            active_ = WidgetType::move;
+            axis_ = Axis::X;
+            break;
+        case (SceneID)WidgetsIds::y_move:
+            active_ = WidgetType::move;
+            axis_ = Axis::Y;
+            break;
+        case (SceneID)WidgetsIds::z_move:
+            active_ = WidgetType::move;
+            axis_ = Axis::Z;
+            break;
+
+        default:
+            dragging_ = false;
+            break;
+        }
+    }
 }
