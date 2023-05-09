@@ -50,8 +50,11 @@ namespace gui
         Widgets widgets_;
 
         bool unselection_{false};
+
+        //debug section
         glm::vec2 ndc_pos_;
         glm::vec4 world_pos_;
+        //
     };
 
 }

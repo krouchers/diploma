@@ -17,7 +17,7 @@ namespace gui
             auto &r = scene::Renderer::Get();
             auto cam_pos = r.GetCameraPos();
             auto obj_pos = item.pose_.pos_;
-            auto length = glm::length(obj_pos - cam_pos);
+            auto length = glm::length(glm::vec3{0.0f, 0.0f, 0.0f} - cam_pos);
             r.Outline(item);
             float scale = length / 50.0f;
             widgets.Render(obj_pos, scale);

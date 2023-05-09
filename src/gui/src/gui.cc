@@ -54,6 +54,14 @@ namespace gui
                 SceneID id = r.ReadID({event->button.x, event->button.y});
                 editor_.Select(id);
                 widgets_.Select(id);
+                if (widgets_.dragging_)
+                {
+                    scene::Item &obj = scene_->Get(editor_.selected_object_).value();
+                    widgets_.StartDrag(
+                        obj.pose_,
+                        ClickDirection({event->button.x, event->button.y}),
+                        camera_->GetPosition());
+                }
                 if (id == 0)
                     unselection_ = true;
             }
@@ -64,8 +72,10 @@ namespace gui
             if (widgets_.dragging_)
             {
                 auto obj_opt = scene_->Get(editor_.selected_object_);
-                widgets_.Drag(obj_opt, ClickDirection({event->button.x,
-                                                       event->button.y}));
+                widgets_.DragTo(obj_opt.value().get().pose_,
+                                 ClickDirection({event->button.x, event->button.y}),
+                                 camera_->GetPosition());
+                obj_opt.value().get().pose_ = widgets_.ApplyAction(obj_opt.value().get().pose_);
             }
             break;
         }
@@ -78,7 +88,9 @@ namespace gui
             }
             if (widgets_.dragging_)
             {
-                widgets_.dragging_ = false;
+                auto obj_opt = scene_->Get(editor_.selected_object_);
+                obj_opt.value().get().pose_ = widgets_.ApplyAction(obj_opt.value().get().pose_);
+                widgets_.EndDrag();
             }
             break;
         }
@@ -144,16 +156,25 @@ namespace gui
             }
             ImGui::EndMainMenuBar();
         }
-
         ImGui::Begin("debug");
         auto pos = camera_->GetPosition();
         ImGui::Text("Camera pos: (%f, %f, %f)", pos.x, pos.y, pos.z);
         ImGui::Text("Current selection: %d", editor_.GetSelectedSceneID());
+        auto obj_opt = scene_->Get(editor_.selected_object_);
+        if (obj_opt)
+        {
+            auto sel_pos = obj_opt.value().get().pose_.pos_;
+            ImGui::Text("Selection pos: (%f, %f, %f)", sel_pos.x, sel_pos.y, sel_pos.z);
+        }
         ImGui::Text("Axis selection: %d", widgets_.axis_);
         ImGui::Text("Started Dragging?: %d", widgets_.dragging_);
 
         ImGui::Text("ndc_pos: (%f, %f)", ndc_pos_.x, ndc_pos_.y);
         ImGui::Text("World pos: (%f, %f, %f, %f)", world_pos_.x, world_pos_.y, world_pos_.z, world_pos_.w);
+
+        ImGui::Text("plane_sel_pos_f: (%f, %f, %f)", widgets_.plane_selection_pos_f_.x, widgets_.plane_selection_pos_f_.y, widgets_.plane_selection_pos_f_.z);
+        ImGui::Text("plane_sel_pos_s: (%f, %f, %f)", widgets_.plane_selection_pos_s_.x, widgets_.plane_selection_pos_s_.y, widgets_.plane_selection_pos_s_.z);
+        ImGui::Text("move_sel_pos: (%f, %f, %f)", widgets_.move_selection_pos_.x, widgets_.move_selection_pos_.y, widgets_.move_selection_pos_.z);
         ImGui::End();
         if (newObjWindow)
         {
@@ -204,7 +225,6 @@ namespace gui
                               glm::vec4{ndc_pos, -1.0f, 1.0f};
         ndc_pos_ = {ndc_pos.x, ndc_pos.y};
         world_pos_ = {world_pos.x, world_pos.y, world_pos.z, world_pos.w};
-        // return glm::normalize(world_pos - camera_->GetPosition());
-        return {};
+        return glm::normalize(glm::vec3(world_pos) - camera_->GetPosition());
     }
 }
