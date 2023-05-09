@@ -65,4 +65,10 @@ namespace gui
             break;
         }
     }
+
+    void Widgets::Drag(MayBeItem obj_opt, glm::vec3 click_dir)
+    {
+        (void)obj_opt;
+        (void)click_dir;
+    }
 }

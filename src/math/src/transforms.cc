@@ -8,15 +8,15 @@
 
 namespace math
 {
-    Mat4x4 Perspective(float n, float f, float fov, float aspect_ratio)
+    Mat4x4 Perspective(float fov, float aspect_ratio, float f, float n)
     {
         float focal_length{1.f / std::tan(Radians(fov) / 2.f)};
         float r = n / focal_length;
         float l = -r;
         float t = aspect_ratio * n / focal_length;
         float b = -t;
-        return math::Mat4x4{2.0f * n / (r - l), 0, (r + l) / (r - l), 0,
-                            0, 2.0f * n / (t - b), (t + b) / (t - b), 0,
+        return math::Mat4x4{n / r, 0, 0, 0,
+                            0, n / b, 0, 0,
                             0, 0, -(f + n) / (f - n), -2.0f * n * f / (f - n),
                             0, 0, -1, 0};
     }

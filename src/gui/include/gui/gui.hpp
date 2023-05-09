@@ -25,7 +25,6 @@ namespace gui
                 std::shared_ptr<Camera> &cam,
                 std::shared_ptr<Scene> &scene,
                 std::string const &exe_path);
-        void AddSlider(const std::string &name, float &value);
         void ProcessEvent(const Event &) final;
         void CreateBaseLine();
         void Render3D(Scene &) final;
@@ -35,6 +34,7 @@ namespace gui
         void UINewObj();
         void UISideMenu();
         virtual ~DearGui() = default;
+        glm::vec3 ClickDirection(glm::vec2 screen_pos);
 
     private:
         std::shared_ptr<IWindow> window_;
@@ -50,5 +50,8 @@ namespace gui
         Widgets widgets_;
 
         bool unselection_{false};
+        glm::vec2 ndc_pos_;
+        glm::vec4 world_pos_;
     };
+
 }

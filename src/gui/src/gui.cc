@@ -40,11 +40,6 @@ namespace gui
         CreateBaseLine();
     }
 
-    void DearGui::AddSlider(const std::string &name, float &value)
-    {
-        ImGui::SliderFloat(name.c_str(), &value, 0.0f, 1.0f, "ratio = %.3f");
-    }
-
     void DearGui::ProcessEvent(const Event &e)
     {
         const SDL_Event *event = reinterpret_cast<const SDL_Event *>(e.GetEventRawHandle());
@@ -68,7 +63,9 @@ namespace gui
         {
             if (widgets_.dragging_)
             {
-                Drag();
+                auto obj_opt = scene_->Get(editor_.selected_object_);
+                widgets_.Drag(obj_opt, ClickDirection({event->button.x,
+                                                       event->button.y}));
             }
             break;
         }
@@ -154,6 +151,9 @@ namespace gui
         ImGui::Text("Current selection: %d", editor_.GetSelectedSceneID());
         ImGui::Text("Axis selection: %d", widgets_.axis_);
         ImGui::Text("Started Dragging?: %d", widgets_.dragging_);
+
+        ImGui::Text("ndc_pos: (%f, %f)", ndc_pos_.x, ndc_pos_.y);
+        ImGui::Text("World pos: (%f, %f, %f, %f)", world_pos_.x, world_pos_.y, world_pos_.z, world_pos_.w);
         ImGui::End();
         if (newObjWindow)
         {
@@ -194,5 +194,17 @@ namespace gui
 
     void DearGui::Drag()
     {
+    }
+
+    glm::vec3 DearGui::ClickDirection(glm::vec2 screen_pos)
+    {
+        glm::vec2 ndc_pos{2.0f * screen_pos.x / 1280.0f - 1.0f,
+                          1.0f - 2.0f * screen_pos.y / 720.0f};
+        glm::vec4 world_pos = glm::inverse(camera_->GetProjection() * camera_->GetView()) *
+                              glm::vec4{ndc_pos, -1.0f, 1.0f};
+        ndc_pos_ = {ndc_pos.x, ndc_pos.y};
+        world_pos_ = {world_pos.x, world_pos.y, world_pos.z, world_pos.w};
+        // return glm::normalize(world_pos - camera_->GetPosition());
+        return {};
     }
 }
