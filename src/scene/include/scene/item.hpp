@@ -23,7 +23,11 @@ namespace scene
         Item(SceneID id, Pose pose, utils::Data &&meshData);
         Item(Item &&item);
 
-        void Render();
+        void Render(bool depth_only = false);
+        SceneID Id()
+        {
+            return id_;
+        };
 
         Pose pose_;
         glm::vec3 color_{Color::white};

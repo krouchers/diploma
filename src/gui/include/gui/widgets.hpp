@@ -16,7 +16,7 @@ enum class WidgetType
 
 enum class Axis
 {
-    X,
+    X = 0,
     Y,
     Z
 };
@@ -27,22 +27,33 @@ namespace gui
     {
         Widgets();
         void Select(SceneID);
-        glm::vec3 AxisHit(scene::Pose const &pose,
+        glm::vec3 AxisHit(glm::vec3 const &pos,
+                          glm::vec3 const &click_dir,
+                          glm::vec3 const &camera_pos);
+        glm::vec3 PlaneHit(glm::vec3 const &pos,
                           glm::vec3 const &click_dir,
                           glm::vec3 const &camera_pos);
         void Render(const glm::vec3 &pos, float scale);
-        void StartDrag(scene::Pose const &pose,
+        void StartDrag(glm::vec3 const &pos,
                        glm::vec3 const &click_dir,
                        glm::vec3 const &camera_pos);
-        void DragTo(scene::Pose const &pose,
+        void DragTo(glm::vec3 const &pos,
                     glm::vec3 const &click_dir,
                     glm::vec3 const &camera_pos);
         scene::Pose ApplyAction(scene::Pose const &old_pose);
         void EndDrag();
 
-        scene::Item x_move;
-        scene::Item y_move;
-        scene::Item z_move;
+        scene::Item x_move_;
+        scene::Item y_move_;
+        scene::Item z_move_;
+
+        scene::Item x_rot_;
+        scene::Item y_rot_;
+        scene::Item z_rot_;
+
+        scene::Item x_scale_;
+        scene::Item y_scale_;
+        scene::Item z_scale_;
 
         WidgetType active_{WidgetType::move};
         Axis axis_{Axis::X};

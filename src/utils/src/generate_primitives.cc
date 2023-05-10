@@ -159,8 +159,8 @@ namespace utils
     }
     Data GenerateArrow()
     {
-        float baseRad = 0.7f;
-        float arrowLength = 6.0f;
+        float baseRad = 0.1f;
+        float arrowLength = 1.0f;
         float basePart = 0.65;
         float tipPart = 1 - 0.65;
         auto base = GenerateCone(baseRad, baseRad, arrowLength * basePart, 10, true);
@@ -168,5 +168,92 @@ namespace utils
         for (auto &v : tip.vertices_)
             v.pos.y += arrowLength * basePart;
         return merge(std::move(base), std::move(tip));
+    }
+
+    Data GenerateTorus(float iradius, float oradius)
+    {
+        const int n_rad_sides = 48, n_sides = 24;
+        const float _2pi = std::numbers::pi * 2.0f;
+        iradius = oradius - iradius;
+
+        std::vector<glm::vec3> vertices((n_rad_sides + 1) * (n_sides + 1));
+        for (int seg = 0; seg <= n_rad_sides; seg++)
+        {
+
+            int cur_seg = seg == n_rad_sides ? 0 : seg;
+
+            float t1 = (float)cur_seg / n_rad_sides * _2pi;
+            glm::vec3 r1(std::cos(t1) * oradius, 0.0f, std::sin(t1) * oradius);
+
+            for (int side = 0; side <= n_sides; side++)
+            {
+
+                int cur_side = side == n_sides ? 0 : side;
+                float t2 = (float)cur_side / n_sides * _2pi;
+                glm::vec3 r2 = glm::rotate(glm::mat4x4(1.0f), glm::degrees(-t1), glm::vec3{0.0f, 1.0f, 0.0f}) *
+                               glm::vec4(std::sin(t2) * iradius, std::cos(t2) * iradius, 0.0f, 0.0f);
+
+                vertices[side + seg * (n_sides + 1)] = r1 + r2;
+            }
+        }
+
+        std::vector<glm::vec3> normals(vertices.size());
+        for (int seg = 0; seg <= n_rad_sides; seg++)
+        {
+
+            int cur_seg = seg == n_rad_sides ? 0 : seg;
+            float t1 = (float)cur_seg / n_rad_sides * _2pi;
+            glm::vec3 r1(std::cos(t1) * oradius, 0.0f, std::sin(t1) * oradius);
+
+            for (int side = 0; side <= n_sides; side++)
+            {
+                normals[side + seg * (n_sides + 1)] =
+                    glm::normalize(vertices[side + seg * (n_sides + 1)] - r1);
+            }
+        }
+
+        int n_faces = (int)vertices.size();
+        int n_tris = n_faces * 2;
+        int n_idx = n_tris * 3;
+        std::vector<gl::Mesh::Index> triangles(n_idx);
+
+        size_t i = 0;
+        for (int seg = 0; seg <= n_rad_sides; seg++)
+        {
+            for (int side = 0; side <= n_sides - 1; side++)
+            {
+
+                int current = side + seg * (n_sides + 1);
+                int next = side + (seg < (n_rad_sides) ? (seg + 1) * (n_sides + 1) : 0);
+
+                if (i < triangles.size() - 6)
+                {
+                    triangles[i++] = current;
+                    triangles[i++] = next;
+                    triangles[i++] = next + 1;
+                    triangles[i++] = current;
+                    triangles[i++] = next + 1;
+                    triangles[i++] = current + 1;
+                }
+            }
+        }
+
+        std::vector<gl::Mesh::Vert> verts;
+        for (size_t j = 0; j < vertices.size(); j++)
+        {
+            verts.push_back({vertices[j], normals[j], 0});
+        }
+        return {verts, triangles};
+    }
+
+    Data GenereateScaleMesh()
+    {
+        auto cube = GenerateCube(0.1f);
+        auto cone = GenerateCone(0.05f, 0.05f, 0.8f, 18, true);
+        for (auto &v : cube.vertices_)
+        {
+            v.pos.y += 0.8;
+        }
+        return merge(std::move(cube), std::move(cone));
     }
 }

@@ -32,3 +32,8 @@ private:
     SDL_GLContext gl_context_;
     std::string Version();
 };
+
+namespace gl
+{
+    void ColorOutput(bool enable);
+}

@@ -19,8 +19,8 @@ namespace gui
             auto obj_pos = item.pose_.pos_;
             auto length = glm::length(glm::vec3{0.0f, 0.0f, 0.0f} - cam_pos);
             r.Outline(item);
-            float scale = length / 50.0f;
-            widgets.Render(obj_pos, scale);
+            float scale = length / 5.0f;
+            widgets.Render(obj_pos, std::min(scale, 3.0f));
         }
     }
 

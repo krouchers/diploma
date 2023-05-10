@@ -30,9 +30,10 @@ namespace gui
         void Render3D(Scene &) final;
         void RenderUi() final;
         void Drag() final;
-        void UIMenu();
+        glm::vec2 UIMenu();
         void UINewObj();
-        void UISideMenu();
+        void UISideMenu(glm::vec2 const &pos);
+        void ItemOptions();
         virtual ~DearGui() = default;
         glm::vec3 ClickDirection(glm::vec2 screen_pos);
 
@@ -51,7 +52,7 @@ namespace gui
 
         bool unselection_{false};
 
-        //debug section
+        // debug section
         glm::vec2 ndc_pos_;
         glm::vec4 world_pos_;
         //

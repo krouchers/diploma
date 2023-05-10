@@ -44,6 +44,8 @@ namespace gui
     {
         const SDL_Event *event = reinterpret_cast<const SDL_Event *>(e.GetEventRawHandle());
         ImGui_ImplSDL2_ProcessEvent(event);
+        if (ImGui::GetIO().WantCaptureMouse)
+            return;
         switch (event->type)
         {
         case SDL_MOUSEBUTTONDOWN:
@@ -58,7 +60,7 @@ namespace gui
                 {
                     scene::Item &obj = scene_->Get(editor_.selected_object_).value();
                     widgets_.StartDrag(
-                        obj.pose_,
+                        obj.pose_.pos_,
                         ClickDirection({event->button.x, event->button.y}),
                         camera_->GetPosition());
                 }
@@ -72,9 +74,9 @@ namespace gui
             if (widgets_.dragging_)
             {
                 auto obj_opt = scene_->Get(editor_.selected_object_);
-                widgets_.DragTo(obj_opt.value().get().pose_,
-                                 ClickDirection({event->button.x, event->button.y}),
-                                 camera_->GetPosition());
+                widgets_.DragTo(obj_opt.value().get().pose_.pos_,
+                                ClickDirection({event->button.x, event->button.y}),
+                                camera_->GetPosition());
                 obj_opt.value().get().pose_ = widgets_.ApplyAction(obj_opt.value().get().pose_);
             }
             break;
@@ -88,8 +90,6 @@ namespace gui
             }
             if (widgets_.dragging_)
             {
-                auto obj_opt = scene_->Get(editor_.selected_object_);
-                obj_opt.value().get().pose_ = widgets_.ApplyAction(obj_opt.value().get().pose_);
                 widgets_.EndDrag();
             }
             break;
@@ -103,7 +103,8 @@ namespace gui
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        UIMenu();
+        auto next_pos = UIMenu();
+        UISideMenu(next_pos);
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -146,16 +147,17 @@ namespace gui
         editor_.Render(scene_->Get(editor_.GetSelectedSceneID()), widgets_);
     }
 
-    void DearGui::UIMenu()
+    glm::vec2 DearGui::UIMenu()
     {
-        if (ImGui::BeginMainMenuBar())
+        float next_window_pos{};
+        ImGui::BeginMainMenuBar();
+        if (ImGui::Button("Добавить фигуру"))
         {
-            if (ImGui::Button("Добавить фигуру"))
-            {
-                newObjWindow = true;
-            }
-            ImGui::EndMainMenuBar();
+            newObjWindow = true;
         }
+        next_window_pos = ImGui::GetWindowSize().y;
+        ImGui::EndMainMenuBar();
+
         ImGui::Begin("debug");
         auto pos = camera_->GetPosition();
         ImGui::Text("Camera pos: (%f, %f, %f)", pos.x, pos.y, pos.z);
@@ -164,7 +166,9 @@ namespace gui
         if (obj_opt)
         {
             auto sel_pos = obj_opt.value().get().pose_.pos_;
+            auto sel_rot = obj_opt.value().get().pose_.euler_;
             ImGui::Text("Selection pos: (%f, %f, %f)", sel_pos.x, sel_pos.y, sel_pos.z);
+            ImGui::Text("Selection rot: (%f, %f, %f)", sel_rot.x, sel_rot.y, sel_rot.z);
         }
         ImGui::Text("Axis selection: %d", widgets_.axis_);
         ImGui::Text("Started Dragging?: %d", widgets_.dragging_);
@@ -180,6 +184,8 @@ namespace gui
         {
             UINewObj();
         }
+
+        return {0, next_window_pos};
     }
 
     void DearGui::UINewObj()
@@ -210,6 +216,20 @@ namespace gui
                 AddMesh(utils::GenerateArrow());
             }
         }
+        if (ImGui::CollapsingHeader("Тор"))
+        {
+            if (ImGui::Button("Добавить"))
+            {
+                AddMesh(utils::GenerateTorus(0.975f, 1.0f));
+            }
+        }
+        if (ImGui::CollapsingHeader("Виджет для вращения"))
+        {
+            if (ImGui::Button("Добавить"))
+            {
+                AddMesh(utils::GenereateScaleMesh());
+            }
+        }
         ImGui::End();
     }
 
@@ -226,5 +246,37 @@ namespace gui
         ndc_pos_ = {ndc_pos.x, ndc_pos.y};
         world_pos_ = {world_pos.x, world_pos.y, world_pos.z, world_pos.w};
         return glm::normalize(glm::vec3(world_pos) - camera_->GetPosition());
+    }
+
+    void DearGui::UISideMenu(glm::vec2 const &pos)
+    {
+        ImGui::SetNextWindowPos({0.0f, pos.y});
+        ImGui::SetNextWindowSize({1280.0f * 0.2, 720.0f - pos.y});
+        ImGui::Begin("SideMenu", nullptr,
+                     ImGuiWindowFlags_NoTitleBar |
+                         ImGuiWindowFlags_NoResize |
+                         ImGuiWindowFlags_NoMove |
+                         ImGuiWindowFlags_NoScrollbar |
+                         ImGuiWindowFlags_NoCollapse |
+                         ImGuiWindowFlags_NoSavedSettings);
+        ImGui::Text("SDF");
+        ItemOptions();
+        ImGui::End();
+    }
+
+    void DearGui::ItemOptions()
+    {
+        if (ImGui::Button("Перемещать"))
+        {
+            widgets_.active_ = WidgetType::move;
+        }
+        if (ImGui::Button("Вращать"))
+        {
+            widgets_.active_ = WidgetType::rotate;
+        }
+        if(ImGui::Button("Масштабировать"))
+        {
+            widgets_.active_ = WidgetType::scale;
+        }
     }
 }

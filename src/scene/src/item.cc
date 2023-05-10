@@ -11,12 +11,13 @@ namespace scene
         SyncMesh();
     }
 
-    void Item::Render()
+    void Item::Render(bool depth_only)
     {
         scene::Renderer::Opts opts;
         opts.pose_ = pose_.Transform();
         opts.color_ = color_;
         opts.id_ = id_;
+        opts.depth_only = depth_only;
         Renderer::Get().Mesh(mesh_, opts);
     }
 

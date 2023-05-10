@@ -21,7 +21,11 @@ namespace scene
         mesh_shader_.Set("p", camera_->GetProjection());
         mesh_shader_.Set("id", opts.id_);
         mesh_shader_.Set("color", opts.color_);
+        if (opts.depth_only)
+            gl::ColorOutput(false);
         mesh.Render();
+        if (opts.depth_only)
+            gl::ColorOutput(true);
     }
 
     void Renderer::Clear()
@@ -72,7 +76,7 @@ namespace scene
     void Renderer::Outline(scene::Item &item)
     {
         framebuffer_.ClearDepth();
-        item.Render();
+        item.Render(true);
         effects_.Outline(framebuffer_, framebuffer_);
     }
 

@@ -10,6 +10,12 @@ namespace gui
         x_move,
         y_move,
         z_move,
+        x_rot,
+        y_rot,
+        z_rot,
+        x_scale,
+        y_scale,
+        z_scale,
         count
     };
 }

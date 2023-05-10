@@ -12,7 +12,7 @@ namespace geometry
         glm::vec3 pos_;
         glm::vec3 norm_;
 
-        glm::vec3 hit(const Line &line)
+        glm::vec3 Hit(const Line &line)
         {
             float t = -(glm::dot(norm_, line.pos_) - glm::dot(norm_, pos_)) / glm::dot(norm_, line.dir_);
             return line.At(t);

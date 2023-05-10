@@ -1,14 +1,16 @@
 #pragma once
 
 #include "definitions.hpp"
-#include "opengl/shader.hpp"
 #include "scene.hpp"
 #include "geometry/mesh.hpp"
 #include "utils/camera.hpp"
+
+#include "opengl/shader.hpp"
 #include "opengl/opengl.hpp"
 #include "opengl/framebuffer.hpp"
 #include "opengl/lines.hpp"
 #include "opengl/effects.hpp"
+
 #include "glm/mat4x4.hpp"
 
 namespace scene
@@ -21,6 +23,7 @@ namespace scene
             glm::mat4x4 pose_;
             glm::vec3 color_;
             SceneID id_;
+            bool depth_only;
         };
 
         Renderer(const Renderer &) = delete;

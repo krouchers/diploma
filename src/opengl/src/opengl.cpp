@@ -130,3 +130,8 @@ void Opengl::InitGlobalParams()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
+
+void gl::ColorOutput(bool enable)
+{
+    glColorMask(enable, enable, enable, enable);
+}
