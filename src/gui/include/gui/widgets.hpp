@@ -66,6 +66,7 @@ namespace gui
         glm::vec3 move_selection_pos_;
         glm::vec3 plane_selection_pos_f_;
         glm::vec3 plane_selection_pos_s_;
+        float rotation_degrees_;
         //
     };
 }

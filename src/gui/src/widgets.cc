@@ -165,11 +165,9 @@ namespace gui
                             glm::vec3 const &click_dir,
                             glm::vec3 const &camera_pos)
     {
-        info("StartDrag call");
         if (active_ == WidgetType::rotate)
         {
-            drag_start_ = glm::normalize(PlaneHit(pos, click_dir, camera_pos));
-            drag_end_ = {};
+            drag_end_ = drag_start_ = glm::normalize(pos - PlaneHit(pos, click_dir, camera_pos));
         }
         else if (active_ == WidgetType::move)
             drag_start_ = drag_end_ = AxisHit(pos, click_dir, camera_pos);
@@ -184,16 +182,19 @@ namespace gui
                          glm::vec3 const &click_dir,
                          glm::vec3 const &camera_pos)
     {
-        info("DragTo call");
         if (active_ == WidgetType::rotate)
         {
-            auto hit = glm::normalize(PlaneHit(pos, click_dir, camera_pos));
-            float angle = std::acos(glm::dot(drag_start_, hit));
-            float sign = math::Sign(glm::cross(drag_start_, hit)[(int)axis_]);
-            drag_end_ = glm::vec3{};
-            drag_end_[(int)axis_] = sign * glm::degrees(angle);
-            info("with angle %f", angle);
-            drag_start_ = hit;
+            auto hit = PlaneHit(pos, click_dir, camera_pos);
+            drag_end_ = glm::normalize(hit - pos);
+
+            float angle = std::acos(glm::dot(drag_start_, drag_end_));
+            float sign = math::Sign(glm::cross(drag_start_, drag_end_)[(int)axis_]);
+
+            glm::vec3 euler{};
+            euler[(int)axis_] = sign * glm::degrees(angle);
+            rotation_degrees_ = euler[(int)axis_];
+            drag_start_ = drag_end_;
+            drag_end_ = euler;
         }
         else
         {
@@ -214,14 +215,12 @@ namespace gui
 
     void Widgets::EndDrag()
     {
-        info("EndDrag call");
         dragging_ = false;
         drag_start_ = drag_end_ = {};
     }
 
     scene::Pose Widgets::ApplyAction(scene::Pose const &old_pose)
     {
-        info("applyAction call");
         scene::Pose new_pose{old_pose};
         switch (active_)
         {
@@ -280,7 +279,7 @@ namespace gui
         glm::vec3 norm{0.0f};
         norm[(int)axis_] = 1.0f;
         geometry::Plane plane{pos, norm};
-        geometry::Line look{camera_pos, click_dir};
-        return plane.Hit(look);
+        geometry::Line select{camera_pos, click_dir};
+        return plane_selection_pos_f_ = plane.Hit(select);
     }
 }

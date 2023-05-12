@@ -50,7 +50,6 @@ namespace gui
         {
         case SDL_MOUSEBUTTONDOWN:
         {
-            info("Mouse down event processing");
             if (event->button.button == SDL_BUTTON_LEFT)
             {
                 auto &r = scene::Renderer::Get();
@@ -72,7 +71,6 @@ namespace gui
         }
         case SDL_MOUSEMOTION:
         {
-            info("Mouse motion event processing");
             if (widgets_.dragging_)
             {
                 auto obj_opt = scene_->Get(editor_.selected_object_);
@@ -85,7 +83,6 @@ namespace gui
         }
         case SDL_MOUSEBUTTONUP:
         {
-            info("Mouse up event processing");
             if (unselection_)
             {
                 editor_.ClearSelection();
@@ -172,6 +169,7 @@ namespace gui
             auto sel_rot = obj_opt.value().get().pose_.euler_;
             ImGui::Text("Selection pos: (%f, %f, %f)", sel_pos.x, sel_pos.y, sel_pos.z);
             ImGui::Text("Selection rot: (%f, %f, %f)", sel_rot.x, sel_rot.y, sel_rot.z);
+            ImGui::Text("Rotation degrees: %f", widgets_.rotation_degrees_);
         }
         ImGui::Text("Axis selection: %d", widgets_.axis_);
         ImGui::Text("Started Dragging?: %d", widgets_.dragging_);
