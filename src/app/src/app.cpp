@@ -28,6 +28,7 @@ void App::Run()
 {
     while (!window_->ShouldQuit())
     {
+        info("===============Start frame================");
         ProcessEvents();
         auto &r = scene::Renderer::Get();
         r.Clear();
@@ -36,6 +37,7 @@ void App::Run()
         r.Complete();
         gui_->RenderUi();
         window_->SwapFrame();
+        info("===============End frame  ================");
     }
 }
 

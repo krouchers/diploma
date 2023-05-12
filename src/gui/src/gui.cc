@@ -50,6 +50,7 @@ namespace gui
         {
         case SDL_MOUSEBUTTONDOWN:
         {
+            info("Mouse down event processing");
             if (event->button.button == SDL_BUTTON_LEFT)
             {
                 auto &r = scene::Renderer::Get();
@@ -71,6 +72,7 @@ namespace gui
         }
         case SDL_MOUSEMOTION:
         {
+            info("Mouse motion event processing");
             if (widgets_.dragging_)
             {
                 auto obj_opt = scene_->Get(editor_.selected_object_);
@@ -83,6 +85,7 @@ namespace gui
         }
         case SDL_MOUSEBUTTONUP:
         {
+            info("Mouse up event processing");
             if (unselection_)
             {
                 editor_.ClearSelection();

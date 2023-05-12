@@ -12,7 +12,7 @@ namespace scene
 
         static Pose Rotated(const glm::vec3 &euler)
         {
-            return Pose{euler, {}, {1.0f, 1.0f, 1.0f}};
+            return Pose{euler, {}};
         }
 
         math::Quat RotationQuat() const

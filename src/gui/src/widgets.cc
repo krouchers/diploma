@@ -14,6 +14,8 @@
 #include "geometry/plane.hpp"
 #include "math/common.hpp"
 
+#include "imgui.h"
+
 #include <cmath>
 
 namespace gui
@@ -33,9 +35,9 @@ namespace gui
                    scene::Pose::Rotated({90.0f, 0.0f, 0.0f}), utils::GenereateScaleMesh()}
 
     {
-        x_rot_.color_ = x_move_.color_ = Color::red;
-        y_rot_.color_ = y_move_.color_ = Color::green;
-        z_rot_.color_ = z_move_.color_ = Color::blue;
+        x_scale_.color_ = x_rot_.color_ = x_move_.color_ = Color::red;
+        y_scale_.color_ = y_rot_.color_ = y_move_.color_ = Color::green;
+        z_scale_.color_ = z_rot_.color_ = z_move_.color_ = Color::blue;
     }
 
     void Widgets::Render(const glm::vec3 &pos, float scale)
@@ -47,17 +49,20 @@ namespace gui
         {
         case WidgetType::move:
         {
-            x_move_.pose_.pos_ = pos;
-            x_move_.pose_.scale_ = scl;
-            x_move_.Render();
+            if (!dragging_)
+            {
+                x_move_.pose_.scale_ = scl;
+                x_move_.pose_.pos_ = pos;
+                x_move_.Render();
 
-            y_move_.pose_.pos_ = pos;
-            y_move_.pose_.scale_ = scl;
-            y_move_.Render();
+                y_move_.pose_.scale_ = scl;
+                y_move_.pose_.pos_ = pos;
+                y_move_.Render();
 
-            z_move_.pose_.pos_ = pos;
-            z_move_.pose_.scale_ = scl;
-            z_move_.Render();
+                z_move_.pose_.scale_ = scl;
+                z_move_.pose_.pos_ = pos;
+                z_move_.Render();
+            }
             break;
         }
         case WidgetType::rotate:
@@ -160,17 +165,18 @@ namespace gui
                             glm::vec3 const &click_dir,
                             glm::vec3 const &camera_pos)
     {
-        switch (active_)
+        info("StartDrag call");
+        if (active_ == WidgetType::rotate)
         {
-        case WidgetType::move:
-            drag_start_ = drag_end_ = AxisHit(pos, click_dir, camera_pos);
-            break;
-        case WidgetType::rotate:
             drag_start_ = glm::normalize(PlaneHit(pos, click_dir, camera_pos));
             drag_end_ = {};
-            break;
-        default:
-            break;
+        }
+        else if (active_ == WidgetType::move)
+            drag_start_ = drag_end_ = AxisHit(pos, click_dir, camera_pos);
+        else
+        {
+            drag_start_ = AxisHit(pos, click_dir, camera_pos);
+            drag_end_ = glm::vec3(1.0f);
         }
     }
 
@@ -178,15 +184,8 @@ namespace gui
                          glm::vec3 const &click_dir,
                          glm::vec3 const &camera_pos)
     {
-        switch (active_)
-        {
-        case WidgetType::move:
-        {
-            drag_start_ = drag_end_;
-            drag_end_ = AxisHit(pos, click_dir, camera_pos);
-            break;
-        }
-        case WidgetType::rotate:
+        info("DragTo call");
+        if (active_ == WidgetType::rotate)
         {
             auto hit = glm::normalize(PlaneHit(pos, click_dir, camera_pos));
             float angle = std::acos(glm::dot(drag_start_, hit));
@@ -195,30 +194,54 @@ namespace gui
             drag_end_[(int)axis_] = sign * glm::degrees(angle);
             info("with angle %f", angle);
             drag_start_ = hit;
-            break;
         }
-        default:
-            break;
+        else
+        {
+            auto hit = AxisHit(pos, click_dir, camera_pos);
+            if (active_ == WidgetType::scale)
+            {
+                drag_end_ = glm::vec3{1.0f};
+                drag_end_[(int)axis_] = glm::length(hit - pos) / glm::length(drag_start_ - pos);
+                drag_start_ = hit;
+            }
+            else
+            {
+                drag_start_ = drag_end_;
+                drag_end_ = hit;
+            }
         }
     }
 
     void Widgets::EndDrag()
     {
+        info("EndDrag call");
         dragging_ = false;
         drag_start_ = drag_end_ = {};
     }
 
     scene::Pose Widgets::ApplyAction(scene::Pose const &old_pose)
     {
+        info("applyAction call");
         scene::Pose new_pose{old_pose};
         switch (active_)
         {
         case WidgetType::move:
+        {
             new_pose.pos_ = drag_end_ - drag_start_ + old_pose.pos_;
             break;
+        }
         case WidgetType::rotate:
+        {
             new_pose.euler_ = new_pose.euler_ + drag_end_;
-            info("applay rotation action with (%f, %f, %f)", drag_end_.x, drag_end_.y, drag_end_.z);
+            break;
+        }
+        case WidgetType::scale:
+        {
+            auto rot = glm::eulerAngleXYZ(old_pose.euler_.x, old_pose.euler_.y, old_pose.euler_.z);
+            auto transform = glm::inverse(rot) * glm::scale(drag_end_) * rot * glm::scale(old_pose.scale_);
+            new_pose.scale_ = {transform[0][0], transform[1][1], transform[2][2]};
+            break;
+        }
         default:
             break;
         }
