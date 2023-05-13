@@ -3,6 +3,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 #include <numbers>
+#include <map>
 
 namespace utils
 {
@@ -91,9 +92,9 @@ namespace utils
         normals[vert + 1] = normals[n_sides * 2 + 3];
 
         size_t n_tris = n_sides + n_sides + n_sides * 2;
-        std::vector<gl::Mesh::Index> triangles(n_tris * 3 + 3);
+        std::vector<geometry::Mesh::Index> triangles(n_tris * 3 + 3);
 
-        gl::Mesh::Index tri = 0;
+        geometry::Mesh::Index tri = 0;
         size_t i = 0;
         while (tri < n_sides - 1)
         {
@@ -150,7 +151,7 @@ namespace utils
             i += 3;
         }
 
-        std::vector<gl::Mesh::Vert> verts;
+        std::vector<geometry::Mesh::Vert> verts;
         for (size_t j = 0; j < vertices.size(); j++)
         {
             verts.push_back({vertices[j], normals[j], 0});
@@ -215,7 +216,7 @@ namespace utils
         int n_faces = (int)vertices.size();
         int n_tris = n_faces * 2;
         int n_idx = n_tris * 3;
-        std::vector<gl::Mesh::Index> triangles(n_idx);
+        std::vector<geometry::Mesh::Index> triangles(n_idx);
 
         size_t i = 0;
         for (int seg = 0; seg <= n_rad_sides; seg++)
@@ -238,7 +239,7 @@ namespace utils
             }
         }
 
-        std::vector<gl::Mesh::Vert> verts;
+        std::vector<geometry::Mesh::Vert> verts;
         for (size_t j = 0; j < vertices.size(); j++)
         {
             verts.push_back({vertices[j], normals[j], 0});
@@ -255,5 +256,110 @@ namespace utils
             v.pos.y += 0.8;
         }
         return merge(std::move(cube), std::move(cone));
+    }
+
+    Data GenerateSphere(float radius, int level)
+    {
+        struct TriIdx
+        {
+            int v1, v2, v3;
+        };
+
+        auto middle_point = [&](int p1, int p2, std::vector<glm::vec3> &vertices,
+                                std::map<int64_t, size_t> &cache, float radius) -> size_t
+        {
+            bool firstIsSmaller = p1 < p2;
+            int64_t smallerIndex = firstIsSmaller ? p1 : p2;
+            int64_t greaterIndex = firstIsSmaller ? p2 : p1;
+            int64_t key = (smallerIndex << 32ll) + greaterIndex;
+
+            auto entry = cache.find(key);
+            if (entry != cache.end())
+            {
+                return entry->second;
+            }
+
+            glm::vec3 point1 = vertices[p1];
+            glm::vec3 point2 = vertices[p2];
+            glm::vec3 middle((point1.x + point2.x) / 2.0f, (point1.y + point2.y) / 2.0f,
+                             (point1.z + point2.z) / 2.0f);
+            size_t i = vertices.size();
+            vertices.push_back(glm::normalize(middle) * radius);
+            cache[key] = i;
+            return i;
+        };
+
+        std::vector<glm::vec3> vertices;
+        std::map<int64_t, size_t> middlePointIndexCache;
+        float t = (1.0f + std::sqrt(5.0f)) / 2.0f;
+        vertices.push_back(glm::normalize(glm::vec3(-1.0f, t, 0.0f)) * radius);
+        vertices.push_back(glm::normalize(glm::vec3(1.0f, t, 0.0f)) * radius);
+        vertices.push_back(glm::normalize(glm::vec3(-1.0f, -t, 0.0f)) * radius);
+        vertices.push_back(glm::normalize(glm::vec3(1.0f, -t, 0.0f)) * radius);
+        vertices.push_back(glm::normalize(glm::vec3(0.0f, -1.0f, t)) * radius);
+        vertices.push_back(glm::normalize(glm::vec3(0.0f, 1.0f, t)) * radius);
+        vertices.push_back(glm::normalize(glm::vec3(0.0f, -1.0f, -t)) * radius);
+        vertices.push_back(glm::normalize(glm::vec3(0.0f, 1.0f, -t)) * radius);
+        vertices.push_back(glm::normalize(glm::vec3(t, 0.0f, -1.0f)) * radius);
+        vertices.push_back(glm::normalize(glm::vec3(t, 0.0f, 1.0f)) * radius);
+        vertices.push_back(glm::normalize(glm::vec3(-t, 0.0f, -1.0f)) * radius);
+        vertices.push_back(glm::normalize(glm::vec3(-t, 0.0f, 1.0f)) * radius);
+
+        std::vector<TriIdx> faces;
+        faces.push_back(TriIdx{0, 11, 5});
+        faces.push_back(TriIdx{0, 5, 1});
+        faces.push_back(TriIdx{0, 1, 7});
+        faces.push_back(TriIdx{0, 7, 10});
+        faces.push_back(TriIdx{0, 10, 11});
+        faces.push_back(TriIdx{1, 5, 9});
+        faces.push_back(TriIdx{5, 11, 4});
+        faces.push_back(TriIdx{11, 10, 2});
+        faces.push_back(TriIdx{10, 7, 6});
+        faces.push_back(TriIdx{7, 1, 8});
+        faces.push_back(TriIdx{3, 9, 4});
+        faces.push_back(TriIdx{3, 4, 2});
+        faces.push_back(TriIdx{3, 2, 6});
+        faces.push_back(TriIdx{3, 6, 8});
+        faces.push_back(TriIdx{3, 8, 9});
+        faces.push_back(TriIdx{4, 9, 5});
+        faces.push_back(TriIdx{2, 4, 11});
+        faces.push_back(TriIdx{6, 2, 10});
+        faces.push_back(TriIdx{8, 6, 7});
+        faces.push_back(TriIdx{9, 8, 1});
+
+        for (int i = 0; i < level; i++)
+        {
+            std::vector<TriIdx> faces2;
+            for (auto tri : faces)
+            {
+                int a = (int)middle_point(tri.v1, tri.v2, vertices, middlePointIndexCache, radius);
+                int b = (int)middle_point(tri.v2, tri.v3, vertices, middlePointIndexCache, radius);
+                int c = (int)middle_point(tri.v3, tri.v1, vertices, middlePointIndexCache, radius);
+                faces2.push_back(TriIdx{tri.v1, a, c});
+                faces2.push_back(TriIdx{tri.v2, b, a});
+                faces2.push_back(TriIdx{tri.v3, c, b});
+                faces2.push_back(TriIdx{a, b, c});
+            }
+            faces = faces2;
+        }
+
+        std::vector<geometry::Mesh::Index> triangles;
+        for (size_t i = 0; i < faces.size(); i++)
+        {
+            triangles.push_back(faces[i].v1);
+            triangles.push_back(faces[i].v2);
+            triangles.push_back(faces[i].v3);
+        }
+
+        std::vector<glm::vec3> normals(vertices.size());
+        for (size_t i = 0; i < normals.size(); i++)
+            normals[i] = glm::normalize(vertices[i]);
+
+        std::vector<geometry::Mesh::Vert> verts;
+        for (size_t i = 0; i < vertices.size(); i++)
+        {
+            verts.push_back({vertices[i], normals[i], 0});
+        }
+        return {verts, triangles};
     }
 }
