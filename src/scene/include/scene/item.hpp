@@ -19,11 +19,11 @@ namespace scene
     {
     public:
         Item(SceneID id, geometry::HalfedgeMesh &&mesh);
-        Item(SceneID id, Pose pose, geometry::HalfedgeMesh &&mesh);
         Item(SceneID id, Pose pose, utils::Data &&meshData);
         Item(Item &&item);
 
         void Render(bool depth_only = false);
+        geometry::HalfedgeMesh *GetHalfedgeMesh();
         SceneID Id()
         {
             return id_;
@@ -37,7 +37,7 @@ namespace scene
 
         SceneID id_;
         geometry::HalfedgeMesh halfedge_mesh_;
-        gl::Mesh mesh_;
+        geometry::Mesh mesh_;
 
         bool mesh_dirty = true;
     };

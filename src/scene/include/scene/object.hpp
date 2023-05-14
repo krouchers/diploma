@@ -12,6 +12,6 @@ namespace scene
         void Render(const glm::mat4x4 &view);
 
     private:
-        gl::Mesh mesh_;
+        geometry::Mesh mesh_;
     };
 }

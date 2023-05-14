@@ -1,4 +1,25 @@
-Create move cstr for Mesh
-Create move cstr for HalfEdgeMesh
+☐ Make some validation for halfedge structure
+    ☐ Vertex position is finite number
+    ☐ Each halfedge's next point to unique halfedge
+    ☐ Each halfedge is pointed to by a halfedge
+    ☐ Check that each halfedge incident to a vertex, points to that vertex
+    ☐ Check whether each halfedge incident to and edge, points to that edge
+    ☐ Check wheterh each halfedge incident to a face, points to that face
+
+☐ Implement instance class
+    ☐ Write shaders
+    ☐ add renderer support
+
+✔ Add sphere @done(23-05-13 23:14)
+☐ Implement halfedge vizualization for model mode
+    ☐ vertices
+    ☐ edges
+    ☐ faces
+☐ Make them selectable
+    ☐ vertices
+    ☐ edges
+    ☐ faces
+
+
 
 

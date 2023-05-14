@@ -40,4 +40,9 @@ namespace scene
     {
         SyncMesh();
     }
+
+    geometry::HalfedgeMesh *Item::GetHalfedgeMesh()
+    {
+        return &halfedge_mesh_;
+    }
 }

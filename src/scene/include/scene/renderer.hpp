@@ -33,7 +33,7 @@ namespace scene
         Renderer &operator=(Renderer &&) = delete;
 
         static Renderer &Get();
-        void Mesh(gl::Mesh &mesh, Opts const &opts);
+        void Mesh(geometry::Mesh &mesh, Opts const &opts);
         void Lines(gl::Lines &mesh, const glm::mat4x4 &view);
         static void Setup(const std::shared_ptr<Opengl> &gl,
                           std::shared_ptr<Camera> const &camera);

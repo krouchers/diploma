@@ -14,7 +14,7 @@ namespace scene
     {
     }
 
-    void Renderer::Mesh(gl::Mesh &mesh, const Opts &opts)
+    void Renderer::Mesh(geometry::Mesh &mesh, const Opts &opts)
     {
         mesh_shader_.Bind();
         mesh_shader_.Set("mv", camera_->GetView() * opts.pose_);
