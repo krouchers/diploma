@@ -5,14 +5,24 @@
 
 #include "definitions.hpp"
 #include "colors.hpp"
+
 #include "interfaces/gui.hpp"
 #include "interfaces/window.hpp"
+
 #include "opengl/lines.hpp"
 #include "utils/camera.hpp"
 #include "scene/scene.hpp"
-#include "gui/editor.hpp"
+
+#include "gui/layout.hpp"
+#include "gui/model.hpp"
 
 class Opengl;
+
+enum class Mode
+{
+    layout,
+    model
+};
 
 namespace gui
 {
@@ -47,8 +57,11 @@ namespace gui
 
         gl::Lines baseline_{};
 
-        Editor editor_;
+        Layout layout_;
+        Model model_;
         Widgets widgets_;
+
+        Mode mode_{Mode::layout};
 
         bool unselection_{false};
 

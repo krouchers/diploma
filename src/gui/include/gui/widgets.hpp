@@ -1,7 +1,6 @@
 #pragma once
 
 #include "scene/item.hpp"
-#include "scene/scene.hpp"
 #include "scene/pose.hpp"
 
 using SceneID = unsigned int;

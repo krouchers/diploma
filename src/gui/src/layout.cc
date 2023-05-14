@@ -1,15 +1,15 @@
-#include "gui/editor.hpp"
+#include "gui/layout.hpp"
 #include "scene/renderer.hpp"
 #include "scene/item.hpp"
 
 namespace gui
 {
-    SceneID Editor::GetSelectedSceneID()
+    SceneID Layout::GetSelectedSceneID()
     {
         return selected_object_;
     }
 
-    void Editor::Render(MayBeItem obj_opt, Widgets &widgets)
+    void Layout::Render(MayBeItem obj_opt, Widgets &widgets)
     {
         if (obj_opt)
         {
@@ -24,7 +24,7 @@ namespace gui
         }
     }
 
-    void Editor::Select(SceneID id)
+    void Layout::Select(SceneID id)
     {
         if (id >= (SceneID)WidgetsIds::count)
             selected_object_ = id;

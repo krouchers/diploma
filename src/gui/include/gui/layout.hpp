@@ -5,7 +5,7 @@
 
 namespace gui
 {
-    struct Editor
+    struct Layout 
     {
         void Select(SceneID id);
         void Render(MayBeItem obj_opt, Widgets &widgets);

@@ -54,11 +54,11 @@ namespace gui
             {
                 auto &r = scene::Renderer::Get();
                 SceneID id = r.ReadID({event->button.x, event->button.y});
-                editor_.Select(id);
+                layout_.Select(id);
                 widgets_.Select(id);
                 if (widgets_.dragging_)
                 {
-                    scene::Item &obj = scene_->Get(editor_.selected_object_).value();
+                    scene::Item &obj = scene_->Get(layout_.selected_object_).value();
                     widgets_.StartDrag(
                         obj.pose_.pos_,
                         ClickDirection({event->button.x, event->button.y}),
@@ -73,7 +73,7 @@ namespace gui
         {
             if (widgets_.dragging_)
             {
-                auto obj_opt = scene_->Get(editor_.selected_object_);
+                auto obj_opt = scene_->Get(layout_.selected_object_);
                 widgets_.DragTo(obj_opt.value().get().pose_.pos_,
                                 ClickDirection({event->button.x, event->button.y}),
                                 camera_->GetPosition());
@@ -85,7 +85,7 @@ namespace gui
         {
             if (unselection_)
             {
-                editor_.ClearSelection();
+                layout_.ClearSelection();
                 unselection_ = false;
             }
             if (widgets_.dragging_)
@@ -138,13 +138,23 @@ namespace gui
 
     void DearGui::Render3D(Scene &scene)
     {
-
-        scene.ForItems([&](scene::Item &item)
-                       { item.Render(); });
+        if (mode_ == Mode::layout)
+        {
+            scene.ForItems([&](scene::Item &item)
+                           { item.Render(); });
+        }
 
         scene::Renderer::Get().Lines(baseline_, camera_->GetProjection() * camera_->GetView());
 
-        editor_.Render(scene_->Get(editor_.GetSelectedSceneID()), widgets_);
+        switch (mode_)
+        {
+        case Mode::layout:
+            layout_.Render(scene_->Get(layout_.GetSelectedSceneID()), widgets_);
+            break;
+        case Mode::model:
+            model_.Render(scene_->Get(layout_.GetSelectedSceneID()), widgets_);
+            break;
+        }
     }
 
     glm::vec2 DearGui::UIMenu()
@@ -155,14 +165,22 @@ namespace gui
         {
             newObjWindow = true;
         }
+        if (ImGui::Button("Редактировать положение"))
+        {
+            mode_ = Mode::layout;
+        }
+        if (ImGui::Button("Редактировать модель"))
+        {
+            mode_ = Mode::model;
+        }
         next_window_pos = ImGui::GetWindowSize().y;
         ImGui::EndMainMenuBar();
 
         ImGui::Begin("debug");
         auto pos = camera_->GetPosition();
         ImGui::Text("Camera pos: (%f, %f, %f)", pos.x, pos.y, pos.z);
-        ImGui::Text("Current selection: %d", editor_.GetSelectedSceneID());
-        auto obj_opt = scene_->Get(editor_.selected_object_);
+        ImGui::Text("Current selection: %d", layout_.GetSelectedSceneID());
+        auto obj_opt = scene_->Get(layout_.selected_object_);
         if (obj_opt)
         {
             auto sel_pos = obj_opt.value().get().pose_.pos_;
@@ -192,7 +210,7 @@ namespace gui
     void DearGui::UINewObj()
     {
         auto AddMesh{
-            [this](gl::Mesh &&mesh)
+            [this](geometry::Mesh &&mesh)
             {
                 geometry::HalfedgeMesh hm{};
                 hm.CreateFromMesh(std::move(mesh));
@@ -207,7 +225,7 @@ namespace gui
             if (ImGui::Button("Добавить"))
             {
                 auto [verts, inds]{utils::GenerateCube(edgeLenght / 2)};
-                AddMesh(gl::Mesh{std::move(verts), std::move(inds)});
+                AddMesh(geometry::Mesh{std::move(verts), std::move(inds)});
             }
         }
         if (ImGui::CollapsingHeader("Стрелку"))
@@ -229,6 +247,15 @@ namespace gui
             if (ImGui::Button("Добавить"))
             {
                 AddMesh(utils::GenereateScaleMesh());
+            }
+        }
+        if (ImGui::CollapsingHeader("Сфера"))
+        {
+            static float radius{};
+            ImGui::SliderFloat("Длина ребра", &radius, 1.0f, 10.0f);
+            if (ImGui::Button("Добавить"))
+            {
+                AddMesh(utils::GenerateSphere(radius, 3));
             }
         }
         ImGui::End();
@@ -275,7 +302,7 @@ namespace gui
         {
             widgets_.active_ = WidgetType::rotate;
         }
-        if(ImGui::Button("Масштабировать"))
+        if (ImGui::Button("Масштабировать"))
         {
             widgets_.active_ = WidgetType::scale;
         }
