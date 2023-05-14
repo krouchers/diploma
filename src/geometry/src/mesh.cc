@@ -1,6 +1,7 @@
 #include "geometry/mesh.hpp"
 #include "utils/generate_primitives.hpp"
-namespace gl
+
+namespace geometry
 {
     Mesh::Mesh()
     {
@@ -44,7 +45,7 @@ namespace gl
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vertices_[0]), reinterpret_cast<void *>(offsetof(Vert, norm)));
         glEnableVertexAttribArray(1);
 
-        glVertexAttribPointer(3, 1, GL_UNSIGNED_INT, GL_FALSE, sizeof(vertices_[0]), reinterpret_cast<void *>(offsetof(Vert, id)));
+        glVertexAttribPointer(2, 1, GL_UNSIGNED_INT, GL_FALSE, sizeof(vertices_[0]), reinterpret_cast<void *>(offsetof(Vert, id)));
         glEnableVertexAttribArray(2);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, veo_);
@@ -62,7 +63,7 @@ namespace gl
         dirty = false;
     }
 
-    void Mesh::Render() 
+    void Mesh::Render()
     {
         if (dirty)
             Update();
@@ -113,5 +114,11 @@ namespace gl
         indices_ = std::move(src.indices_);
 
         return *this;
+    }
+
+    void Mesh::Recreate(std::vector<Vert> &&vertices, std::vector<Index> &&indices)
+    {
+        vertices_ = vertices;
+        indices = indices;
     }
 }

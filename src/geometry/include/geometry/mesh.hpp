@@ -3,6 +3,7 @@
 #include "glm/vec3.hpp"
 #include "glm/mat4x4.hpp"
 #include "glad.hpp"
+#include "common/widgets_ids.hpp"
 
 #include <vector>
 
@@ -11,7 +12,7 @@ namespace utils
     struct Data;
 }
 
-namespace gl
+namespace geometry
 {
     class Mesh
     {
@@ -40,9 +41,9 @@ namespace gl
 
         Mesh &operator=(Mesh &&src);
         Mesh &operator=(const Mesh &src) = delete;
-        void Update();
         void Destroy();
         void Render();
+        void Recreate(std::vector<Vert> &&vertices, std::vector<Index> &&indices);
 
         std::vector<Vert> Vertices();
         std::vector<Index> Indices();
@@ -54,6 +55,7 @@ namespace gl
          */
         void SetupVao();
 
+        void Update();
         bool dirty{true};
         GLuint vao_, vbo_, veo_;
         std::vector<Vert> vertices_;

@@ -19,12 +19,12 @@ namespace std
 namespace geometry
 {
 
-    gl::Mesh HalfedgeMesh::ToMesh()
+    geometry::Mesh HalfedgeMesh::ToMesh()
     {
-        std::vector<gl::Mesh::Vert> mesh_verts;
-        std::vector<gl::Mesh::Index> mesh_indexes;
+        std::vector<geometry::Mesh::Vert> mesh_verts;
+        std::vector<geometry::Mesh::Index> mesh_indexes;
 
-        std::unordered_map<glm::vec3, gl::Mesh::Index> posToInd;
+        std::unordered_map<glm::vec3, geometry::Mesh::Index> posToInd;
         for (auto f = faces_.begin(); f != faces_.end(); ++f)
         {
             if (f->isBoundary_)
@@ -48,14 +48,14 @@ namespace geometry
             mesh_verts.push_back({p1, n, 0});
             mesh_verts.push_back({p2, n, 0});
 
-            gl::Mesh::Index ind = mesh_indexes.size();
+            geometry::Mesh::Index ind = mesh_indexes.size();
 
             mesh_indexes.push_back(ind);
             mesh_indexes.push_back(ind + 1);
             mesh_indexes.push_back(ind + 2);
         }
 
-        return gl::Mesh(std::move(mesh_verts), std::move(mesh_indexes));
+        return geometry::Mesh(std::move(mesh_verts), std::move(mesh_indexes));
     }
 
     void HalfedgeMesh::CreateFromData(utils::Data &&data)
@@ -214,7 +214,40 @@ namespace geometry
     }
 
     HalfedgeMesh::HalfedgeMesh(utils::Data &&data)
+        : HalfedgeMesh()
     {
         CreateFromData(std::move(data));
+    }
+
+    HalfedgeMesh::HalfedgeMesh()
+        : next_id_{(SceneID)gui::WidgetsIds::count}
+    {
+    }
+
+    HalfedgeMesh::FaceRef HalfedgeMesh::FacesBegin()
+    {
+        return faces_.begin();
+    }
+    HalfedgeMesh::FaceRef HalfedgeMesh::FacesEnd()
+    {
+        return faces_.end();
+    }
+
+    HalfedgeMesh::EdgeRef HalfedgeMesh::EdgesBegin()
+    {
+        return edges_.begin();
+    }
+    HalfedgeMesh::EdgeRef HalfedgeMesh::EdgesEnd()
+    {
+        return edges_.end();
+    }
+
+    HalfedgeMesh::VertexRef HalfedgeMesh::VerticesBegin()
+    {
+        return vertices_.begin();
+    }
+    HalfedgeMesh::VertexRef HalfedgeMesh::VerticesEnd()
+    {
+        return vertices_.end();
     }
 }
