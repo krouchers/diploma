@@ -45,7 +45,7 @@ namespace geometry
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vertices_[0]), reinterpret_cast<void *>(offsetof(Vert, norm)));
         glEnableVertexAttribArray(1);
 
-        glVertexAttribPointer(2, 1, GL_UNSIGNED_INT, GL_FALSE, sizeof(vertices_[0]), reinterpret_cast<void *>(offsetof(Vert, id)));
+        glVertexAttribIPointer(2, 1, GL_UNSIGNED_INT, sizeof(vertices_[0]), reinterpret_cast<void *>(offsetof(Vert, id)));
         glEnableVertexAttribArray(2);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, veo_);
@@ -119,6 +119,17 @@ namespace geometry
     void Mesh::Recreate(std::vector<Vert> &&vertices, std::vector<Index> &&indices)
     {
         vertices_ = vertices;
-        indices = indices;
+        indices_ = indices;
+        dirty = true;
+    }
+
+    size_t Mesh::IndicesSize()
+    {
+        return indices_.size();
+    }
+
+    GLuint Mesh::GetVAO()
+    {
+        return vao_;
     }
 }

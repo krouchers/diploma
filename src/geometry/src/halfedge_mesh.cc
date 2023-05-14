@@ -44,9 +44,9 @@ namespace geometry
             auto p2 = verts[2];
             auto n = glm::normalize(glm::cross(p2 - p0, p1 - p0));
 
-            mesh_verts.push_back({p0, n, 0});
-            mesh_verts.push_back({p1, n, 0});
-            mesh_verts.push_back({p2, n, 0});
+            mesh_verts.push_back({p0, n, f->id_});
+            mesh_verts.push_back({p1, n, f->id_});
+            mesh_verts.push_back({p2, n, f->id_});
 
             geometry::Mesh::Index ind = mesh_indexes.size();
 

@@ -7,6 +7,11 @@
 
 #include <vector>
 
+namespace opengl
+{
+    class Instance;
+}
+
 namespace utils
 {
     struct Data;
@@ -47,6 +52,10 @@ namespace geometry
 
         std::vector<Vert> Vertices();
         std::vector<Index> Indices();
+        size_t IndicesSize();
+        GLuint GetVAO();
+        void Update();
+        bool dirty{true};
 
     private:
         /**
@@ -55,8 +64,6 @@ namespace geometry
          */
         void SetupVao();
 
-        void Update();
-        bool dirty{true};
         GLuint vao_, vbo_, veo_;
         std::vector<Vert> vertices_;
         std::vector<GLuint> indices_;
