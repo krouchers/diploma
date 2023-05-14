@@ -13,14 +13,20 @@ namespace gui
 
         auto &r = scene::Renderer::Get();
         scene::Renderer::HalfedgeOpts opts(Shapes());
+        opts.hov_id_ = hovered_id_;
+        opts.sel_id_ = selected_id_;
         r.Halfedge(opts);
         (void)widgets;
     }
 
     void Model::SetupMeshComponents(scene::Item &item)
     {
-        // geometry::HalfedgeMesh *old = halfedge_mesh_;
+        geometry::HalfedgeMesh *old = halfedge_mesh_;
         halfedge_mesh_ = item.GetHalfedgeMesh();
+        if (old == halfedge_mesh_)
+        {
+            return;
+        }
 
         using Vert = geometry::Mesh::Vert;
         using Index = geometry::Mesh::Index;
@@ -33,10 +39,16 @@ namespace gui
             ExtractVertsAndIndexes(faces_begin, verts, inds, verts.size());
 
         face_mesh_.Recreate(std::move(verts), std::move(inds));
+
+        // vertices visualization
+        for (auto v = halfedge_mesh_->VerticesBegin(); v != halfedge_mesh_->VerticesEnd(); ++v)
+        {
+            spheres_.Add(GetTransformForSphere(v), v->id_);
+        }
     }
 
     Model::Model()
-        : spheres_{utils::GenerateSphere(1.0f, 2)}
+        : spheres_{geometry::Mesh{utils::GenerateSphere(1.0f, 2)}}
     {
     }
 
@@ -91,5 +103,29 @@ namespace gui
     std::tuple<geometry::Mesh &, gl::Instance &> Model::Shapes()
     {
         return {face_mesh_, spheres_};
+    }
+
+    void Model::SetHoverID(SceneID id)
+    {
+        hovered_id_ = id;
+    }
+
+    SceneID Model::GetHoverID()
+    {
+        return hovered_id_;
+    }
+    void Model::SetSelectID(SceneID id)
+    {
+        selected_id_ = id;
+    }
+
+    glm::mat4x4 Model::GetTransformForSphere(geometry::HalfedgeMesh::VertexRef v)
+    {
+        return {
+            glm::vec4{0.25f, 0.0f, 0.0f, 0.0f},
+            glm::vec4{0.0f, 0.25f, 0.0f, 0.0f},
+            glm::vec4{0.0f, 0.0f, 0.25f, 0.0f},
+            glm::vec4{v->pos_, 1.0f},
+        };
     }
 }

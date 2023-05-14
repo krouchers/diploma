@@ -55,6 +55,7 @@ namespace gui
                 auto &r = scene::Renderer::Get();
                 SceneID id = r.ReadID({event->button.x, event->button.y});
                 layout_.Select(id);
+                model_.SetSelectID(id);
                 widgets_.Select(id);
                 if (widgets_.dragging_)
                 {
@@ -78,6 +79,12 @@ namespace gui
                                 ClickDirection({event->button.x, event->button.y}),
                                 camera_->GetPosition());
                 obj_opt.value().get().pose_ = widgets_.ApplyAction(obj_opt.value().get().pose_);
+            }
+            else
+            {
+                auto &r = scene::Renderer::Get();
+                auto id = r.ReadID({event->button.x, event->button.y});
+                model_.SetHoverID(id);
             }
             break;
         }
@@ -180,6 +187,7 @@ namespace gui
         auto pos = camera_->GetPosition();
         ImGui::Text("Camera pos: (%f, %f, %f)", pos.x, pos.y, pos.z);
         ImGui::Text("Current selection: %d", layout_.GetSelectedSceneID());
+        ImGui::Text("Hovered id: %d", model_.GetHoverID());
         auto obj_opt = scene_->Get(layout_.selected_object_);
         if (obj_opt)
         {
@@ -307,4 +315,5 @@ namespace gui
             widgets_.active_ = WidgetType::scale;
         }
     }
+
 }
