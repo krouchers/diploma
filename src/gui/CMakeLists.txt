@@ -18,7 +18,8 @@ set(imgui_sources
 
 set(src_files
     src/gui.cc
-    src/editor.cc
+    src/layout.cc
+    src/model.cc
     src/widgets.cc
 )
 

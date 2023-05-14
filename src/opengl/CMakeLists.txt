@@ -7,6 +7,7 @@ set(src_files
    src/lines.cc
    src/framebuffer.cc
    src/effects.cc
+   src/instance.cc
 )
 
 build_library_with_type(opengl STATIC "${MODULE_COMPILE_FLAGS}" "${src_files}")

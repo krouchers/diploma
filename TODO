@@ -6,24 +6,26 @@
     ☐ Check whether each halfedge incident to and edge, points to that edge
     ☐ Check wheterh each halfedge incident to a face, points to that face
 
-☐ Add buttons for switching between model and layout mods
+✔ Add buttons for switching between model and layout mods @done(23-05-14 17:29)
 ☐ Add nice side menu showing-ups when needed
 
+✔ Add hover function that saves id of object on which mouse is point @done(23-05-15 02:47)
+
 ☐ Implement instance class
-    ☐ Write shaders
-    ☐ add renderer support
+    ✔ Write shaders @done(23-05-15 02:47)
+    ✔ add renderer support @done(23-05-15 02:47)
 
 ✔ Add sphere @done(23-05-13 23:14)
 ☐ Impelement model render function
     ☐ Implement halfedge vizualization for model mode
-        ☐ vertices
+        ✔ vertices @done(23-05-15 02:47)
         ☐ edges
-        ☐ faces
+        ✔ faces @done(23-05-14 14:07)
 
 ☐ Make them selectable
-    ☐ vertices
+    ✔ vertices @done(23-05-15 02:48)
     ☐ edges
-    ☐ faces
+    ✔ faces @done(23-05-15 02:48)
 
 
 
