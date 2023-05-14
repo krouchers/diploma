@@ -106,10 +106,10 @@ Shader::~Shader()
 namespace shaders
 {
     inline const std::string kMeshVertexShader{
-        R"(#version 410 core
+        R"(#version 330 core
         layout(location = 0) in vec3 v_pos;
         layout(location = 1) in vec3 v_norm;
-        layout(location = 1) in uint v_id;
+        layout(location = 2) in int v_id;
 
         out vec3 f_norm;
         out uint f_id;
@@ -124,21 +124,33 @@ namespace shaders
         }
         )"};
     inline const std::string kMeshFragmentShader{
-        R"(#version 410 core
+        R"(#version 330 core
         layout(location = 0) out vec4 out_color;
         layout(location = 1) out vec4 out_id;
 
         in vec3 f_norm;
         flat in uint f_id;
 
-        uniform vec3 color;
-        uniform uint id;
+        uniform vec3 color, hover_color, select_color;
+        uniform uint select_id, hover_id;
+        uniform bool use_f_id;
         
         void main(){
             float ndotl = abs(f_norm.z);
             float diffuse = max(ndotl, 0.4f);
             out_color = vec4(diffuse * color, 1.0f);
-            out_id = vec4((id & 0xFFu) / 255.0f, 0.0f, 0.0f, 1.0f);
+            if(use_f_id){
+                out_id = vec4((f_id & 0xFFu) / 255.0f, 0.0f, 0.0f, 1.0f);
+                if(f_id == select_id)
+                    out_color = vec4(diffuse * select_color, 1.0f);
+                else if(f_id == hover_id)
+                    out_color = vec4(diffuse * hover_color, 1.0f);
+                else 
+                    out_color = vec4(diffuse * color, 1.0f);
+            } else {
+                out_id = vec4((select_id & 0xFFu) / 255.0f, 0.0f, 0.0f, 1.0f);
+                out_color = vec4(diffuse * color, 1.0f);
+            }
         }
         )"};
 
@@ -195,6 +207,28 @@ namespace shaders
                 }
             float a = (o != 1.0f && max_depth == 1.0f ?  1.0f : 0.0f);
             out_color = vec4(color, a);
+        }
+        )"};
+
+    inline const std::string kInstancedVertex{
+        R"(#version 330 core
+        layout(location = 0) in vec3 v_pos;
+        layout(location = 1) in vec3 v_norm;
+        layout(location = 2) in uint v_id;
+
+        layout(location = 3) in uint i_id;
+        layout(location = 4) in mat4 i_transform;
+
+        out vec3 f_norm;
+        out uint f_id;
+
+        uniform mat4 mv;
+        uniform mat4 p;
+
+        void main(){
+            gl_Position = p * mv * i_transform * vec4(v_pos, 1.0f);
+            f_norm = (mv * i_transform * vec4(v_norm, 0.0f)).xyz;
+            f_id = i_id;
         }
         )"};
 }

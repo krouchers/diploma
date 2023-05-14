@@ -13,6 +13,8 @@ namespace shaders
 
     extern const std::string kEffectsShader;
     extern const std::string kOutlineFragmentShader;
+
+    extern const std::string kInstancedVertex;
 }
 
 #include <string>
