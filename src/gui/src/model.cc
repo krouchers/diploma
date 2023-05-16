@@ -41,6 +41,7 @@ namespace gui
         face_mesh_.Recreate(std::move(verts), std::move(inds));
 
         // vertices visualization
+        spheres_.Clear();
         for (auto v = halfedge_mesh_->VerticesBegin(); v != halfedge_mesh_->VerticesEnd(); ++v)
         {
             spheres_.Add(GetTransformForSphere(v), v->id_);

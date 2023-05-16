@@ -55,4 +55,10 @@ namespace gl
                                 nullptr, data_.size());
         glBindVertexArray(0);
     }
+
+    void Instance::Clear()
+    {
+        data_.clear();
+        dirty = true;
+    }
 }

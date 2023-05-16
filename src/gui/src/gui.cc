@@ -141,6 +141,8 @@ namespace gui
             }
             baseline_.Add({i, 0, -length / 2}, {i, 0, length / 2}, {Color::baseplane});
         }
+
+        baseline_.Add({0, 0, 0}, {0, length / 2, 0}, {Color::green});
     }
 
     void DearGui::Render3D(Scene &scene)
@@ -238,29 +240,59 @@ namespace gui
         }
         if (ImGui::CollapsingHeader("Стрелку"))
         {
+            static float size{};
+            ImGui::SliderFloat("Размер", &size, 1.0f, 10.0f);
             if (ImGui::Button("Добавить"))
             {
-                AddMesh(utils::GenerateArrow());
+                AddMesh(utils::GenerateArrow(size));
             }
         }
-        if (ImGui::CollapsingHeader("Тор"))
+        // if (ImGui::CollapsingHeader("Тор"))
+        // {
+        //     static float irad{};
+        //     static float orad{};
+        //     ImGui::SliderFloat("Внешний радиус", &orad, 1.0f, 10.0f);
+        //     ImGui::SliderFloat("Внутренний радиус", &irad, 1.0f, 10.0f);
+        //     if (ImGui::Button("Добавить"))
+        //     {
+        //         AddMesh(utils::GenerateTorus(irad, orad));
+        //     }
+        // }
+        if (ImGui::CollapsingHeader("Цилиндр"))
         {
+            static float rad{};
+            static float height{};
+            ImGui::SliderFloat("Радиус", &rad, 1.0f, 10.0f);
+            ImGui::SliderFloat("Длина", &height, 1.0f, 10.0f);
             if (ImGui::Button("Добавить"))
             {
-                AddMesh(utils::GenerateTorus(0.975f, 1.0f));
+                AddMesh(utils::GenerateCone(rad, rad, height));
             }
         }
-        if (ImGui::CollapsingHeader("Виджет для вращения"))
+        if (ImGui::CollapsingHeader("Конус"))
         {
+            static float rad{};
+            static float height{};
+            ImGui::SliderFloat("Радиус основания", &rad, 1.0f, 10.0f);
+            ImGui::SliderFloat("Длина", &height, 1.0f, 10.0f);
             if (ImGui::Button("Добавить"))
             {
-                AddMesh(utils::GenereateScaleMesh());
+                AddMesh(utils::GenerateCone(rad, 0.001, height));
+            }
+        }
+        if (ImGui::CollapsingHeader("Виджет для масштабирования"))
+        {
+            static float size{};
+            ImGui::SliderFloat("Размер", &size, 1.0f, 10.0f);
+            if (ImGui::Button("Добавить"))
+            {
+                AddMesh(utils::GenereateScaleMesh(size));
             }
         }
         if (ImGui::CollapsingHeader("Сфера"))
         {
             static float radius{};
-            ImGui::SliderFloat("Длина ребра", &radius, 1.0f, 10.0f);
+            ImGui::SliderFloat("Радиус", &radius, 1.0f, 10.0f);
             if (ImGui::Button("Добавить"))
             {
                 AddMesh(utils::GenerateSphere(radius, 3));
@@ -295,7 +327,6 @@ namespace gui
                          ImGuiWindowFlags_NoScrollbar |
                          ImGuiWindowFlags_NoCollapse |
                          ImGuiWindowFlags_NoSavedSettings);
-        ImGui::Text("SDF");
         ItemOptions();
         ImGui::End();
     }
@@ -314,6 +345,15 @@ namespace gui
         {
             widgets_.active_ = WidgetType::scale;
         }
+        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(163, 66, 81, 255));
+        ImGui::Text("Ось X красного цвета");
+        ImGui::PopStyleColor();
+        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(124, 172, 40, 255));
+        ImGui::Text("Ось Y зеленого цвета");
+        ImGui::PopStyleColor();
+        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(64, 127, 193, 255));
+        ImGui::Text("Ось Z синего цвета");
+        ImGui::PopStyleColor();
     }
 
 }

@@ -13,6 +13,7 @@ namespace gl
     public:
         Instance(geometry::Mesh &&mesh);
         void Add(glm::mat4x4 const &transform, unsigned int id);
+        void Clear();
         void Render();
 
     private:

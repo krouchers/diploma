@@ -158,10 +158,10 @@ namespace utils
         }
         return {verts, triangles};
     }
-    Data GenerateArrow()
+    Data GenerateArrow(int size)
     {
-        float baseRad = 0.1f;
-        float arrowLength = 1.0f;
+        float baseRad = size * 0.1f;
+        float arrowLength = size * 1.0f;
         float basePart = 0.65;
         float tipPart = 1 - 0.65;
         auto base = GenerateCone(baseRad, baseRad, arrowLength * basePart, 10, true);
@@ -192,7 +192,7 @@ namespace utils
                 int cur_side = side == n_sides ? 0 : side;
                 float t2 = (float)cur_side / n_sides * _2pi;
                 glm::vec3 r2 = glm::rotate(glm::mat4x4(1.0f), glm::degrees(-t1), glm::vec3{0.0f, 1.0f, 0.0f}) *
-                               glm::vec4(std::sin(t2) * iradius, std::cos(t2) * iradius, 0.0f, 0.0f);
+                               glm::vec4(std::sin(t2) * iradius, std::cos(t2) * iradius, 0.0f, 1.0f);
 
                 vertices[side + seg * (n_sides + 1)] = r1 + r2;
             }
@@ -247,10 +247,10 @@ namespace utils
         return {verts, triangles};
     }
 
-    Data GenereateScaleMesh()
+    Data GenereateScaleMesh(int size)
     {
-        auto cube = GenerateCube(0.1f);
-        auto cone = GenerateCone(0.05f, 0.05f, 0.8f, 18, true);
+        auto cube = GenerateCube(size * 0.1f);
+        auto cone = GenerateCone(size * 0.05f, size * 0.05f, size * 0.8f, 18, true);
         for (auto &v : cube.vertices_)
         {
             v.pos.y += 0.8;
