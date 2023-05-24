@@ -16,7 +16,13 @@ namespace gui
         opts.hov_id_ = hovered_id_;
         opts.sel_id_ = selected_id_;
         r.Halfedge(opts);
-        (void)widgets;
+
+        auto elem = GetSelectedElem();
+        if (elem)
+        {
+            auto pos = geometry::HalfedgeMesh::CenterOf(elem.value());
+            widgets.Render(pos, 1.0f);
+        }
     }
 
     void Model::SetupMeshComponents(scene::Item &item)
@@ -28,15 +34,8 @@ namespace gui
             return;
         }
 
-        using Vert = geometry::Mesh::Vert;
-        using Index = geometry::Mesh::Index;
-
-        std::vector<Vert> verts;
-        std::vector<Index> inds;
-
         // faces visualization
-        for (auto faces_begin = halfedge_mesh_->FacesBegin(); faces_begin != halfedge_mesh_->FacesEnd(); ++faces_begin)
-            ExtractVertsAndIndexes(faces_begin, verts, inds, verts.size());
+        auto [verts, inds] = ExtractVertsAndIndexes();
 
         face_mesh_.Recreate(std::move(verts), std::move(inds));
 
@@ -45,6 +44,7 @@ namespace gui
         for (auto v = halfedge_mesh_->VerticesBegin(); v != halfedge_mesh_->VerticesEnd(); ++v)
         {
             spheres_.Add(GetTransformForSphere(v), v->id_);
+            id_to_info_[v->id_].element_ = v;
         }
     }
 
@@ -63,42 +63,41 @@ namespace gui
         spheres_.Add(transform, v->id_);
     }
 
-    void Model::ExtractVertsAndIndexes(geometry::HalfedgeMesh::FaceRef f,
-                                       std::vector<geometry::Mesh::Vert> &verts,
-                                       std::vector<geometry::Mesh::Index> &inds,
-                                       size_t extract_at)
+    std::pair<std::vector<geometry::Mesh::Vert>,
+              std::vector<geometry::Mesh::Index>>
+    Model::ExtractVertsAndIndexes()
     {
-        auto h = f->halfedge_;
-        auto i = h;
-        auto id = f->id_;
-
-        std::vector<glm::vec3> face_vert_positions;
-        do
+        using Vert = geometry::Mesh::Vert;
+        using Index = geometry::Mesh::Index;
+        std::vector<Vert> mesh_verts;
+        std::vector<Index> mesh_inds;
+        for (auto f = halfedge_mesh_->FacesBegin(); f != halfedge_mesh_->FacesEnd(); ++f)
         {
-            face_vert_positions.push_back(i->vertex_->pos_);
-            i = i->next_;
-        } while (i != h);
+            auto h = f->halfedge_;
+            auto i = h;
+            auto id = f->id_;
+            std::vector<glm::vec3> face_verts;
+            do
+            {
+                face_verts.push_back(i->vertex_->pos_);
+                i = i->next_;
+            } while (i != h);
 
-        size_t augment_size = extract_at + 3;
-        if (verts.size() < augment_size)
-            verts.resize(augment_size);
-        if (inds.size() < augment_size)
-            inds.resize(augment_size);
+            auto v0 = face_verts[0];
+            auto v1 = face_verts[1];
+            auto v2 = face_verts[2];
+            auto n = glm::normalize(glm::cross(v1 - v0, v2 - v0));
 
-        auto v0 = face_vert_positions[0];
-        auto v1 = face_vert_positions[1];
-        auto v2 = face_vert_positions[2];
+            mesh_inds.push_back(mesh_verts.size());
+            mesh_verts.push_back({v0, n, id});
 
-        auto n = glm::normalize(glm::cross(v1 - v0, v2 - v0));
+            mesh_inds.push_back(mesh_verts.size());
+            mesh_verts.push_back({v1, n, id});
 
-        verts[extract_at] = {v0, n, id};
-        inds[extract_at++] = extract_at;
-
-        verts[extract_at] = {v1, n, id};
-        inds[extract_at++] = extract_at;
-
-        verts[extract_at] = {v2, n, id};
-        inds[extract_at++] = extract_at;
+            mesh_inds.push_back(mesh_verts.size());
+            mesh_verts.push_back({v2, n, id});
+        }
+        return {mesh_verts, mesh_inds};
     }
 
     std::tuple<geometry::Mesh &, gl::Instance &> Model::Shapes()
@@ -115,7 +114,7 @@ namespace gui
     {
         return hovered_id_;
     }
-    void Model::SetSelectID(SceneID id)
+    void Model::Select(SceneID id)
     {
         selected_id_ = id;
     }
@@ -128,5 +127,15 @@ namespace gui
             glm::vec4{0.0f, 0.0f, 0.25f, 0.0f},
             glm::vec4{v->pos_, 1.0f},
         };
+    }
+
+    std::optional<geometry::HalfedgeMesh::ElementRef> Model::GetSelectedElem()
+    {
+        auto entry = id_to_info_.find(selected_id_);
+        if (entry == id_to_info_.end())
+        {
+            return std::nullopt;
+        }
+        return entry->second.element_;
     }
 }
