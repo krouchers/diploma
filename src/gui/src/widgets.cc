@@ -165,16 +165,19 @@ namespace gui
                             glm::vec3 const &click_dir,
                             glm::vec3 const &camera_pos)
     {
-        if (active_ == WidgetType::rotate)
+        switch (active_)
         {
-            drag_end_ = drag_start_ = glm::normalize(pos - PlaneHit(pos, click_dir, camera_pos));
-        }
-        else if (active_ == WidgetType::move)
+        case WidgetType::rotate:
+            drag_end_ = drag_start_ = glm::normalize(PlaneHit(pos, click_dir, camera_pos) - pos);
+            break;
+        case WidgetType::move:
             drag_start_ = drag_end_ = AxisHit(pos, click_dir, camera_pos);
-        else
-        {
+            break;
+        case WidgetType::scale:
             drag_start_ = AxisHit(pos, click_dir, camera_pos);
             drag_end_ = glm::vec3(1.0f);
+        default:
+            break;
         }
     }
 

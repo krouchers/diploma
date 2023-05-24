@@ -54,14 +54,31 @@ namespace gui
             {
                 auto &r = scene::Renderer::Get();
                 SceneID id = r.ReadID({event->button.x, event->button.y});
-                layout_.Select(id);
-                model_.SetSelectID(id);
+                switch (mode_)
+                {
+                case Mode::layout:
+                    layout_.Select(id);
+                    break;
+                case Mode::model:
+                    model_.Select(id);
+                    break;
+                }
+
                 widgets_.Select(id);
                 if (widgets_.dragging_)
                 {
-                    scene::Item &obj = scene_->Get(layout_.selected_object_).value();
+                    glm::vec3 pos;
+                    switch (mode_)
+                    {
+                    case Mode::layout:
+                        pos = scene_->Get(layout_.selected_object_).value().get().pose_.pos_;
+                        break;
+                    case Mode::model:
+                        // pos = ;
+                        break;
+                    }
                     widgets_.StartDrag(
-                        obj.pose_.pos_,
+                        pos,
                         ClickDirection({event->button.x, event->button.y}),
                         camera_->GetPosition());
                 }
