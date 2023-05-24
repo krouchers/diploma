@@ -114,7 +114,14 @@ namespace scene
         instanced_shader_.Set("color", Color::white);
         instanced_shader_.Set("select_color", Color::outline);
         instanced_shader_.Set("hover_color", Color::hover);
+        instanced_shader_.Set("select_id", opts.sel_id_);
+        instanced_shader_.Set("hover_id", opts.hov_id_);
         instanced_shader_.Set("use_f_id", true);
         spheres.Render();
-        }
+    }
+
+    void Renderer::Destroy()
+    {
+        delete instance_;
+    }
 }

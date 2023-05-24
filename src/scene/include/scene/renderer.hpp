@@ -58,6 +58,7 @@ namespace scene
         glm::vec3 GetCameraPos();
         void Outline(scene::Item &item);
         SceneID ReadID(glm::vec2 const &pos);
+        static void Destroy();
 
     private:
         Renderer();

@@ -22,7 +22,10 @@ App::App(std::string exe_path)
     scene::Renderer::Setup(gl_, camera_);
 }
 
-App::~App() = default;
+App::~App()
+{
+    scene::Renderer::Destroy();
+};
 
 void App::Run()
 {
