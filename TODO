@@ -11,7 +11,7 @@
 
 ✔ Add hover function that saves id of object on which mouse is point @done(23-05-15 02:47)
 
-☐ Implement instance class
+✔ Implement instance class @done(23-05-23 17:26)
     ✔ Write shaders @done(23-05-15 02:47)
     ✔ add renderer support @done(23-05-15 02:47)
 
@@ -19,6 +19,7 @@
 ☐ Impelement model render function
     ☐ Implement halfedge vizualization for model mode
         ✔ vertices @done(23-05-15 02:47)
+            ☐ Make spehere's size to be adaptive to distance beetwen spheres
         ☐ edges
         ✔ faces @done(23-05-14 14:07)
 
@@ -27,6 +28,14 @@
     ☐ edges
     ✔ faces @done(23-05-15 02:48)
 
+☐ Add widgets pop up when select object in model mode
+    ☐ for vertices
+    ☐ for edges
+    ☐ for faces
+    ☐ make them scalable when zooming
 
+☐ Align menu for adding new mesh and make it unmovable
 
+☐ Make HalfEdgeMesh structure to be copyable
 
+☐ Rewrite dragging logic to apply transfrom after stop dragging

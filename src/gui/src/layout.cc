@@ -29,4 +29,8 @@ namespace gui
         if (id >= (SceneID)WidgetsIds::count)
             selected_object_ = id;
     }
+
+    glm::vec3 Layout::GetSelectedPos(){
+        return {}; //FIXME:
+    }
 }

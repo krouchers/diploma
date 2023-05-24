@@ -18,26 +18,38 @@ namespace gui
         std::tuple<geometry::Mesh &, gl::Instance &> Shapes();
 
         void SetHoverID(SceneID id);
-        void SetSelectID(SceneID id);
+        void Select(SceneID id);
         SceneID GetHoverID();
         SceneID GetSelectID();
 
     private:
         void VertVisualize(geometry::HalfedgeMesh::VertexRef v);
         void SetupMeshComponents(scene::Item &item);
-        void ExtractVertsAndIndexes(geometry::HalfedgeMesh::FaceRef f,
-                                    std::vector<geometry::Mesh::Vert> &verts,
-                                    std::vector<geometry::Mesh::Index> &inds,
-                                    size_t extract_at);
+        std::pair<std::vector<geometry::Mesh::Vert>,
+                  std::vector<geometry::Mesh::Index>>
+        ExtractVertsAndIndexes();
+        std::optional<geometry::HalfedgeMesh::ElementRef> GetSelectedElem();
         glm::mat4x4 GetTransformForSphere(geometry::HalfedgeMesh::VertexRef v);
 
         glm::vec3 mesh_color_{1.0f, 1.0f, 1.0f};
 
         geometry::HalfedgeMesh *halfedge_mesh_;
-        geometry::Mesh face_mesh_;
 
+        geometry::Mesh face_mesh_;
         gl::Instance spheres_;
 
         SceneID hovered_id_, selected_id_;
+
+        struct TransformData
+        {
+            glm::vec3 center_;
+        };
+
+        struct Info
+        {
+            geometry::HalfedgeMesh::ElementRef element_;
+        };
+
+        std::unordered_map<SceneID, Info> id_to_info_;
     };
 }

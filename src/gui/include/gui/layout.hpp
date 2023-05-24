@@ -10,6 +10,7 @@ namespace gui
         void Select(SceneID id);
         void Render(MayBeItem obj_opt, Widgets &widgets);
         SceneID GetSelectedSceneID();
+        glm::vec3 GetSelectedPos();
         void ClearSelection()
         {
             selected_object_ = (SceneID)WidgetsIds::none;
