@@ -7,6 +7,7 @@
 #include <list>
 #include <map>
 #include <stdexcept>
+#include <variant>
 
 namespace geometry
 {
@@ -22,12 +23,21 @@ namespace geometry
         using FaceRef = std::list<Face>::iterator;
         using HalfedgeRef = std::list<Halfedge>::iterator;
 
+        using ElementRef = std::variant<
+            VertexRef,
+            EdgeRef,
+            FaceRef,
+            HalfedgeRef>;
+
         using Index = size_t;
         using Size = size_t;
+
+        static glm::vec3 CenterOf(ElementRef elem);
 
         struct Vertex
         {
             Vertex(SceneID id) : id_{(SceneID)id} {}
+            glm::vec3 Center();
             SceneID id_;
             HalfedgeRef halfedge_;
             glm::vec3 pos_;

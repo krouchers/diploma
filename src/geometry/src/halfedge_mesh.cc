@@ -1,6 +1,7 @@
 #include "geometry/halfedge_mesh.hpp"
 
 #include <unordered_map>
+#include <iostream>
 
 namespace std
 {
@@ -15,6 +16,15 @@ namespace std
         }
     };
 }
+
+template <class... Ts>
+struct overloaded : Ts...
+{
+    using Ts::operator()...;
+};
+
+template <class... Ts>
+overloaded(Ts...) -> overloaded<Ts...>;
 
 namespace geometry
 {
@@ -228,6 +238,7 @@ namespace geometry
     {
         return faces_.begin();
     }
+
     HalfedgeMesh::FaceRef HalfedgeMesh::FacesEnd()
     {
         return faces_.end();
@@ -237,6 +248,7 @@ namespace geometry
     {
         return edges_.begin();
     }
+
     HalfedgeMesh::EdgeRef HalfedgeMesh::EdgesEnd()
     {
         return edges_.end();
@@ -246,8 +258,32 @@ namespace geometry
     {
         return vertices_.begin();
     }
+
     HalfedgeMesh::VertexRef HalfedgeMesh::VerticesEnd()
     {
         return vertices_.end();
+    }
+
+    glm::vec3 HalfedgeMesh::CenterOf(HalfedgeMesh::ElementRef elem)
+    {
+        glm::vec3 pos;
+        std::variant<int, double> var;
+        std::visit(overloaded{
+                       [&](VertexRef v)
+                       { pos = v->Center(); },
+                       [&](EdgeRef)
+                       { std::cout << "double\n"; },
+                       [&](FaceRef)
+                       { std::cout << "double\n"; },
+                       [&](HalfedgeRef)
+                       { std::cout << "double\n"; },
+                   },
+                   elem);
+        return pos;
+    }
+
+    glm::vec3 HalfedgeMesh::Vertex::Center()
+    {
+        return pos_;
     }
 }
