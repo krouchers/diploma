@@ -196,7 +196,6 @@ namespace gui
             glm::vec3 euler{};
             euler[(int)axis_] = sign * glm::degrees(angle);
             rotation_degrees_ = euler[(int)axis_];
-            drag_start_ = drag_end_;
             drag_end_ = euler;
         }
         else
@@ -206,11 +205,9 @@ namespace gui
             {
                 drag_end_ = glm::vec3{1.0f};
                 drag_end_[(int)axis_] = glm::length(hit - pos) / glm::length(drag_start_ - pos);
-                drag_start_ = hit;
             }
             else
             {
-                drag_start_ = drag_end_;
                 drag_end_ = hit;
             }
         }

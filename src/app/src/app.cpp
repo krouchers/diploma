@@ -66,7 +66,6 @@ void App::ProcessEvents()
                 camera_->MoveThroughOrbit(
                     glm::vec2{static_cast<float>(sdl_e.motion.xrel),
                               static_cast<float>(sdl_e.motion.yrel)});
-                info("mouse moved from to %d with delta %d", sdl_e.motion.x, sdl_e.motion.xrel);
             }
             break;
         }

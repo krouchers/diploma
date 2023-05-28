@@ -114,9 +114,18 @@ namespace gui
     {
         return hovered_id_;
     }
-    void Model::Select(SceneID id)
+    void Model::Select(SceneID id, Widgets &widgets, const glm::vec3 &click_dir, const glm::vec3 &cam_pos)
     {
-        selected_id_ = id;
+        if (id >= (SceneID)WidgetsIds::count)
+            selected_id_ = id;
+        if (widgets.dragging_)
+        {
+            auto e = GetSelectedElem().value();
+            widgets.StartDrag(
+                geometry::HalfedgeMesh::CenterOf(e),
+                click_dir,
+                cam_pos);
+        }
     }
 
     glm::mat4x4 Model::GetTransformForSphere(geometry::HalfedgeMesh::VertexRef v)
@@ -137,5 +146,9 @@ namespace gui
             return std::nullopt;
         }
         return entry->second.element_;
+    }
+    glm::vec3 Model::GetSelectedPos()
+    {
+        return geometry::HalfedgeMesh::CenterOf(GetSelectedElem().value());
     }
 }

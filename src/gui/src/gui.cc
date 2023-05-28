@@ -54,17 +54,22 @@ namespace gui
             {
                 auto &r = scene::Renderer::Get();
                 SceneID id = r.ReadID({event->button.x, event->button.y});
+
+                widgets_.Select(id);
+
                 switch (mode_)
                 {
                 case Mode::layout:
-                    layout_.Select(id);
+                    layout_.Select(id, *scene_, widgets_);
                     break;
                 case Mode::model:
-                    model_.Select(id);
+                    model_.Select(id,
+                                  widgets_,
+                                  ClickDirection({event->button.x, event->button.y}),
+                                  camera_->GetPosition());
                     break;
                 }
 
-                widgets_.Select(id);
                 if (widgets_.dragging_)
                 {
                     glm::vec3 pos;
@@ -74,7 +79,6 @@ namespace gui
                         pos = scene_->Get(layout_.selected_object_).value().get().pose_.pos_;
                         break;
                     case Mode::model:
-                        // pos = ;
                         break;
                     }
                     widgets_.StartDrag(
@@ -91,11 +95,9 @@ namespace gui
         {
             if (widgets_.dragging_)
             {
-                auto obj_opt = scene_->Get(layout_.selected_object_);
-                widgets_.DragTo(obj_opt.value().get().pose_.pos_,
-                                ClickDirection({event->button.x, event->button.y}),
-                                camera_->GetPosition());
-                obj_opt.value().get().pose_ = widgets_.ApplyAction(obj_opt.value().get().pose_);
+                DragTo(ClickDirection({event->button.x,
+                                       event->button.y}),
+                       camera_->GetPosition());
             }
             else
             {
@@ -318,10 +320,6 @@ namespace gui
         ImGui::End();
     }
 
-    void DearGui::Drag()
-    {
-    }
-
     glm::vec3 DearGui::ClickDirection(glm::vec2 screen_pos)
     {
         glm::vec2 ndc_pos{2.0f * screen_pos.x / 1280.0f - 1.0f,
@@ -373,4 +371,26 @@ namespace gui
         ImGui::PopStyleColor();
     }
 
+    void DearGui::DragTo(const glm::vec3 click_dir, const glm::vec3 cam_pos)
+    {
+        auto obj = scene_->Get(layout_.selected_object_);
+
+        glm::vec3 pos;
+        switch (mode_)
+        {
+        case Mode::model:
+            pos = model_.GetSelectedPos();
+            break;
+        case Mode::layout:
+            pos = layout_.GetSelectedPos(*scene_);
+            break;
+        default:
+            break;
+        }
+        widgets_.DragTo(pos,
+                        click_dir,
+                        cam_pos);
+
+        obj.value().get().pose_ = widgets_.ApplyAction(layout_.old_pose_);
+    }
 }

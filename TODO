@@ -38,4 +38,11 @@
 
 ☐ Make HalfEdgeMesh structure to be copyable
 
-☐ Rewrite dragging logic to apply transfrom after stop dragging
+✔ Rewrite dragging logic to apply transfrom to old pose @done(23-05-28 23:27)
+    ✔ for move @done(23-05-28 22:39)
+    ✔ for scale @done(23-05-28 23:27)
+    ✔ for rotation @done(23-05-28 23:27)
+
+☐ Transfer widget logic to Select function
+    ☐ for model
+    ☐ for layout

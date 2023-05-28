@@ -18,9 +18,9 @@ namespace gui
         std::tuple<geometry::Mesh &, gl::Instance &> Shapes();
 
         void SetHoverID(SceneID id);
-        void Select(SceneID id);
+        void Select(SceneID id, Widgets &widgets, const glm::vec3 &click_dir, const glm::vec3 &cam_pos);
         SceneID GetHoverID();
-        SceneID GetSelectID();
+        glm::vec3 GetSelectedPos();
 
     private:
         void VertVisualize(geometry::HalfedgeMesh::VertexRef v);

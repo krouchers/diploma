@@ -24,13 +24,20 @@ namespace gui
         }
     }
 
-    void Layout::Select(SceneID id)
+    void Layout::Select(SceneID id, Scene &scene, Widgets &widgets)
     {
         if (id >= (SceneID)WidgetsIds::count)
+        {
             selected_object_ = id;
+        }
+        if (widgets.dragging_)
+        {
+            old_pose_ = scene.Get(selected_object_).value().get().pose_;
+        }
     }
 
-    glm::vec3 Layout::GetSelectedPos(){
-        return {}; //FIXME:
+    glm::vec3 Layout::GetSelectedPos(Scene &scene)
+    {
+        return scene.Get(selected_object_).value().get().pose_.pos_;
     }
 }
