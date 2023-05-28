@@ -57,35 +57,19 @@ namespace gui
 
                 widgets_.Select(id);
 
+                auto click_dir = ClickDirection({event->button.x, event->button.y});
+                auto cam_pos = camera_->GetPosition();
+
                 switch (mode_)
                 {
                 case Mode::layout:
-                    layout_.Select(id, *scene_, widgets_);
+                    layout_.Select(id, widgets_, click_dir, cam_pos, *scene_);
                     break;
                 case Mode::model:
-                    model_.Select(id,
-                                  widgets_,
-                                  ClickDirection({event->button.x, event->button.y}),
-                                  camera_->GetPosition());
+                    model_.Select(id, widgets_, click_dir, cam_pos);
                     break;
                 }
 
-                if (widgets_.dragging_)
-                {
-                    glm::vec3 pos;
-                    switch (mode_)
-                    {
-                    case Mode::layout:
-                        pos = scene_->Get(layout_.selected_object_).value().get().pose_.pos_;
-                        break;
-                    case Mode::model:
-                        break;
-                    }
-                    widgets_.StartDrag(
-                        pos,
-                        ClickDirection({event->button.x, event->button.y}),
-                        camera_->GetPosition());
-                }
                 if (id == 0)
                     unselection_ = true;
             }

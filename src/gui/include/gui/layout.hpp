@@ -7,7 +7,8 @@ namespace gui
 {
     struct Layout
     {
-        void Select(SceneID id, Scene &scene, Widgets &widgets);
+        void Select(SceneID id, Widgets &widgets, glm::vec3 click_dir,
+                    glm::vec3 cam_pos, Scene &scene);
         void Render(MayBeItem obj_opt, Widgets &widgets);
         SceneID GetSelectedSceneID();
         glm::vec3 GetSelectedPos(Scene &scene);

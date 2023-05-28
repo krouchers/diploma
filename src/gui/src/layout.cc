@@ -24,15 +24,18 @@ namespace gui
         }
     }
 
-    void Layout::Select(SceneID id, Scene &scene, Widgets &widgets)
+    void Layout::Select(SceneID id, Widgets &widgets, glm::vec3 click_dir,
+                        glm::vec3 cam_pos, Scene &scene)
     {
         if (id >= (SceneID)WidgetsIds::count)
         {
             selected_object_ = id;
         }
+        auto pos = scene.Get(id).value().get().pose_.pos_;
         if (widgets.dragging_)
         {
             old_pose_ = scene.Get(selected_object_).value().get().pose_;
+            widgets.StartDrag(pos, click_dir, cam_pos);
         }
     }
 
