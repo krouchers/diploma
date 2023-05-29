@@ -68,6 +68,8 @@ namespace gui
     void Model::UpdateVertex(geometry::HalfedgeMesh::VertexRef v)
     {
         spheres_.Get(id_to_info_[v->id_].instance_id).transform_[3] = {v->pos_, 1.0f};
+        auto [verts, inds] = ExtractVertsAndIndexes();
+        face_mesh_.Recreate(std::move(verts), std::move(inds));
     }
 
     std::pair<std::vector<geometry::Mesh::Vert>,

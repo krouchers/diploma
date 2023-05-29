@@ -53,3 +53,5 @@
     ✔ implement layout ApplyAction() function @done(23-05-30 01:38)
 
 ✔ Fix bad optinoal access when dragging move widget @done(23-05-29 18:19)
+
+✔ Make mesh faces to change when dragging vertex @done(23-05-30 01:52)
