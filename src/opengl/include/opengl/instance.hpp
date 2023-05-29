@@ -12,17 +12,20 @@ namespace gl
     {
     public:
         Instance(geometry::Mesh &&mesh);
-        void Add(glm::mat4x4 const &transform, unsigned int id);
+        size_t Add(glm::mat4x4 const &transform, unsigned int id);
         void Clear();
         void Render();
 
-    private:
-        void Update();
         struct Info
         {
             glm::mat4x4 transform_;
             unsigned int id_;
         };
+
+        Info &Get(size_t instance_id);
+
+    private:
+        void Update();
 
         geometry::Mesh mesh_;
         std::vector<Info> data_;

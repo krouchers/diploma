@@ -379,8 +379,11 @@ namespace gui
             model_.ApplyTransform(widgets_);
             break;
         case Mode::layout:
-            // layout_.ApplyTransform();
+        {
+            scene::Item &obj = scene_->Get(layout_.selected_object_).value();
+            layout_.ApplyTransform(obj, widgets_);
             break;
+        }
         default:
             break;
         }

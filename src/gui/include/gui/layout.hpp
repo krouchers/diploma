@@ -12,6 +12,7 @@ namespace gui
         void Render(MayBeItem obj_opt, Widgets &widgets);
         SceneID GetSelectedSceneID();
         glm::vec3 GetSelectedPos(Scene &scene);
+        void ApplyTransform(scene::Item &obj, Widgets &widgets);
         void ClearSelection()
         {
             selected_object_ = (SceneID)WidgetsIds::none;

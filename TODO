@@ -29,7 +29,7 @@
     ✔ faces @done(23-05-15 02:48)
 
 ☐ Add widgets pop up when select object in model mode
-    ☐ for vertices
+    ✔ for vertices @done(23-05-30 01:38)
     ☐ for edges
     ☐ for faces
     ☐ make them scalable when zooming
@@ -48,8 +48,8 @@
     ✔ for layout @done(23-05-28 23:39)
 
 
-☐ Make vertex spheres to be movebale
-    ☐ implement model ApplyAction() function
-    ☐ implement layout ApplyAction() function
+✔ Make vertex spheres to be movebale @done(23-05-30 01:38)
+    ✔ implement model ApplyAction() function @done(23-05-30 01:38)
+    ✔ implement layout ApplyAction() function @done(23-05-30 01:38)
 
 ✔ Fix bad optinoal access when dragging move widget @done(23-05-29 18:19)

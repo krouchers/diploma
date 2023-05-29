@@ -26,6 +26,7 @@ namespace gui
 
     private:
         void VertVisualize(geometry::HalfedgeMesh::VertexRef v);
+        void UpdateVertex(geometry::HalfedgeMesh::VertexRef v);
         void SetupMeshComponents(scene::Item &item);
         std::pair<std::vector<geometry::Mesh::Vert>,
                   std::vector<geometry::Mesh::Index>>
@@ -50,6 +51,7 @@ namespace gui
         struct Info
         {
             geometry::HalfedgeMesh::ElementRef element_;
+            size_t instance_id;
         };
 
         std::unordered_map<SceneID, Info> id_to_info_;

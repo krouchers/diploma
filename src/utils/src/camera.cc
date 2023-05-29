@@ -59,8 +59,6 @@ void Camera::MoveThroughOrbit(glm::vec2 const &offset)
 				rotation_;
 	UpdatePos();
 	UpdateView();
-
-	info("Orbit is moving");
 }
 
 void Camera::UpdateView()

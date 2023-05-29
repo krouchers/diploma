@@ -2,9 +2,17 @@
 
 namespace gl
 {
-    void Instance::Add(glm::mat4x4 const &transform, unsigned int id)
+    size_t Instance::Add(glm::mat4x4 const &transform, unsigned int id)
     {
+        dirty = true;
         data_.push_back({transform, id});
+        return data_.size() - 1;
+    }
+
+    Instance::Info &Instance::Get(size_t instance_id)
+    {
+        dirty = true;
+        return data_[instance_id];
     }
 
     Instance::Instance(geometry::Mesh &&mesh)

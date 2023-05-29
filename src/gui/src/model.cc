@@ -47,10 +47,7 @@ namespace gui
         // vertices visualization
         spheres_.Clear();
         for (auto v = halfedge_mesh_->VerticesBegin(); v != halfedge_mesh_->VerticesEnd(); ++v)
-        {
-            spheres_.Add(GetTransformForSphere(v), v->id_);
-            id_to_info_[v->id_].element_ = v;
-        }
+            id_to_info_[v->id_] = {v, spheres_.Add(GetTransformForSphere(v), v->id_)};
     }
 
     Model::Model()
@@ -66,6 +63,11 @@ namespace gui
             glm::vec4{glm::vec3{0.0f, 0.0f, 1.0f}, 0.0f},
             glm::vec4{v->pos_, 0.0f}};
         spheres_.Add(transform, v->id_);
+    }
+
+    void Model::UpdateVertex(geometry::HalfedgeMesh::VertexRef v)
+    {
+        spheres_.Get(id_to_info_[v->id_].instance_id).transform_[3] = {v->pos_, 1.0f};
     }
 
     std::pair<std::vector<geometry::Mesh::Vert>,
@@ -166,6 +168,7 @@ namespace gui
         std::visit(overloaded{[&](geometry::HalfedgeMesh::VertexRef v)
                               {
                                   v->pos_ = abs_pos;
+                                  UpdateVertex(v);
                               },
                               [&](geometry::HalfedgeMesh::EdgeRef e)
                               {

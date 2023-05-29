@@ -43,4 +43,9 @@ namespace gui
     {
         return scene.Get(selected_object_).value().get().pose_.pos_;
     }
+
+    void Layout::ApplyTransform(scene::Item &obj, Widgets &widgets)
+    {
+        obj.pose_ = widgets.ApplyTransform(old_pose_);
+    }
 }
