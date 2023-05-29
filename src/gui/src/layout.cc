@@ -31,7 +31,7 @@ namespace gui
         {
             selected_object_ = id;
         }
-        auto pos = scene.Get(id).value().get().pose_.pos_;
+        auto pos = scene.Get(selected_object_).value().get().pose_.pos_;
         if (widgets.dragging_)
         {
             old_pose_ = scene.Get(selected_object_).value().get().pose_;

@@ -46,3 +46,10 @@
 ✔ Transfer widget logic to Select function @done(23-05-28 23:39)
     ✔ for model @done(23-05-28 23:39)
     ✔ for layout @done(23-05-28 23:39)
+
+
+☐ Make vertex spheres to be movebale
+    ☐ implement model ApplyAction() function
+    ☐ implement layout ApplyAction() function
+
+✔ Fix bad optinoal access when dragging move widget @done(23-05-29 18:19)

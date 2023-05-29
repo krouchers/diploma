@@ -1,8 +1,13 @@
 #include "gui/model.hpp"
+
 #include "glm/vec3.hpp"
 #include "glm/gtx/transform.hpp"
 
 #include "scene/renderer.hpp"
+
+#include "common/overloaded.hpp"
+
+#include <variant>
 
 namespace gui
 {
@@ -121,6 +126,7 @@ namespace gui
         if (widgets.dragging_)
         {
             auto e = GetSelectedElem().value();
+            old_data_.center_ = geometry::HalfedgeMesh::CenterOf(e);
             widgets.StartDrag(
                 geometry::HalfedgeMesh::CenterOf(e),
                 click_dir,
@@ -150,5 +156,29 @@ namespace gui
     glm::vec3 Model::GetSelectedPos()
     {
         return geometry::HalfedgeMesh::CenterOf(GetSelectedElem().value());
+    }
+
+    void Model::ApplyTransform(Widgets &widgets)
+    {
+        auto elem = GetSelectedElem().value();
+        auto delta = widgets.ApplyTransform({});
+        auto abs_pos = old_data_.center_ + delta.pos_;
+        std::visit(overloaded{[&](geometry::HalfedgeMesh::VertexRef v)
+                              {
+                                  v->pos_ = abs_pos;
+                              },
+                              [&](geometry::HalfedgeMesh::EdgeRef e)
+                              {
+                                  (void)e;
+                              },
+                              [&](geometry::HalfedgeMesh::FaceRef f)
+                              {
+                                  (void)f;
+                              },
+                              [&](geometry::HalfedgeMesh::HalfedgeRef h)
+                              {
+                                  (void)h;
+                              }},
+                   elem);
     }
 }

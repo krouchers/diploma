@@ -219,7 +219,7 @@ namespace gui
         drag_start_ = drag_end_ = {};
     }
 
-    scene::Pose Widgets::ApplyAction(scene::Pose const &old_pose)
+    scene::Pose Widgets::ApplyTransform(scene::Pose const &old_pose)
     {
         scene::Pose new_pose{old_pose};
         switch (active_)

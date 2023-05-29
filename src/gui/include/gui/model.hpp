@@ -22,6 +22,8 @@ namespace gui
         SceneID GetHoverID();
         glm::vec3 GetSelectedPos();
 
+        void ApplyTransform(Widgets &Widgets);
+
     private:
         void VertVisualize(geometry::HalfedgeMesh::VertexRef v);
         void SetupMeshComponents(scene::Item &item);
@@ -43,7 +45,7 @@ namespace gui
         struct TransformData
         {
             glm::vec3 center_;
-        };
+        } old_data_;
 
         struct Info
         {

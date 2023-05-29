@@ -39,7 +39,7 @@ namespace gui
         void DragTo(glm::vec3 const &pos,
                     glm::vec3 const &click_dir,
                     glm::vec3 const &camera_pos);
-        scene::Pose ApplyAction(scene::Pose const &old_pose);
+        scene::Pose ApplyTransform(scene::Pose const &old_pose);
         void EndDrag();
 
         scene::Item x_move_;

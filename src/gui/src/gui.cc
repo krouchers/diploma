@@ -357,8 +357,6 @@ namespace gui
 
     void DearGui::DragTo(const glm::vec3 click_dir, const glm::vec3 cam_pos)
     {
-        auto obj = scene_->Get(layout_.selected_object_);
-
         glm::vec3 pos;
         switch (mode_)
         {
@@ -375,6 +373,16 @@ namespace gui
                         click_dir,
                         cam_pos);
 
-        obj.value().get().pose_ = widgets_.ApplyAction(layout_.old_pose_);
+        switch (mode_)
+        {
+        case Mode::model:
+            model_.ApplyTransform(widgets_);
+            break;
+        case Mode::layout:
+            // layout_.ApplyTransform();
+            break;
+        default:
+            break;
+        }
     }
 }
