@@ -93,7 +93,8 @@ namespace gui
         }
         case SDL_MOUSEBUTTONUP:
         {
-            EndDrag();
+            if(widgets_.dragging_)
+                EndDrag();
             break;
         }
         }
@@ -393,8 +394,9 @@ namespace gui
             widgets_.EndDrag();
         }
 
-        if(mode_ == Mode::model){
-            model_.EndTransform(); 
+        if (mode_ == Mode::model)
+        {
+            // model_.EndTransform(scene_->Get(layout_.selected_object_), model_);
         }
     }
 }

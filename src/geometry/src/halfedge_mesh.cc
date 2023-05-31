@@ -287,7 +287,7 @@ namespace geometry
         halfedges_.clear();
     }
 
-    void HalfedgeMesh::CopyTo(HalfedgeMesh &mesh)
+    void HalfedgeMesh::CopyTo(HalfedgeMesh &mesh) const
     {
         mesh.Clear();
 

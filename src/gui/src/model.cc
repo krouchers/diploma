@@ -187,7 +187,8 @@ namespace gui
                    elem);
     }
 
-    void Model::EndTransform()
+    void Model::EndTransform(MayBeItem item, Model &model)
     {
+        item.value().get().UpdateHalfedgeMesh(*model.halfedge_mesh_);
     }
 }

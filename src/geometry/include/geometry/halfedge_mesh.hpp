@@ -78,7 +78,7 @@ namespace geometry
 
         geometry::Mesh ToMesh();
 
-        void CopyTo(HalfedgeMesh &mesh);
+        void CopyTo(HalfedgeMesh &mesh) const;
         void Clear();
 
         void CreateFromData(utils::Data &&data);

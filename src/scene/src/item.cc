@@ -13,6 +13,8 @@ namespace scene
 
     void Item::Render(bool depth_only)
     {
+        if(mesh_dirty)
+            SyncMesh();
         scene::Renderer::MeshOpts opts;
         opts.pose_ = pose_.Transform();
         opts.color_ = color_;
@@ -43,6 +45,12 @@ namespace scene
 
     geometry::HalfedgeMesh *Item::GetHalfedgeMesh()
     {
+        mesh_dirty = true;
         return &halfedge_mesh_;
+    }
+
+    void Item::UpdateHalfedgeMesh(const geometry::HalfedgeMesh &update_from) {
+        update_from.CopyTo(halfedge_mesh_);
+        mesh_dirty = true;
     }
 }
