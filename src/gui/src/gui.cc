@@ -93,15 +93,7 @@ namespace gui
         }
         case SDL_MOUSEBUTTONUP:
         {
-            if (unselection_)
-            {
-                layout_.ClearSelection();
-                unselection_ = false;
-            }
-            if (widgets_.dragging_)
-            {
-                widgets_.EndDrag();
-            }
+            EndDrag();
             break;
         }
         }
@@ -386,6 +378,23 @@ namespace gui
         }
         default:
             break;
+        }
+    }
+
+    void DearGui::EndDrag()
+    {
+        if (unselection_)
+        {
+            layout_.ClearSelection();
+            unselection_ = false;
+        }
+        if (widgets_.dragging_)
+        {
+            widgets_.EndDrag();
+        }
+
+        if(mode_ == Mode::model){
+            model_.EndTransform(); 
         }
     }
 }

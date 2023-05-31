@@ -186,4 +186,8 @@ namespace gui
                               }},
                    elem);
     }
+
+    void Model::EndTransform()
+    {
+    }
 }

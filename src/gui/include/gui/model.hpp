@@ -23,6 +23,7 @@ namespace gui
         glm::vec3 GetSelectedPos();
 
         void ApplyTransform(Widgets &Widgets);
+        void EndTransform();
 
     private:
         void VertVisualize(geometry::HalfedgeMesh::VertexRef v);

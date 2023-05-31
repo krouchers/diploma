@@ -36,7 +36,8 @@
 
 ☐ Align menu for adding new mesh and make it unmovable
 
-☐ Make HalfEdgeMesh structure to be copyable
+✔ Make HalfEdgeMesh structure to be copyable @done(23-05-31 12:57)
+    ✔ Implement function for clearing contents of HalfEdgeMesh @done(23-05-31 12:57)
 
 ✔ Rewrite dragging logic to apply transfrom to old pose @done(23-05-28 23:27)
     ✔ for move @done(23-05-28 22:39)
@@ -55,3 +56,7 @@
 ✔ Fix bad optinoal access when dragging move widget @done(23-05-29 18:19)
 
 ✔ Make mesh faces to change when dragging vertex @done(23-05-30 01:52)
+
+☐ Make changes to mesh in model mode propagate to layout mode
+
+☐ Correct test launching logic

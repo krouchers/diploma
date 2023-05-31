@@ -278,4 +278,49 @@ namespace geometry
     {
         return pos_;
     }
+
+    void HalfedgeMesh::Clear()
+    {
+        vertices_.clear();
+        edges_.clear();
+        faces_.clear();
+        halfedges_.clear();
+    }
+
+    void HalfedgeMesh::CopyTo(HalfedgeMesh &mesh)
+    {
+        mesh.Clear();
+
+        std::unordered_map<SceneID, VertexRef> v_map;
+        std::unordered_map<SceneID, EdgeRef> e_map;
+        std::unordered_map<SceneID, FaceRef> f_map;
+        std::unordered_map<SceneID, HalfedgeRef> h_map;
+
+        for (auto v : this->vertices_)
+            v_map[v.id_] = mesh.vertices_.insert(mesh.vertices_.end(), v);
+        for (auto e : this->edges_)
+            e_map[e.id_] = mesh.edges_.insert(mesh.edges_.end(), e);
+        for (auto f : this->faces_)
+            f_map[f.id_] = mesh.faces_.insert(mesh.faces_.end(), f);
+        for (auto h : this->halfedges_)
+            h_map[h.id_] = mesh.halfedges_.insert(mesh.halfedges_.end(), h);
+
+        for (auto v : mesh.vertices_)
+            v.halfedge_ = h_map[v.halfedge_->id_];
+
+        for (auto e : mesh.edges_)
+            e.halfedge_ = h_map[e.halfedge_->id_];
+
+        for (auto f : mesh.faces_)
+            f.halfedge_ = h_map[f.halfedge_->id_];
+
+        for (auto h : mesh.halfedges_)
+        {
+            h.vertex_ = v_map[h.id_];
+            h.edge_ = e_map[h.id_];
+            h.face_ = f_map[h.id_];
+            h.twin_ = h_map[h.twin_->id_];
+            h.next_ = h_map[h.next_->id_];
+        }
+    }
 }

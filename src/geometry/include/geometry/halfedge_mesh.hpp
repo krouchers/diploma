@@ -69,6 +69,7 @@ namespace geometry
             EdgeRef edge_;
             HalfedgeRef next_, twin_;
             using IndexPair = std::pair<Index, Index>;
+            //For Validation
             IndexPair pair;
         };
 
@@ -76,6 +77,9 @@ namespace geometry
         HalfedgeMesh(utils::Data &&data);
 
         geometry::Mesh ToMesh();
+
+        void CopyTo(HalfedgeMesh &mesh);
+        void Clear();
 
         void CreateFromData(utils::Data &&data);
 

@@ -59,3 +59,36 @@ TEST(HalfEdge, construct_from_mesh_cube)
         EXPECT_EQ(h, i->halfedge_);
     }
 }
+
+TEST(HalfEdge, CopyTo)
+{
+    utils::Data data{{{glm::vec3{-5, -5, -5}, {0, 0, 0}, 0},
+                      {glm::vec3{5, -5, -5}, {0, 0, 0}, 0},
+                      {glm::vec3{5, 5, -5}, {0, 0, 0}, 0},
+                      {glm::vec3{-5, 5, -5}, {0, 0, 0}, 0},
+                      {glm::vec3{-5, -5, 5}, {0, 0, 0}, 0},
+                      {glm::vec3{5, -5, 5}, {0, 0, 0}, 0},
+                      {glm::vec3{5, 5, 5}, {0, 0, 0}, 0},
+                      {glm::vec3{-5, 5, 5}, {0, 0, 0}, 0}},
+                     {0, 1, 3, 3, 1, 2, 1, 5, 2, 2, 5, 6, 5, 4, 6, 6, 4, 7,
+                      4, 0, 7, 7, 0, 3, 3, 2, 7, 7, 2, 6, 4, 5, 0, 0, 5, 1}};
+    geometry::HalfedgeMesh hmesh{}, copiedFrom{};
+    hmesh.CreateFromData(std::move(data));
+    hmesh.CopyTo(copiedFrom);
+
+    for (auto i{copiedFrom.halfedges_.begin()}; i != copiedFrom.halfedges_.end(); ++i)
+    {
+        std::pair expected{i->twin_->pair.second, i->twin_->pair.first};
+        EXPECT_EQ(i->pair, expected);
+    }
+
+    for (auto i{copiedFrom.faces_.begin()}; i != copiedFrom.faces_.end(); ++i)
+    {
+        auto h{i->halfedge_};
+        for (size_t j{0}; j < 3; ++j)
+        {
+            h = h->next_;
+        }
+        EXPECT_EQ(h, i->halfedge_);
+    }
+}
