@@ -71,3 +71,5 @@
 ✔ Implement merge function for scene items @done(23-06-01 22:37)
 
 ✔ Fix problem with transfroms non applying in view mode @done(23-06-01 22:37)
+
+☐ Add text displaying in view mode

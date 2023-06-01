@@ -15,6 +15,7 @@ namespace gui
     {
         if (obj_opt)
             SetupMeshComponents(obj_opt.value());
+        else return;
 
         auto &r = scene::Renderer::Get();
         scene::Renderer::HalfedgeOpts opts(Shapes());

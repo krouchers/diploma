@@ -320,29 +320,23 @@ namespace gui
     {
         ImGui::SetNextWindowPos({0.0f, pos.y});
         ImGui::SetNextWindowSize({1280.0f * 0.2, 720.0f - pos.y});
+        ImGui::Begin("SideMenu", nullptr,
+                     ImGuiWindowFlags_NoTitleBar |
+                         ImGuiWindowFlags_NoResize |
+                         ImGuiWindowFlags_NoMove |
+                         ImGuiWindowFlags_NoScrollbar |
+                         ImGuiWindowFlags_NoCollapse |
+                         ImGuiWindowFlags_NoSavedSettings);
         switch (mode_)
         {
         case Mode::model:
         case Mode::layout:
-            ImGui::Begin("SideMenu", nullptr,
-                         ImGuiWindowFlags_NoTitleBar |
-                             ImGuiWindowFlags_NoResize |
-                             ImGuiWindowFlags_NoMove |
-                             ImGuiWindowFlags_NoScrollbar |
-                             ImGuiWindowFlags_NoCollapse |
-                             ImGuiWindowFlags_NoSavedSettings);
             ItemOptions();
             ImGui::End();
             break;
         case Mode::view:
-            ImGui::Begin("SideMenu", nullptr,
-                         ImGuiWindowFlags_NoTitleBar |
-                             ImGuiWindowFlags_NoResize |
-                             ImGuiWindowFlags_NoMove |
-                             ImGuiWindowFlags_NoScrollbar |
-                             ImGuiWindowFlags_NoCollapse |
-                             ImGuiWindowFlags_NoSavedSettings);
             static size_t item_current_idx = 0; // Here we store our selection data as an index.
+            ImGui::SetNextItemWidth(1024);
             if (ImGui::BeginListBox("listbox 1"))
             {
                 for (size_t n = 0; n < view_.GetProblemsNames().size(); n++)
@@ -388,7 +382,14 @@ namespace gui
 
         if (text_input_window_)
         {
-            ImGui::Begin("Input text");
+            ImGui::SetNextWindowPos({1280.0f * 0.2, 24.0f});
+            ImGui::SetNextWindowSize({1280.0f * 0.2, 580.0f});
+            ImGui::Begin("Input text", nullptr,
+                         ImGuiWindowFlags_NoTitleBar |
+                             ImGuiWindowFlags_NoResize |
+                             ImGuiWindowFlags_NoMove |
+                             ImGuiWindowFlags_NoCollapse |
+                             ImGuiWindowFlags_NoSavedSettings);
             ImGui::InputText("Название задачи", view_.problem_name, 128);
             ImGui::InputTextMultiline("Input text", view_.problem_text, 1024, {512, 512});
             if (ImGui::Button("Ок"))
