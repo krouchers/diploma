@@ -4,15 +4,16 @@
 #include "scene/scene.hpp"
 
 #include <optional>
+#include <unordered_map>
 
 class View
 {
 public:
     std::optional<size_t> &GetCurrentProblemId();
-    std::vector<Problem> &GetProblems();
-    std::vector<std::string> &GetProblemsNames();
+    std::unordered_map<size_t, Problem> &GetProblems();
     void SelectProblem(size_t id);
     void AddProblem(const char *name, const char *text, geometry::Mesh &mesh);
+    void DeleteProblem(size_t problem_id);
     void Render();
 
     char problem_name[128]{};
@@ -26,7 +27,6 @@ private:
     std::string problem_text_;
     geometry::Mesh problem_mesh_;
 
-    std::vector<Problem> problems_;
-    std::vector<std::string> problem_names_;
+    std::unordered_map<size_t, Problem> problems_;
     std::optional<size_t> current_item_id_;
 };

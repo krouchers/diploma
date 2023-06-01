@@ -6,20 +6,14 @@ std::optional<size_t> &View::GetCurrentProblemId()
     return current_item_id_;
 }
 
-std::vector<Problem> &View::GetProblems()
+std::unordered_map<size_t, Problem> &View::GetProblems()
 {
     return problems_;
 }
 
-std::vector<std::string> &View::GetProblemsNames()
-{
-    return problem_names_;
-}
-
 void View::AddProblem(const char *name, const char *text, geometry::Mesh &mesh)
 {
-    problems_.push_back({next_id++, name, text, std::move(mesh)});
-    problem_names_.push_back(name);
+    problems_[next_id++] = {name, text, std::move(mesh)};
 }
 
 void View::Render()
@@ -36,4 +30,10 @@ void View::Render()
 void View::SelectProblem(size_t id)
 {
     current_item_id_ = id;
+}
+
+void View::DeleteProblem(size_t problem_id)
+{
+    problems_.erase(problem_id);
+    current_item_id_.reset();
 }

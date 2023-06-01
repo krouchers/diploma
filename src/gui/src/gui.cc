@@ -251,17 +251,6 @@ namespace gui
                 AddMesh(utils::GenerateArrow(size));
             }
         }
-        // if (ImGui::CollapsingHeader("Тор"))
-        // {
-        //     static float irad{};
-        //     static float orad{};
-        //     ImGui::SliderFloat("Внешний радиус", &orad, 1.0f, 10.0f);
-        //     ImGui::SliderFloat("Внутренний радиус", &irad, 1.0f, 10.0f);
-        //     if (ImGui::Button("Добавить"))
-        //     {
-        //         AddMesh(utils::GenerateTorus(irad, orad));
-        //     }
-        // }
         if (ImGui::CollapsingHeader("Цилиндр"))
         {
             static float rad{};
@@ -338,20 +327,25 @@ namespace gui
             ImGui::SetNextItemWidth(1024);
             if (ImGui::BeginListBox("listbox 1"))
             {
-                for (size_t n = 0; n < view_.GetProblemsNames().size(); n++)
+                for (auto &[id, problem] : view_.GetProblems())
                 {
-                    if (ImGui::Selectable(view_.GetProblemsNames()[n].c_str()))
+                    if (ImGui::Selectable(problem.problem_name_.c_str()))
                     {
-                        view_.SelectProblem(n);
+                        view_.SelectProblem(id);
                     }
                 }
                 ImGui::EndListBox();
             }
             if (view_.GetCurrentProblemId().has_value())
             {
-                ImGui::Text("%s", view_.GetProblemsNames()[view_.GetCurrentProblemId().value()].c_str());
+                ImGui::Text("%s", view_.GetProblems()[view_.GetCurrentProblemId().value()].problem_name_.c_str());
                 ImGui::Text("%s", view_.GetProblems()[view_.GetCurrentProblemId().value()].problem_text_.c_str());
+                if (ImGui::Button("Удалить"))
+                {
+                    view_.DeleteProblem(view_.GetCurrentProblemId().value());
+                }
             }
+
             ImGui::End();
             break;
         }
@@ -359,17 +353,24 @@ namespace gui
 
     void DearGui::ItemOptions()
     {
-        if (ImGui::Button("Перемещать"))
+        if (mode_ == Mode::layout)
         {
-            widgets_.active_ = WidgetType::move;
-        }
-        if (ImGui::Button("Вращать"))
-        {
-            widgets_.active_ = WidgetType::rotate;
-        }
-        if (ImGui::Button("Масштабировать"))
-        {
-            widgets_.active_ = WidgetType::scale;
+            if (ImGui::Button("Перемещать"))
+            {
+                widgets_.active_ = WidgetType::move;
+            }
+            if (ImGui::Button("Вращать"))
+            {
+                widgets_.active_ = WidgetType::rotate;
+            }
+            if (ImGui::Button("Масштабировать"))
+            {
+                widgets_.active_ = WidgetType::scale;
+            }
+            if (ImGui::Button("Очистить"))
+            {
+                scene_->Clear();
+            }
         }
         if (ImGui::Button("Ввести условие задачи"))
         {
@@ -416,11 +417,12 @@ namespace gui
             geometry::Mesh merged_mesh{};
             scene_->ForItems([&merged_mesh](scene::Item &item)
                              { 
-                                for(auto &vert :item.GetMesh().Vertices()){
-                                    vert.pos = glm::vec3(item.pose_.Transform() * glm::vec4{vert.pos, 1.0f});
-                                    vert.norm = glm::vec3(item.pose_.Transform() * glm::vec4{vert.norm, 0.0f});
-                                }
-                                merged_mesh = utils::merge(merged_mesh.GetData(), item.GetMesh().GetData()); });
+                                for(auto &vert :item.GetMesh().Vertices())
+                {
+                    vert.pos = glm::vec3(item.pose_.Transform() * glm::vec4{vert.pos, 1.0f});
+                    vert.norm = glm::vec3(item.pose_.Transform() * glm::vec4{vert.norm, 0.0f});
+                }
+                merged_mesh = utils::merge(merged_mesh.GetData(), item.GetMesh().GetData()); });
             scene_->Clear();
             view_.AddProblem(view_.problem_name, view_.problem_text, merged_mesh);
         }
