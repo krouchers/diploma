@@ -48,10 +48,11 @@ namespace geometry
         Mesh &operator=(const Mesh &src) = delete;
         void Destroy();
         void Render();
-        void Recreate(std::vector<Vert> &&vertices, std::vector<Index> &&indices);
+        void Recreate(utils::Data &&data);
 
-        std::vector<Vert> Vertices();
+        std::vector<Vert> &Vertices();
         std::vector<Index> Indices();
+        utils::Data GetData();
         size_t IndicesSize();
         GLuint GetVAO();
         void Update();

@@ -17,6 +17,7 @@ public:
     void ForItems(std::function<void(scene::Item &)> f);
     void Add(geometry::HalfedgeMesh &&item);
     MayBeItem Get(SceneID id);
+    void Clear();
 
     Scene(const Scene &) = delete;
     Scene &operator=(const Scene &) = delete;

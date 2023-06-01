@@ -145,21 +145,20 @@ namespace gui
 
     void DearGui::Render3D(Scene &scene)
     {
-        if (mode_ == Mode::layout)
-        {
-            scene.ForItems([&](scene::Item &item)
-                           { item.Render(); });
-        }
-
         scene::Renderer::Get().Lines(baseline_, camera_->GetProjection() * camera_->GetView());
 
         switch (mode_)
         {
         case Mode::layout:
+            scene.ForItems([&](scene::Item &item)
+                           { item.Render(); });
             layout_.Render(scene_->Get(layout_.GetSelectedSceneID()), widgets_);
             break;
         case Mode::model:
             model_.Render(scene_->Get(layout_.GetSelectedSceneID()), widgets_);
+            break;
+        case Mode::view:
+            view_.Render();
             break;
         default:
             break;
@@ -350,11 +349,7 @@ namespace gui
                 {
                     const bool is_selected = (item_current_idx == n);
                     if (ImGui::Selectable(view_.GetProblemsNames()[n].c_str(), is_selected))
-                        item_current_idx = n;
-
-                    // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-                    if (is_selected)
-                        ImGui::SetItemDefaultFocus();
+                        view_.SelectProblem(n);
                 }
                 ImGui::EndListBox();
             }
@@ -394,20 +389,34 @@ namespace gui
         if (text_input_window_)
         {
             ImGui::Begin("Input text");
-            static char problem_name[128];
-            static char problem_text[1028];
-            ImGui::InputText("Название задачи", problem_name, 128);
-            ImGui::InputTextMultiline("Input text", problem_text, 1024, {512, 512});
+            ImGui::InputText("Название задачи", view_.problem_name, 128);
+            ImGui::InputTextMultiline("Input text", view_.problem_text, 1024, {512, 512});
             if (ImGui::Button("Ок"))
             {
-                geometry::Mesh mesh;
-                view_.AddProblem(problem_name, problem_text, std::move(mesh));
                 text_input_window_ = false;
             }
             ImGui::SameLine();
             if (ImGui::Button("Отмена"))
+            {
                 text_input_window_ = false;
+                memset(view_.problem_name, 0, 128);
+                memset(view_.problem_text, 0, 1024);
+            }
             ImGui::End();
+        }
+
+        if (ImGui::Button("Сохранить"))
+        {
+            geometry::Mesh merged_mesh{};
+            scene_->ForItems([&merged_mesh](scene::Item &item)
+                             { 
+                                for(auto &vert :item.GetMesh().Vertices()){
+                                    vert.pos = glm::vec3(item.pose_.Transform() * glm::vec4{vert.pos, 1.0f});
+                                    vert.norm = glm::vec3(item.pose_.Transform() * glm::vec4{vert.norm, 0.0f});
+                                }
+                                merged_mesh = utils::merge(merged_mesh.GetData(), item.GetMesh().GetData()); });
+            scene_->Clear();
+            view_.AddProblem(view_.problem_name, view_.problem_text, merged_mesh);
         }
     }
 

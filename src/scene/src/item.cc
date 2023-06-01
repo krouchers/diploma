@@ -13,7 +13,7 @@ namespace scene
 
     void Item::Render(bool depth_only)
     {
-        if(mesh_dirty)
+        if (mesh_dirty)
             SyncMesh();
         scene::Renderer::MeshOpts opts;
         opts.pose_ = pose_.Transform();
@@ -49,8 +49,17 @@ namespace scene
         return &halfedge_mesh_;
     }
 
-    void Item::UpdateHalfedgeMesh(const geometry::HalfedgeMesh &update_from) {
+    void Item::UpdateHalfedgeMesh(const geometry::HalfedgeMesh &update_from)
+    {
         update_from.CopyTo(halfedge_mesh_);
         mesh_dirty = true;
+    }
+
+    geometry::Mesh &Item::GetMesh()
+    {
+        if (mesh_dirty)
+            SyncMesh();
+        mesh_dirty = false;
+        return mesh_;
     }
 }

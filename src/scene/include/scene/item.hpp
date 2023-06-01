@@ -23,6 +23,7 @@ namespace scene
         Item(Item &&item);
 
         void Render(bool depth_only = false);
+        geometry::Mesh &GetMesh();
         geometry::HalfedgeMesh *GetHalfedgeMesh();
         void UpdateHalfedgeMesh(const geometry::HalfedgeMesh &update_from);
         SceneID Id()

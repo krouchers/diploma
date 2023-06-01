@@ -3,10 +3,11 @@
 #include "glm/mat4x4.hpp"
 
 #include "math/quat.hpp"
+#include "common/definitions.hpp"
 
 namespace scene
 {
-    struct Pose
+    struct GEODIP_API Pose
     {
         glm::mat4x4 Transform() const;
 

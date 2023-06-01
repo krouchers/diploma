@@ -67,3 +67,7 @@
 ✔ Add new menu item for switching to viewing problems @done(23-06-01 18:01)
 ✔ Add button to side menu for setting text and name for problems @done(23-06-01 18:02)
 ✔ Add field for text typing that will be show in side menu of viewing problems mode @done(23-06-01 18:02)
+
+✔ Implement merge function for scene items @done(23-06-01 22:37)
+
+✔ Fix problem with transfroms non applying in view mode @done(23-06-01 22:37)

@@ -42,7 +42,7 @@ namespace gui
         // faces visualization
         auto [verts, inds] = ExtractVertsAndIndexes();
 
-        face_mesh_.Recreate(std::move(verts), std::move(inds));
+        face_mesh_.Recreate({std::move(verts), std::move(inds)});
 
         // vertices visualization
         spheres_.Clear();
@@ -69,7 +69,7 @@ namespace gui
     {
         spheres_.Get(id_to_info_[v->id_].instance_id).transform_[3] = {v->pos_, 1.0f};
         auto [verts, inds] = ExtractVertsAndIndexes();
-        face_mesh_.Recreate(std::move(verts), std::move(inds));
+        face_mesh_.Recreate({std::move(verts), std::move(inds)});
     }
 
     std::pair<std::vector<geometry::Mesh::Vert>,

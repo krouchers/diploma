@@ -23,3 +23,8 @@ MayBeItem Scene::Get(SceneID id)
         return std::nullopt;
     return entry->second;
 }
+
+void Scene::Clear()
+{
+    objs_.clear();
+}

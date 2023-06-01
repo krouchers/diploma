@@ -72,7 +72,7 @@ namespace geometry
         glBindVertexArray(0);
     }
 
-    std::vector<Mesh::Vert> Mesh::Vertices()
+    std::vector<Mesh::Vert> &Mesh::Vertices()
     {
         return vertices_;
     }
@@ -116,10 +116,10 @@ namespace geometry
         return *this;
     }
 
-    void Mesh::Recreate(std::vector<Vert> &&vertices, std::vector<Index> &&indices)
+    void Mesh::Recreate(utils::Data &&data)
     {
-        vertices_ = vertices;
-        indices_ = indices;
+        vertices_ = data.vertices_;
+        indices_ = data.indices_;
         dirty = true;
     }
 
@@ -131,5 +131,10 @@ namespace geometry
     GLuint Mesh::GetVAO()
     {
         return vao_;
+    }
+
+    utils::Data Mesh::GetData()
+    {
+        return {vertices_, indices_};
     }
 }
