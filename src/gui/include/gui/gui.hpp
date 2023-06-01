@@ -15,13 +15,15 @@
 
 #include "gui/layout.hpp"
 #include "gui/model.hpp"
+#include "gui/view.hpp"
 
 class Opengl;
 
 enum class Mode
 {
     layout,
-    model
+    model,
+    view
 };
 
 namespace gui
@@ -54,6 +56,8 @@ namespace gui
         std::shared_ptr<Camera> camera_;
         std::shared_ptr<Scene> scene_;
 
+        bool text_input_window_{false};
+
         bool newObjWindow{false};
 
         gl::Lines baseline_{};
@@ -61,6 +65,7 @@ namespace gui
         Layout layout_;
         Model model_;
         Widgets widgets_;
+        View view_;
 
         Mode mode_{Mode::layout};
 

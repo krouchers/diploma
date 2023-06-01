@@ -62,3 +62,8 @@
 ✔ Correct test launching logic @done(23-06-01 14:17)
 
 ☐ Make cleanup with EndTransfrom logic
+
+✔ Create Problem class representing geometric problem @done(23-06-01 18:01)
+✔ Add new menu item for switching to viewing problems @done(23-06-01 18:01)
+✔ Add button to side menu for setting text and name for problems @done(23-06-01 18:02)
+✔ Add field for text typing that will be show in side menu of viewing problems mode @done(23-06-01 18:02)

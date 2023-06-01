@@ -68,6 +68,8 @@ namespace gui
                 case Mode::model:
                     model_.Select(id, widgets_, click_dir, cam_pos);
                     break;
+                default:
+                    break;
                 }
 
                 if (id == 0)
@@ -93,7 +95,7 @@ namespace gui
         }
         case SDL_MOUSEBUTTONUP:
         {
-            if(widgets_.dragging_)
+            if (widgets_.dragging_)
                 EndDrag();
             break;
         }
@@ -159,6 +161,8 @@ namespace gui
         case Mode::model:
             model_.Render(scene_->Get(layout_.GetSelectedSceneID()), widgets_);
             break;
+        default:
+            break;
         }
     }
 
@@ -178,6 +182,11 @@ namespace gui
         {
             mode_ = Mode::model;
         }
+        if (ImGui::Button("Решать задачи"))
+        {
+            mode_ = Mode::view;
+        }
+
         next_window_pos = ImGui::GetWindowSize().y;
         ImGui::EndMainMenuBar();
 
@@ -312,15 +321,46 @@ namespace gui
     {
         ImGui::SetNextWindowPos({0.0f, pos.y});
         ImGui::SetNextWindowSize({1280.0f * 0.2, 720.0f - pos.y});
-        ImGui::Begin("SideMenu", nullptr,
-                     ImGuiWindowFlags_NoTitleBar |
-                         ImGuiWindowFlags_NoResize |
-                         ImGuiWindowFlags_NoMove |
-                         ImGuiWindowFlags_NoScrollbar |
-                         ImGuiWindowFlags_NoCollapse |
-                         ImGuiWindowFlags_NoSavedSettings);
-        ItemOptions();
-        ImGui::End();
+        switch (mode_)
+        {
+        case Mode::model:
+        case Mode::layout:
+            ImGui::Begin("SideMenu", nullptr,
+                         ImGuiWindowFlags_NoTitleBar |
+                             ImGuiWindowFlags_NoResize |
+                             ImGuiWindowFlags_NoMove |
+                             ImGuiWindowFlags_NoScrollbar |
+                             ImGuiWindowFlags_NoCollapse |
+                             ImGuiWindowFlags_NoSavedSettings);
+            ItemOptions();
+            ImGui::End();
+            break;
+        case Mode::view:
+            ImGui::Begin("SideMenu", nullptr,
+                         ImGuiWindowFlags_NoTitleBar |
+                             ImGuiWindowFlags_NoResize |
+                             ImGuiWindowFlags_NoMove |
+                             ImGuiWindowFlags_NoScrollbar |
+                             ImGuiWindowFlags_NoCollapse |
+                             ImGuiWindowFlags_NoSavedSettings);
+            static size_t item_current_idx = 0; // Here we store our selection data as an index.
+            if (ImGui::BeginListBox("listbox 1"))
+            {
+                for (size_t n = 0; n < view_.GetProblemsNames().size(); n++)
+                {
+                    const bool is_selected = (item_current_idx == n);
+                    if (ImGui::Selectable(view_.GetProblemsNames()[n].c_str(), is_selected))
+                        item_current_idx = n;
+
+                    // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                    if (is_selected)
+                        ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndListBox();
+            }
+            ImGui::End();
+            break;
+        }
     }
 
     void DearGui::ItemOptions()
@@ -337,6 +377,10 @@ namespace gui
         {
             widgets_.active_ = WidgetType::scale;
         }
+        if (ImGui::Button("Ввести условие задачи"))
+        {
+            text_input_window_ = true;
+        }
         ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(163, 66, 81, 255));
         ImGui::Text("Ось X красного цвета");
         ImGui::PopStyleColor();
@@ -346,6 +390,25 @@ namespace gui
         ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(64, 127, 193, 255));
         ImGui::Text("Ось Z синего цвета");
         ImGui::PopStyleColor();
+
+        if (text_input_window_)
+        {
+            ImGui::Begin("Input text");
+            static char problem_name[128];
+            static char problem_text[1028];
+            ImGui::InputText("Название задачи", problem_name, 128);
+            ImGui::InputTextMultiline("Input text", problem_text, 1024, {512, 512});
+            if (ImGui::Button("Ок"))
+            {
+                geometry::Mesh mesh;
+                view_.AddProblem(problem_name, problem_text, std::move(mesh));
+                text_input_window_ = false;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Отмена"))
+                text_input_window_ = false;
+            ImGui::End();
+        }
     }
 
     void DearGui::DragTo(const glm::vec3 click_dir, const glm::vec3 cam_pos)

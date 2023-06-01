@@ -21,6 +21,7 @@ set(src_files
     src/layout.cc
     src/model.cc
     src/widgets.cc
+    src/view.cc
 )
 
 build_library_with_type(dear_gui SHARED "${MODULE_COMPILE_FLAGS}" "${src_files};${imgui_sources}")

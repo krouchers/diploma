@@ -16,4 +16,6 @@ namespace utils
     Data GenerateSphere(float radius, int level);
     Data GenereateScaleMesh(int size = 1);
     Data GenerateArrow(int size = 1);
+
+    Data merge(Data &&l, Data &&r);
 }

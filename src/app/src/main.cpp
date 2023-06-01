@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "app.hpp"
+#include "app/app.hpp"
 
 int main(int, char **argv)
 {
