@@ -1,8 +1,9 @@
 #include "gui/view.hpp"
+#include "scene/renderer.hpp"
 
-size_t &View::GetCurrentProblemId()
+std::optional<size_t> &View::GetCurrentProblemId()
 {
-    return current_item_id_.value();
+    return current_item_id_;
 }
 
 std::vector<Problem> &View::GetProblems()
@@ -23,8 +24,13 @@ void View::AddProblem(const char *name, const char *text, geometry::Mesh &mesh)
 
 void View::Render()
 {
+    auto &r = scene::Renderer::Get();
     if (current_item_id_.has_value())
-        problems_[current_item_id_.value()].obj.Render();
+    {
+        scene::Renderer::MeshOpts m_opts;
+        m_opts.color_ = Color::white;
+        r.Mesh(problems_[current_item_id_.value()].obj, m_opts);
+    }
 }
 
 void View::SelectProblem(size_t id)

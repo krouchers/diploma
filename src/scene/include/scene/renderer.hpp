@@ -22,7 +22,7 @@ namespace scene
     public:
         struct MeshOpts
         {
-            glm::mat4x4 pose_;
+            glm::mat4x4 pose_ = glm::mat4x4(1.0f);
             glm::vec3 color_;
             SceneID sel_id_;
             SceneID hov_id_;

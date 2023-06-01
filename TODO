@@ -72,4 +72,5 @@
 
 ✔ Fix problem with transfroms non applying in view mode @done(23-06-01 22:37)
 
-☐ Add text displaying in view mode
+✔ Add text displaying in view mode @done(23-06-02 00:05)
+✔ Make figures in view mode have white color @done(23-06-02 00:05)

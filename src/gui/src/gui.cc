@@ -335,17 +335,22 @@ namespace gui
             ImGui::End();
             break;
         case Mode::view:
-            static size_t item_current_idx = 0; // Here we store our selection data as an index.
             ImGui::SetNextItemWidth(1024);
             if (ImGui::BeginListBox("listbox 1"))
             {
                 for (size_t n = 0; n < view_.GetProblemsNames().size(); n++)
                 {
-                    const bool is_selected = (item_current_idx == n);
-                    if (ImGui::Selectable(view_.GetProblemsNames()[n].c_str(), is_selected))
+                    if (ImGui::Selectable(view_.GetProblemsNames()[n].c_str()))
+                    {
                         view_.SelectProblem(n);
+                    }
                 }
                 ImGui::EndListBox();
+            }
+            if (view_.GetCurrentProblemId().has_value())
+            {
+                ImGui::Text("%s", view_.GetProblemsNames()[view_.GetCurrentProblemId().value()].c_str());
+                ImGui::Text("%s", view_.GetProblems()[view_.GetCurrentProblemId().value()].problem_text_.c_str());
             }
             ImGui::End();
             break;

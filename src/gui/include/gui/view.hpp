@@ -8,7 +8,7 @@
 class View
 {
 public:
-    size_t &GetCurrentProblemId();
+    std::optional<size_t> &GetCurrentProblemId();
     std::vector<Problem> &GetProblems();
     std::vector<std::string> &GetProblemsNames();
     void SelectProblem(size_t id);
