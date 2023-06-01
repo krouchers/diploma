@@ -20,6 +20,12 @@ target_link_libraries(geometry_test gtest_main glm geometry)
 
 enable_testing()
 
+include(GoogleTest)
+
+gtest_discover_tests(math_test)
+gtest_discover_tests(halfedge_test)
+gtest_discover_tests(geometry_test)
+
 add_test(NAME math_test COMMAND math_test)
 add_test(NAME halfedge_test COMMAND halfedge_test)
 add_test(NAME geometry_test COMMAND geometry_test)

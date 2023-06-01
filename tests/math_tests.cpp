@@ -5,12 +5,6 @@
 
 #include <cmath>
 
-int main()
-{
-    testing::InitGoogleTest();
-    [[maybe_unused]] int a{RUN_ALL_TESTS()};
-}
-
 TEST(vector_test, num_multiplication)
 {
     math::Vec4 v{1, 1, 1, 1};

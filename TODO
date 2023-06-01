@@ -59,6 +59,6 @@
 
 ✔ Make changes to mesh in model mode propagate to layout mode @done(23-05-31 13:22)
 
-☐ Correct test launching logic
+✔ Correct test launching logic @done(23-06-01 14:17)
 
 ☐ Make cleanup with EndTransfrom logic

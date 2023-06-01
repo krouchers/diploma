@@ -3,12 +3,6 @@
 #include "geometry/halfedge_mesh.hpp"
 #include "utils/generate_primitives.hpp"
 
-int main()
-{
-    testing::InitGoogleTest();
-    [[maybe_unused]] int a{RUN_ALL_TESTS()};
-}
-
 TEST(HalfEdge, construct_from_mesh_plane)
 {
     utils::Data data{{{glm::vec3{-4, -4, -0}, {0, 0, 0}, 0},

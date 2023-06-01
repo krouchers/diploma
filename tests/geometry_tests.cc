@@ -3,12 +3,6 @@
 #include "geometry/line.hpp"
 #include "geometry/plane.hpp"
 
-int main()
-{
-    testing::InitGoogleTest();
-    [[maybe_unused]] int a{RUN_ALL_TESTS()};
-}
-
 TEST(PlaneTest, IntersectionWithLine)
 {
     using namespace geometry;
