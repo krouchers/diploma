@@ -464,11 +464,6 @@ namespace gui
 
     void DearGui::EndDrag()
     {
-        if (unselection_)
-        {
-            layout_.ClearSelection();
-            unselection_ = false;
-        }
         if (widgets_.dragging_)
         {
             widgets_.EndDrag();
