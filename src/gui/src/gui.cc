@@ -22,7 +22,7 @@ namespace gui
                      std::shared_ptr<Camera> &cam,
                      std::shared_ptr<Scene> &scene,
                      std::string const &exe_path)
-        : window_{window}, gl_{gl}, camera_{cam}, scene_{scene}
+        : window_{window}, gl_{gl}, camera_{cam}, scene_{scene}, view_{exe_path}
     {
         info("Initializing DearGui...");
 

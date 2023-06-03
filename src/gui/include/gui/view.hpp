@@ -5,10 +5,16 @@
 
 #include <optional>
 #include <unordered_map>
+#include <filesystem>
+#include <string>
+
+namespace fs = std::filesystem;
 
 class View
 {
 public:
+    View(fs::path exe_path);
+
     std::optional<size_t> &GetCurrentProblemId();
     std::unordered_map<size_t, Problem> &GetProblems();
     void SelectProblem(size_t id);
@@ -19,7 +25,12 @@ public:
     char problem_name[128]{};
     char problem_text[1028]{};
 
+    void SaveProblemsToFiles();
+    ~View();
+
 private:
+    fs::path source_folder_;
+
     size_t next_id{0};
 
     // data for current porblem

@@ -77,7 +77,7 @@ namespace geometry
         return vertices_;
     }
 
-    std::vector<Mesh::Index> Mesh::Indices()
+    std::vector<Mesh::Index> &Mesh::Indices()
     {
         return indices_;
     }

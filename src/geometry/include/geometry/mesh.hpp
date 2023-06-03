@@ -51,7 +51,7 @@ namespace geometry
         void Recreate(utils::Data &&data);
 
         std::vector<Vert> &Vertices();
-        std::vector<Index> Indices();
+        std::vector<Index> &Indices();
         utils::Data GetData();
         size_t IndicesSize();
         GLuint GetVAO();
