@@ -37,4 +37,6 @@ private:
     };
 
     CameraMode camera_mode{CameraMode::none};
+
+    const uint8_t* key_buffer_;
 };

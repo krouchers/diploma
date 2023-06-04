@@ -20,6 +20,7 @@ App::App(std::string exe_path)
 {
     gl_->InitGlobalParams();
     scene::Renderer::Setup(gl_, camera_);
+    key_buffer_ = SDL_GetKeyboardState(nullptr);
 }
 
 App::~App()
@@ -76,7 +77,8 @@ void App::ProcessEvents()
         }
         case SDL_MOUSEWHEEL:
         {
-            camera_->MoveThroughRadius(sdl_e.wheel.y);
+            if (key_buffer_[SDL_SCANCODE_LSHIFT] == 1)
+                camera_->MoveThroughRadius(sdl_e.wheel.y);
             break;
         }
         case SDL_QUIT:
