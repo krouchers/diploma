@@ -51,4 +51,13 @@ namespace gui
     {
         obj.pose_ = widgets.ApplyTransform(old_pose_);
     }
+
+    void Layout::ScaleVertices(scene::Item &obj)
+    {
+        for (auto &v : obj.GetMesh().Vertices())
+        {
+            v.pos = v.pos * obj.pose_.scale_;
+        }
+        obj.pose_.scale_ = {1, 1, 1};
+    }
 }

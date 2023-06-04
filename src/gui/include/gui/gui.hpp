@@ -42,7 +42,7 @@ namespace gui
         void Render3D(Scene &) final;
         void RenderUi() final;
         void DragTo(const glm::vec3 click_dir, const glm::vec3 cam_pos);
-        void EndDrag();
+        void EndDrag(scene::Item &obj);
         glm::vec2 UIMenu();
         void UINewObj();
         void UISideMenu(glm::vec2 const &pos);

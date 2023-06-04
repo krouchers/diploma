@@ -13,6 +13,7 @@ namespace gui
         SceneID GetSelectedSceneID();
         glm::vec3 GetSelectedPos(Scene &scene);
         void ApplyTransform(scene::Item &obj, Widgets &widgets);
+        void ScaleVertices(scene::Item &obj);
         void ClearSelection()
         {
             selected_object_ = (SceneID)WidgetsIds::none;
