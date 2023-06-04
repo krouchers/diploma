@@ -85,6 +85,7 @@ namespace gui
         {
             auto h = f->halfedge_;
             auto i = h;
+            // SceneID id = 0;
             auto id = f->id_;
             std::vector<glm::vec3> face_verts;
             do

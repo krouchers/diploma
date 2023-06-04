@@ -104,8 +104,8 @@ namespace scene
         m_opts.pose_ = glm::mat4x4(1.0f);
         m_opts.color_ = Color::white;
         m_opts.use_f_id = true;
-        m_opts.hov_id_ = opts.hov_id_;
-        m_opts.sel_id_ = opts.sel_id_;
+        // m_opts.hov_id_ = opts.hov_id_;
+        // m_opts.sel_id_ = opts.sel_id_;
         Renderer::Mesh(faces, m_opts);
 
         instanced_shader_.Bind();

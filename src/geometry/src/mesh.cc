@@ -74,6 +74,7 @@ namespace geometry
 
     std::vector<Mesh::Vert> &Mesh::Vertices()
     {
+        dirty = true;
         return vertices_;
     }
 

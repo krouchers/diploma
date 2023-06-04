@@ -96,7 +96,7 @@ namespace gui
         case SDL_MOUSEBUTTONUP:
         {
             if (widgets_.dragging_)
-                EndDrag();
+                EndDrag(scene_->Get(layout_.selected_object_).value());
             break;
         }
         }
@@ -171,7 +171,7 @@ namespace gui
         ImGui::BeginMainMenuBar();
         if (ImGui::Button("Добавить фигуру"))
         {
-            newObjWindow = true;
+            newObjWindow = !newObjWindow;
         }
         if (ImGui::Button("Редактировать положение"))
         {
@@ -231,7 +231,15 @@ namespace gui
                 scene_->Add(std::move(hm));
                 newObjWindow = false;
             }};
-        ImGui::Begin("Добавить фигуру", &newObjWindow);
+
+        ImGui::SetNextWindowPos({1280.0f * 0.25, 24.0f});
+        ImGui::SetNextWindowSize({1280.0f * 0.5, 380.0f});
+        ImGui::Begin("Добавить фигуру", nullptr,
+                     ImGuiWindowFlags_NoTitleBar |
+                         ImGuiWindowFlags_NoResize |
+                         ImGuiWindowFlags_NoMove |
+                         ImGuiWindowFlags_NoCollapse |
+                         ImGuiWindowFlags_NoSavedSettings);
         if (ImGui::CollapsingHeader("Куб"))
         {
             static float edgeLenght{};
@@ -244,7 +252,7 @@ namespace gui
         }
         if (ImGui::CollapsingHeader("Стрелку"))
         {
-            static float size{};
+            static float size{1};
             ImGui::SliderFloat("Размер", &size, 1.0f, 10.0f);
             if (ImGui::Button("Добавить"))
             {
@@ -253,8 +261,8 @@ namespace gui
         }
         if (ImGui::CollapsingHeader("Цилиндр"))
         {
-            static float rad{};
-            static float height{};
+            static float rad{1};
+            static float height{1};
             ImGui::SliderFloat("Радиус", &rad, 1.0f, 10.0f);
             ImGui::SliderFloat("Длина", &height, 1.0f, 10.0f);
             if (ImGui::Button("Добавить"))
@@ -262,10 +270,23 @@ namespace gui
                 AddMesh(utils::GenerateCone(rad, rad, height));
             }
         }
+        if (ImGui::CollapsingHeader("Призма"))
+        {
+            static float rad = 1;
+            static float height = 1;
+            static int sides = 3;
+            ImGui::SliderFloat("Высота", &height, 1.0f, 10.0f);
+            ImGui::SliderFloat("Рад. описанной окр-и", &rad, 1.0f, 10.0f);
+            ImGui::SliderInt("Кол-во углов", &sides, 3.0f, 8.0f);
+            if (ImGui::Button("Добавить"))
+            {
+                AddMesh(utils::GenerateCone(rad, rad, height, sides));
+            }
+        }
         if (ImGui::CollapsingHeader("Конус"))
         {
-            static float rad{};
-            static float height{};
+            static float rad{1};
+            static float height{1};
             ImGui::SliderFloat("Радиус основания", &rad, 1.0f, 10.0f);
             ImGui::SliderFloat("Длина", &height, 1.0f, 10.0f);
             if (ImGui::Button("Добавить"))
@@ -275,7 +296,7 @@ namespace gui
         }
         if (ImGui::CollapsingHeader("Виджет для масштабирования"))
         {
-            static float size{};
+            static float size{1};
             ImGui::SliderFloat("Размер", &size, 1.0f, 10.0f);
             if (ImGui::Button("Добавить"))
             {
@@ -284,7 +305,7 @@ namespace gui
         }
         if (ImGui::CollapsingHeader("Сфера"))
         {
-            static float radius{};
+            static float radius{1};
             ImGui::SliderFloat("Радиус", &radius, 1.0f, 10.0f);
             if (ImGui::Button("Добавить"))
             {
@@ -308,7 +329,7 @@ namespace gui
     void DearGui::UISideMenu(glm::vec2 const &pos)
     {
         ImGui::SetNextWindowPos({0.0f, pos.y});
-        ImGui::SetNextWindowSize({1280.0f * 0.2, 720.0f - pos.y});
+        ImGui::SetNextWindowSize({1280.0f * 0.25, 720.0f - pos.y});
         ImGui::Begin("SideMenu", nullptr,
                      ImGuiWindowFlags_NoTitleBar |
                          ImGuiWindowFlags_NoResize |
@@ -388,15 +409,15 @@ namespace gui
 
         if (text_input_window_)
         {
-            ImGui::SetNextWindowPos({1280.0f * 0.2, 24.0f});
-            ImGui::SetNextWindowSize({1280.0f * 0.2, 580.0f});
+            ImGui::SetNextWindowPos({1280.0f * 0.25, 24.0f});
+            ImGui::SetNextWindowSize({1280.0f * 0.25, 580.0f});
             ImGui::Begin("Input text", nullptr,
                          ImGuiWindowFlags_NoTitleBar |
                              ImGuiWindowFlags_NoResize |
                              ImGuiWindowFlags_NoMove |
                              ImGuiWindowFlags_NoCollapse |
                              ImGuiWindowFlags_NoSavedSettings);
-            ImGui::InputText("Название задачи", view_.problem_name, 128);
+            ImGui::InputText("Название", view_.problem_name, 128);
             ImGui::InputTextMultiline("Input text", view_.problem_text, 1024, {512, 512});
             if (ImGui::Button("Ок"))
             {
@@ -462,16 +483,16 @@ namespace gui
         }
     }
 
-    void DearGui::EndDrag()
+    void DearGui::EndDrag(scene::Item &obj)
     {
         if (widgets_.dragging_)
         {
             widgets_.EndDrag();
         }
 
-        if (mode_ == Mode::model)
+        if (mode_ == Mode::layout)
         {
-            // model_.EndTransform(scene_->Get(layout_.selected_object_), model_);
+            layout_.ScaleVertices(obj);
         }
     }
 }

@@ -119,7 +119,7 @@ namespace shaders
 
         void main(){
             gl_Position = p * mv * vec4(v_pos, 1.0);
-            f_norm = (mv * vec4(v_norm, 0.0f)).xyz;
+            f_norm = normalize((mv * vec4(v_norm, 0.0f)).xyz);
             f_id = v_id;
         }
         )"};

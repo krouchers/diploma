@@ -11,7 +11,7 @@ namespace utils
     };
 
     Data GenerateCube(float edgeLenght);
-    Data GenerateCone(float bradius, float tradius, float height, int sides = 24, bool caps = 24);
+    Data GenerateCone(float bradius, float tradius, float height, int sides = 84, bool caps = 24);
     Data GenerateTorus(float iradius, float oradius);
     Data GenerateSphere(float radius, int level);
     Data GenereateScaleMesh(int size = 1);
