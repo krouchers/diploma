@@ -18,4 +18,11 @@ namespace gui
         z_scale,
         count
     };
+
+    enum class Mode
+    {
+        layout,
+        model,
+        view
+    };
 }

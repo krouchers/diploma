@@ -14,6 +14,8 @@
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
 
+#include <string>
+
 namespace gui
 {
 
@@ -445,6 +447,10 @@ namespace gui
                 }
                 merged_mesh = utils::merge(merged_mesh.GetData(), item.GetMesh().GetData()); });
             scene_->Clear();
+            if (std::string(view_.problem_name) == "")
+            {
+                strcpy_s(view_.problem_name, (std::string("noname") + std::to_string(view_.GetProblems().size() + 1)).c_str());
+            }
             view_.AddProblem(view_.problem_name, view_.problem_text, merged_mesh);
         }
     }

@@ -1,4 +1,6 @@
 #include "gui/widgets.hpp"
+#include "gui/gui.hpp"
+
 #include "glm/gtx/transform.hpp"
 
 #include "scene/pose.hpp"
@@ -40,76 +42,91 @@ namespace gui
         z_scale_.color_ = z_rot_.color_ = z_move_.color_ = Color::blue;
     }
 
-    void Widgets::Render(const glm::vec3 &pos, float scale)
+    void Widgets::Render(const glm::vec3 &pos, float scale, gui::Mode mode)
     {
         auto &r = scene::Renderer::Get();
         r.ClearDepth();
         glm::vec3 scl{scale};
-        switch (active_)
+        if (mode == gui::Mode::model && !dragging_)
         {
-        case WidgetType::move:
-        {
-            if (!dragging_)
-            {
-                x_move_.pose_.scale_ = scl;
-                x_move_.pose_.pos_ = pos;
-                x_move_.Render();
+            x_move_.pose_.scale_ = scl;
+            x_move_.pose_.pos_ = pos;
+            x_move_.Render();
 
-                y_move_.pose_.scale_ = scl;
-                y_move_.pose_.pos_ = pos;
-                y_move_.Render();
+            y_move_.pose_.scale_ = scl;
+            y_move_.pose_.pos_ = pos;
+            y_move_.Render();
 
-                z_move_.pose_.scale_ = scl;
-                z_move_.pose_.pos_ = pos;
-                z_move_.Render();
-            }
-            break;
+            z_move_.pose_.scale_ = scl;
+            z_move_.pose_.pos_ = pos;
+            z_move_.Render();
         }
-        case WidgetType::rotate:
-        {
-            if (!dragging_ || axis_ == Axis::X)
+        else
+            switch (active_)
             {
-                x_rot_.pose_.pos_ = pos;
-                x_rot_.pose_.scale_ = scl;
-                x_rot_.Render();
-            }
+            case WidgetType::move:
+            {
+                if (!dragging_)
+                {
+                    x_move_.pose_.scale_ = scl;
+                    x_move_.pose_.pos_ = pos;
+                    x_move_.Render();
 
-            if (!dragging_ || axis_ == Axis::Y)
-            {
-                y_rot_.pose_.pos_ = pos;
-                y_rot_.pose_.scale_ = scl;
-                y_rot_.Render();
-            }
+                    y_move_.pose_.scale_ = scl;
+                    y_move_.pose_.pos_ = pos;
+                    y_move_.Render();
 
-            if (!dragging_ || axis_ == Axis::Z)
-            {
-                z_rot_.pose_.pos_ = pos;
-                z_rot_.pose_.scale_ = scl;
-                z_rot_.Render();
+                    z_move_.pose_.scale_ = scl;
+                    z_move_.pose_.pos_ = pos;
+                    z_move_.Render();
+                }
                 break;
             }
-        }
-        case WidgetType::scale:
-        {
-            if (!dragging_)
+            case WidgetType::rotate:
             {
-                x_scale_.pose_.pos_ = pos;
-                x_scale_.pose_.scale_ = scl;
-                x_scale_.Render();
+                if (!dragging_ || axis_ == Axis::X)
+                {
+                    x_rot_.pose_.pos_ = pos;
+                    x_rot_.pose_.scale_ = scl;
+                    x_rot_.Render();
+                }
 
-                y_scale_.pose_.pos_ = pos;
-                y_scale_.pose_.scale_ = scl;
-                y_scale_.Render();
+                if (!dragging_ || axis_ == Axis::Y)
+                {
+                    y_rot_.pose_.pos_ = pos;
+                    y_rot_.pose_.scale_ = scl;
+                    y_rot_.Render();
+                }
 
-                z_scale_.pose_.pos_ = pos;
-                z_scale_.pose_.scale_ = scl;
-                z_scale_.Render();
+                if (!dragging_ || axis_ == Axis::Z)
+                {
+                    z_rot_.pose_.pos_ = pos;
+                    z_rot_.pose_.scale_ = scl;
+                    z_rot_.Render();
+                    break;
+                }
             }
-            break;
-        }
-        default:
-            break;
-        }
+            case WidgetType::scale:
+            {
+                if (!dragging_)
+                {
+                    x_scale_.pose_.pos_ = pos;
+                    x_scale_.pose_.scale_ = scl;
+                    x_scale_.Render();
+
+                    y_scale_.pose_.pos_ = pos;
+                    y_scale_.pose_.scale_ = scl;
+                    y_scale_.Render();
+
+                    z_scale_.pose_.pos_ = pos;
+                    z_scale_.pose_.scale_ = scl;
+                    z_scale_.Render();
+                }
+                break;
+            }
+            default:
+                break;
+            }
     }
 
     void Widgets::Select(SceneID id)

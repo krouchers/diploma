@@ -3,6 +3,8 @@
 #include "scene/item.hpp"
 #include "scene/pose.hpp"
 
+#include "widgets_ids.hpp"
+
 using SceneID = unsigned int;
 
 enum class WidgetType
@@ -30,9 +32,9 @@ namespace gui
                           glm::vec3 const &click_dir,
                           glm::vec3 const &camera_pos);
         glm::vec3 PlaneHit(glm::vec3 const &pos,
-                          glm::vec3 const &click_dir,
-                          glm::vec3 const &camera_pos);
-        void Render(const glm::vec3 &pos, float scale);
+                           glm::vec3 const &click_dir,
+                           glm::vec3 const &camera_pos);
+        void Render(const glm::vec3 &pos, float scale, gui::Mode mode = gui::Mode::layout);
         void StartDrag(glm::vec3 const &pos,
                        glm::vec3 const &click_dir,
                        glm::vec3 const &camera_pos);

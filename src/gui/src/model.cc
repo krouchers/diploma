@@ -1,4 +1,5 @@
 #include "gui/model.hpp"
+#include "gui/gui.hpp"
 
 #include "glm/vec3.hpp"
 #include "glm/gtx/transform.hpp"
@@ -15,7 +16,8 @@ namespace gui
     {
         if (obj_opt)
             SetupMeshComponents(obj_opt.value());
-        else return;
+        else
+            return;
 
         auto &r = scene::Renderer::Get();
         scene::Renderer::HalfedgeOpts opts(Shapes());
@@ -27,7 +29,7 @@ namespace gui
         if (elem)
         {
             auto pos = geometry::HalfedgeMesh::CenterOf(elem.value());
-            widgets.Render(pos, 1.0f);
+            widgets.Render(pos, 1.0f, Mode::model);
         }
     }
 

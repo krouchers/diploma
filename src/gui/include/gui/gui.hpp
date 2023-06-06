@@ -19,13 +19,6 @@
 
 class Opengl;
 
-enum class Mode
-{
-    layout,
-    model,
-    view
-};
-
 namespace gui
 {
     class GEODIP_API DearGui : public IGui
