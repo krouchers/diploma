@@ -6,7 +6,7 @@
 #include <sstream>
 
 View::View(fs::path exe_path)
-    : source_folder_{exe_path.parent_path().parent_path()}
+    : source_folder_{exe_path.parent_path().parent_path().parent_path()}
 {
     if (fs::exists(source_folder_ / "saves"))
     {

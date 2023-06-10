@@ -17,4 +17,4 @@ set_target_properties(
 install(TARGETS test-bed)
 
 set_target_properties(test-bed PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)

@@ -32,4 +32,4 @@ target_include_directories(dear_gui PUBLIC
     ${PROJECT_SOURCE_DIR}/src/common
     PRIVATE ${imgui_SOURCE_DIR} ${imgui_SOURCE_DIR}/backends)
 target_compile_definitions(dear_gui PRIVATE "-DDLL_EXPORT")
-set_target_properties(dear_gui PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+set_target_properties(dear_gui PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)

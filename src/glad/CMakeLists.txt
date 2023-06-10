@@ -8,4 +8,4 @@ target_compile_definitions(glad INTERFACE GLAD_GLAPI_EXPORT)
 target_include_directories(glad PUBLIC include)
 
 set_target_properties(glad PROPERTIES 
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)

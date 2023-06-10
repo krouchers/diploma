@@ -31,7 +31,7 @@ namespace gui
         ImGui::CreateContext();
         auto &io{ImGui::GetIO()};
         io.Fonts->AddFontFromFileTTF(
-            std::filesystem::path{exe_path}.parent_path().parent_path().append("fonts").append("Anonymous_Pro.ttf").string().c_str(), 16.0f,
+            std::filesystem::path{exe_path}.parent_path().parent_path().parent_path().append("fonts").append("Anonymous_Pro.ttf").string().c_str(), 16.0f,
             nullptr, io.Fonts->GetGlyphRangesCyrillic());
 
         ImGui_ImplSDL2_InitForOpenGL(
