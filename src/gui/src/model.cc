@@ -37,7 +37,9 @@ namespace gui
     {
         geometry::HalfedgeMesh *old = halfedge_mesh_;
         halfedge_mesh_ = item.GetHalfedgeMesh();
-        if (old == halfedge_mesh_)
+
+        //Not updating mesh components
+        if (old == halfedge_mesh_ && !item.IsDirty())
         {
             return;
         }

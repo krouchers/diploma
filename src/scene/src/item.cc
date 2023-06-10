@@ -43,6 +43,10 @@ namespace scene
         SyncMesh();
     }
 
+    bool Item::IsDirty(){
+        return mesh_dirty;
+    }
+
     geometry::HalfedgeMesh *Item::GetHalfedgeMesh()
     {
         mesh_dirty = true;

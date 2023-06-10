@@ -26,6 +26,7 @@ namespace scene
         geometry::Mesh &GetMesh();
         geometry::HalfedgeMesh *GetHalfedgeMesh();
         void UpdateHalfedgeMesh(const geometry::HalfedgeMesh &update_from);
+        bool IsDirty();
         SceneID Id()
         {
             return id_;

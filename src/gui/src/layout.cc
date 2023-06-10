@@ -54,9 +54,10 @@ namespace gui
 
     void Layout::ScaleVertices(scene::Item &obj)
     {
-        for (auto &v : obj.GetMesh().Vertices())
+        for (auto v = obj.GetHalfedgeMesh()->VerticesBegin();
+             v != obj.GetHalfedgeMesh()->VerticesEnd(); ++v)
         {
-            v.pos = v.pos * obj.pose_.scale_;
+            v->pos_ = v->pos_ * obj.pose_.scale_;
         }
         obj.pose_.scale_ = {1, 1, 1};
     }
