@@ -63,6 +63,11 @@ namespace gui
         Mode mode_{Mode::layout};
 
         bool unselection_{false};
+        /**
+         * @brief Weather warning window should show up when 
+         * trying to use name that already in use when save problem. 
+         */
+        bool show_window_on_used_name_{false};
 
         // debug section
         glm::vec2 ndc_pos_;

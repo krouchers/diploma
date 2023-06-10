@@ -15,6 +15,7 @@
 #include "imgui_impl_opengl3.h"
 
 #include <string>
+#include <algorithm>
 
 namespace gui
 {
@@ -218,6 +219,17 @@ namespace gui
         if (newObjWindow)
         {
             UINewObj();
+        }
+        if (show_window_on_used_name_)
+        {
+            ImGui::Begin("Задача с таким именем уже существует");
+            if (ImGui::Button("Ok"))
+            {
+                ImGui::SetNextWindowPos({350, 350});
+                ImGui::SetNextWindowSize({50, 300});
+                show_window_on_used_name_ = false;
+            }
+            ImGui::End();
         }
 
         return {0, next_window_pos};
@@ -437,21 +449,36 @@ namespace gui
 
         if (ImGui::Button("Сохранить"))
         {
-            geometry::Mesh merged_mesh{};
-            scene_->ForItems([&merged_mesh](scene::Item &item)
-                             { 
+            auto GetNames = [](const std::unordered_map<size_t, Problem> &problems)
+            {
+                std::vector<std::string> names;
+                for (const auto &[_, problem] : problems)
+                    names.push_back(problem.problem_name_);
+                return names;
+            };
+            auto names = GetNames(view_.GetProblems());
+            if (std::find(names.begin(), names.end(), std::string(view_.problem_name)) != names.end())
+            {
+                show_window_on_used_name_ = true;
+            }
+            else
+            {
+                geometry::Mesh merged_mesh{};
+                scene_->ForItems([&merged_mesh](scene::Item &item)
+                                 { 
                                 for(auto &vert :item.GetMesh().Vertices())
                 {
                     vert.pos = glm::vec3(item.pose_.Transform() * glm::vec4{vert.pos, 1.0f});
                     vert.norm = glm::vec3(item.pose_.Transform() * glm::vec4{vert.norm, 0.0f});
                 }
                 merged_mesh = utils::merge(merged_mesh.GetData(), item.GetMesh().GetData()); });
-            scene_->Clear();
-            if (std::string(view_.problem_name) == "")
-            {
-                strcpy_s(view_.problem_name, (std::string("noname") + std::to_string(view_.GetProblems().size() + 1)).c_str());
+                scene_->Clear();
+                if (std::string(view_.problem_name) == "")
+                {
+                    strcpy_s(view_.problem_name, (std::string("noname") + std::to_string(view_.GetProblems().size() + 1)).c_str());
+                }
+                view_.AddProblem(view_.problem_name, view_.problem_text, merged_mesh);
             }
-            view_.AddProblem(view_.problem_name, view_.problem_text, merged_mesh);
         }
     }
 
